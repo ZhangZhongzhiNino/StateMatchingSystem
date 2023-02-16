@@ -14,6 +14,9 @@ namespace StateMatching
 {
     public class StateMatchingRoot : MonoBehaviour
     {
+        public StateMatchingGlobalReference stateMatchingGlobalReference;
+        public string StateMatchingName;
+        
         #region UnityReference
         [FoldoutGroup("Unity Reference")] public UnityEngine.Animator animator;
         [FoldoutGroup("Unity Reference")] public CharacterController characterController;

@@ -12,7 +12,7 @@ namespace StateMatching.Input
         #region Prefabs
         [FoldoutGroup("Prefabs")]
         [FolderPath]
-        public string prefabFolder = "Assets/Script/State_Matching_System/StateMatchingComponents/Input/InputPresets/Prefabs";
+        public string prefabFolder = "Assets/Nino/StateMatchingSystem/StateMatchingComponents/Input/InputPresets/Prefabs";
         [FoldoutGroup("Prefabs")] 
         public List<GameObject> presets = new List<GameObject>();
         [FoldoutGroup("Prefabs")]
