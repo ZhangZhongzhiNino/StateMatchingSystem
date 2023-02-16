@@ -12,8 +12,6 @@ using StateMatching.State;
 using StateMatching.Variable;
 namespace StateMatching
 {
-    
-
     public class StateMatchingRoot : MonoBehaviour
     {
         #region UnityReference
