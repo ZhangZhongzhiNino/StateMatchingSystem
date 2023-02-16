@@ -1,0 +1,25 @@
+fileFormatVersion: 2
+guid: 46cdab22da53b3b4ab73816ab237392e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - bodyPartPrefab: {fileID: 5655088387579352169, guid: f3ff53a2c9f604f41b3d2cf3bfed20a4,
+      type: 3}
+  - rootPrefab: {fileID: 5632360154677762819, guid: 87f6fa2416134234bbf53bcfe4c94028,
+      type: 3}
+  - centerOfMassPrefab: {fileID: 5632360154677762819, guid: 04739d27a1707a8458a04307d2ad88f5,
+      type: 3}
+  - footCenterPrefab: {fileID: 2035231353518244057, guid: aebf97ba043902a498d060f02c2e00ba,
+      type: 3}
+  - centerOfMass: {instanceID: 0}
+  - rightFootCenter: {instanceID: 0}
+  - leftFootCenter: {instanceID: 0}
+  - _ROOT: {instanceID: 0}
+  - _animator: {instanceID: 0}
+  - poseDataManager: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

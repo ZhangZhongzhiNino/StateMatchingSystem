@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: ab2e4818af5c5204eb0bbf2d717618d1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - infoController: {instanceID: 0}
+  - poseDataHolderPrefab: {fileID: 3955522712058385406, guid: 0634984e4c2461a48ae097be670d2208,
+      type: 3}
+  - poseDataHolder: {instanceID: 0}
+  - importancePresetsHolderPrefab: {instanceID: 0}
+  - importancePresetsHolder: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
