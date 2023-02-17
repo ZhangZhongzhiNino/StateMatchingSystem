@@ -9,7 +9,7 @@ using StateMatching;
 using StateMatching.Helper;
 namespace StateMatching.Data
 {
-    public class HumanoidInfoData : MonoBehaviour, IStateMatchingComponent
+    public class HumanoidInfoData : ExtensionExecuter                    //MonoBehaviour, IStateMatchingComponent
     {
         #region 0 Body Part List
         [PropertySpace(SpaceBefore = 5, SpaceAfter = 5), ReadOnly]
@@ -28,7 +28,6 @@ namespace StateMatching.Data
 
         #endregion//1 Prefabs
         #region 2 Data
-        [TitleGroup("Reference/Data")][SerializeField] StateMatchingRoot stateMatchingRoot;
         [TitleGroup("Reference/Data")][SerializeField] SpecialPart centerOfMass;
         [TitleGroup("Reference/Data")][SerializeField] FootCenter rightFootCenter;
         [TitleGroup("Reference/Data")][SerializeField] FootCenter leftFootCenter;
@@ -55,12 +54,12 @@ namespace StateMatching.Data
         [Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
         private void AutoSetUpBodyPartInfo()
         {
-            if (stateMatchingRoot.animator == null) stateMatchingRoot.FindUnityComponent<Animator>(ref stateMatchingRoot.animator);
-            if (stateMatchingRoot.animator == null) return;
+            if (root.animator == null) root.FindUnityComponent<Animator>(ref root.animator);
+            if (root.animator == null) return;
             if (bodyParts.Count != 0) ClearAllBodyPart(false);
             foreach (HumanBodyBones bone in Enum.GetValues(typeof(HumanBodyBones)))
             {
-                GameObject obj = stateMatchingRoot.animator?.GetBoneTransform(bone)?.gameObject;
+                GameObject obj = root.animator?.GetBoneTransform(bone)?.gameObject;
                 if (obj == null || bone.ToString() == "LeftEye") break;
                 bodyParts.Add(TrySetInfo(obj, bone.ToString(), defaultMass, gizmoSize, editDisplayOffset));
             }
@@ -716,20 +715,20 @@ namespace StateMatching.Data
         #endregion
 
         #region Initialize & Destroy
-        public void Initialize<T>(T instance = null, StateMatchingRoot _stateMatchingRoot = null) where T : MonoBehaviour
+        public override void Initialize<T>(T instance = null, StateMatchingRoot _stateMatchingRoot = null)
         {
-            stateMatchingRoot = _stateMatchingRoot;
+            base.Initialize(instance, _stateMatchingRoot);
             MoveCenterOfMass();
             createRoot();
             if (bodyParts == null) bodyParts = new List<BodyPartInfoHolder>();
         }
 
-        public void PreDestroy()
+        public override void PreDestroy()
         {
             ClearAllExtensions();
             ClearAllBodyPart();
             if (partDataRoot) Helpers.RemoveGameObject(partDataRoot.gameObject);
-            Helpers.RemoveGameObject(this.gameObject);
+            base.PreDestroy();
         }
         void ClearAllExtensions()
         {

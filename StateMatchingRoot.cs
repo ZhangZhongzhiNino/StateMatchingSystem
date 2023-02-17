@@ -5,11 +5,11 @@ using UnityEngine;
 
 using StateMatching.Data;
 using StateMatching.Action;
-using StateMatching.Resource;
 using StateMatching.Helper;
 using StateMatching.Input;
 using StateMatching.State;
 using StateMatching.Variable;
+using StateMatching.InternalEvent;
 namespace StateMatching
 {
     public class StateMatchingRoot : MonoBehaviour
@@ -43,11 +43,13 @@ namespace StateMatching
         [FoldoutGroup("State Matching Reference")] 
         [TitleGroup("State Matching Reference/Game Object")]public GameObject stateMatchingComponent;
         [TitleGroup("State Matching Reference/Game Object")] public GameObject inputObj;
+        [TitleGroup("State Matching Reference/Game Object")] public GameObject internalEventObj;
         [TitleGroup("State Matching Reference/Game Object")] public GameObject variableObj; 
         [TitleGroup("State Matching Reference/Game Object")] public GameObject dataObj;
         [TitleGroup("State Matching Reference/Game Object")] public GameObject actionObj;
         [TitleGroup("State Matching Reference/Game Object")] public GameObject stateMachineObj;
         [TitleGroup("State Matching Reference/Script Reference")] public InputController inputController;
+        [TitleGroup("State Matching Reference/Script Reference")] public InternalEventController internalEventController;
         [TitleGroup("State Matching Reference/Script Reference")] public VariableController_s variableController;
         [TitleGroup("State Matching Reference/Script Reference")] public DataController dataController;
         [TitleGroup("State Matching Reference/Script Reference")] public ActionController actionController;
@@ -57,11 +59,13 @@ namespace StateMatching
         {
             stateMatchingComponent = Helpers.CreateGameObject("_____stateMatchingComponent_____", this.transform);
             CreateGameObjectWithScript<InputController>("Category: Inputs ____", stateMatchingComponent.transform,out inputObj, out inputController);
+            CreateGameObjectWithScript<InternalEventController>("Category: Internal Event ____", stateMatchingComponent.transform, out internalEventObj, out internalEventController);
             CreateGameObjectWithScript<VariableController_s>("Category: Variable ____", stateMatchingComponent.transform, out variableObj, out variableController); 
             CreateGameObjectWithScript<DataController>("Category: Datas ____", stateMatchingComponent.transform, out dataObj, out dataController);
             CreateGameObjectWithScript<ActionController>("Category: Actions ____", stateMatchingComponent.transform, out actionObj, out actionController);
             CreateGameObjectWithScript<StateMachineController>("Category: StateMachine ____", stateMatchingComponent.transform,out stateMachineObj,out stateMachineController);
             inputController.InitiateExtensions();
+            internalEventController.InitiateExtensions();
             dataController.InitiateExtensions();
             actionController.InitiateExtensions();
             variableController.InitiateExtensions();
@@ -90,6 +94,15 @@ namespace StateMatching
             Helpers.CreateGameObjectWithScript<T>(objName, parent, out objReference, out scriptReference, root: this);
         }
         #endregion
+
+
+        public void AnimationEventHaldler(AnimationEvent animationEvent)
+        {
+            string animationClipName = animationEvent.animatorClipInfo.clip.name;
+            int currentEventIndex = animationEvent.intParameter;
+            Debug.Log($"Animation clip name: {animationClipName}");
+            Debug.Log($"Current triggered AnimationEvent index: {currentEventIndex}");
+        }
     }
 
 }

@@ -12,7 +12,7 @@ namespace StateMatching.Helper
             root = stateMatchingRoot;
             
         }
-        public void PreDestroy()
+        public virtual void PreDestroy()
         {
             Helpers.RemoveGameObject(this.gameObject);
         }

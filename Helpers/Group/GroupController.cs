@@ -16,7 +16,6 @@ namespace StateMatching.Helper
         public abstract System.Type getGroupType();
 
         //Need To Overide
-        [Button]
         public Group<T, V> addNewGroupToGameObject()
         {
             Group <T,V> newGroup = gameObject.AddComponent(getGroupType()) as Group<T,V>;

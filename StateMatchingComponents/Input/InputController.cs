@@ -12,7 +12,6 @@ namespace StateMatching.Input
         {
             inputSystemContainer = Helpers.InitiateExtension<InputSystemContainerExtension>("Input System Container", this.gameObject, root);
             inputPresets = Helpers.InitiateExtension<InputPresetExtension>("Input Presets", this.gameObject,root);
-
         }
     }
 }

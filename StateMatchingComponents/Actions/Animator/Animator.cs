@@ -12,22 +12,20 @@ namespace StateMatching.Action
     {
         
         public UnityEngine.Animator animator;
-        #region Unity Events
+
         private void OnDrawGizmos()
         {
-            if(animator!=null && groupController != null) UpdateAnimatorStates();
+            if(autoUpdate && animator!=null && groupController != null) UpdateAnimatorStates();
         }
-        #endregion
-        #region Initialize & destroy
+
         public override void Initialize<T>(T instance = null, StateMatchingRoot stateMatchingRoot = null) 
         {
             base.Initialize<T>(instance, stateMatchingRoot);
             animator = root.animator;
             UpdateAnimatorStates();
         }
-        #endregion
-   
-        
+
+        public bool autoUpdate = true;
         void UpdateAnimatorStates()
         {
             groupController.RemoveAllInItems(items =>items.value==null|| items.value.state == null);
