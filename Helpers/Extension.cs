@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using System;
+using UnityEditor;
+
 
 namespace StateMatching.Helper
 {
@@ -33,7 +35,11 @@ namespace StateMatching.Helper
         {
             GameObject extensionObj = Helpers.CreateGameObject("____"+extensionName, controller.transform);
             extension = Helpers.AddStateMatchingComponent<T>(extensionObj, root: root);
+            Helpers.OpenHierarchy(controller,true);
         }
+        
+        
+
         [ShowIfGroup("extension group/Remove", Condition = "@extension != null")]
         [Button(name: "@removeName"),GUIColor(1, 0.4f, 0.4f)]
         public void RemoveExtension()

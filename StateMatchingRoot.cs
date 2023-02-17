@@ -57,19 +57,14 @@ namespace StateMatching
         [FoldoutGroup("State Matching Reference"),Button(ButtonSizes.Large),GUIColor(0.4f,1,0.4f)]
         void SetUpStateMatchingComponent()
         {
-            stateMatchingComponent = Helpers.CreateGameObject("_____stateMatchingComponent_____", this.transform);
-            CreateGameObjectWithScript<InputController>("Category: Inputs ____", stateMatchingComponent.transform,out inputObj, out inputController);
-            CreateGameObjectWithScript<InternalEventController>("Category: Internal Event ____", stateMatchingComponent.transform, out internalEventObj, out internalEventController);
-            CreateGameObjectWithScript<VariableController_s>("Category: Variable ____", stateMatchingComponent.transform, out variableObj, out variableController); 
-            CreateGameObjectWithScript<DataController>("Category: Datas ____", stateMatchingComponent.transform, out dataObj, out dataController);
-            CreateGameObjectWithScript<ActionController>("Category: Actions ____", stateMatchingComponent.transform, out actionObj, out actionController);
-            CreateGameObjectWithScript<StateMachineController>("Category: StateMachine ____", stateMatchingComponent.transform,out stateMachineObj,out stateMachineController);
-            inputController.InitiateExtensions();
-            internalEventController.InitiateExtensions();
-            dataController.InitiateExtensions();
-            actionController.InitiateExtensions();
-            variableController.InitiateExtensions();
-            stateMachineController.InitiateExtensions();
+            if(stateMatchingComponent == null) stateMatchingComponent = Helpers.CreateGameObject("_____stateMatchingComponent_____", this.transform);
+            CreateGameObjectWithScript<InputController>("Category: Inputs ____", stateMatchingComponent.transform,ref inputObj, ref inputController);
+            CreateGameObjectWithScript<InternalEventController>("Category: Internal Event ____", stateMatchingComponent.transform, ref internalEventObj, ref internalEventController);
+            CreateGameObjectWithScript<VariableController_s>("Category: Variable ____", stateMatchingComponent.transform, ref variableObj, ref variableController); 
+            CreateGameObjectWithScript<DataController>("Category: Datas ____", stateMatchingComponent.transform, ref dataObj, ref dataController);
+            CreateGameObjectWithScript<ActionController>("Category: Actions ____", stateMatchingComponent.transform, ref actionObj, ref actionController);
+            CreateGameObjectWithScript<StateMachineController>("Category: StateMachine ____", stateMatchingComponent.transform, ref stateMachineObj,ref stateMachineController);
+
             
         }
 
@@ -89,9 +84,11 @@ namespace StateMatching
             }
         }
 
-        public void CreateGameObjectWithScript<T>(string objName, Transform parent,out GameObject objReference,out T scriptReference) where T: MonoBehaviour,IStateMatchingComponent    
+        public void CreateGameObjectWithScript<T>(string objName, Transform parent,ref GameObject objReference,ref T scriptReference) where T: MonoBehaviour,IStateMatchingComponent,IExtensionController    
         {
-            Helpers.CreateGameObjectWithScript<T>(objName, parent, out objReference, out scriptReference, root: this);
+            if (objReference == null) Helpers.CreateGameObjectWithScript<T>(objName, parent, out objReference, out scriptReference, root: this);
+            else if (scriptReference == null) Helpers.AddStateMatchingComponent<T>(objReference,root: this);
+            scriptReference.InitiateExtensions();
         }
         #endregion
 
@@ -100,8 +97,11 @@ namespace StateMatching
         {
             string animationClipName = animationEvent.animatorClipInfo.clip.name;
             int currentEventIndex = animationEvent.intParameter;
-            Debug.Log($"Animation clip name: {animationClipName}");
-            Debug.Log($"Current triggered AnimationEvent index: {currentEventIndex}");
+            if (internalEventController.unityAnimationEventHandler.extension == null) return;
+            UnityAnimationEventHandler animEventHandler = internalEventController.unityAnimationEventHandler.extension;
+            UnityAnimationEventGroup getEventGroup = animEventHandler.groupController.GetGroup(animationClipName) as UnityAnimationEventGroup;
+            UnityAnimationEvent getEvent = getEventGroup.items[currentEventIndex];
+            getEvent.InvokeUnityEvent();
         }
     }
 

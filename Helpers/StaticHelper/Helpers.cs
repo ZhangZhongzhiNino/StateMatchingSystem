@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using StateMatching;
 using System;
+using UnityEditor;
 
 namespace StateMatching.Helper
 {
@@ -78,6 +78,27 @@ namespace StateMatching.Helper
             return extension;
         }
 
+        public static void SetUpExtensions<T>(ref T extension, string name, GameObject parent, StateMatchingRoot root) where T : MonoBehaviour, IExtension
+        {
+            if (extension == null) parent.TryGetComponent<T>(out extension);
+            if (extension != null) extension.Initiate(name, parent, root);
+            else extension = Helpers.InitiateExtension<T>(name, parent, root);
+        }
+        public static void OpenHierarchy(GameObject obj, bool open)
+        {
+            EditorApplication.ExecuteMenuItem("Window/Panels/7 Hierarchy");
+            var hierarchyWindow = EditorWindow.focusedWindow;
+            var expandMethodInfo = hierarchyWindow.GetType().GetMethod("SetExpandedRecursive");
+            expandMethodInfo.Invoke(hierarchyWindow, new object[] { obj.GetInstanceID(), open });
+            if (open)
+            {
+                foreach (Transform t in obj.transform)
+                {
+                    if (t == obj.transform) continue;
+                    OpenHierarchy(t.gameObject, false);
+                }
+            }
+        }
     }
 }
 

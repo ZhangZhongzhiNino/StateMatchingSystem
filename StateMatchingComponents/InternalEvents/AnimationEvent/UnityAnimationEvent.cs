@@ -23,7 +23,6 @@ namespace StateMatching.InternalEvent
         public void InvokeUnityEvent()
         {
             unityEvent?.Invoke();
-            Debug.Log(eventName + ": Invoke");
         }
 
 
@@ -32,14 +31,6 @@ namespace StateMatching.InternalEvent
             this.eventName = eventName;
             this.animationEvent = animationEvent;
             this.unityEvent = new UnityEvent();
-            animationEvent.functionName = "AnimationEventHaldler";
-
-        }
-        [Button]
-        void dg()
-        {
-            animationEvent.functionName = "AnimationEventHaldler";
-            Debug.Log(animationEvent.functionName);
         }
     }
 }

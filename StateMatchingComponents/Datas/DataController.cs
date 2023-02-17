@@ -13,8 +13,8 @@ namespace StateMatching.Data
         public PoseDataExtension poseDatas;
         public void InitiateExtensions()
         {
-            humanoidInfoDatas = Helpers.InitiateExtension<HumanoidInfoDataExtension>("Humanoid Info Data", this.gameObject, root);
-            poseDatas = Helpers.InitiateExtension<PoseDataExtension>("Pose Data", this.gameObject, root);
+            Helpers.SetUpExtensions<HumanoidInfoDataExtension>(ref humanoidInfoDatas, "Humanoid Info Data", this.gameObject, root);
+            Helpers.SetUpExtensions<PoseDataExtension>(ref poseDatas, "Pose Data", this.gameObject, root);
         }
     }
 

@@ -11,7 +11,7 @@ namespace StateMatching.InternalEvent
         public UnityAnimationEventHandlerExtension unityAnimationEventHandler;
         public void InitiateExtensions()
         {
-            unityAnimationEventHandler = Helpers.InitiateExtension<UnityAnimationEventHandlerExtension>("Unity Animation Event Handler", this.gameObject, root);
+            Helpers.SetUpExtensions<UnityAnimationEventHandlerExtension>(ref unityAnimationEventHandler, "Unity Animation Event Handler", this.gameObject, root);
 
         }
     }

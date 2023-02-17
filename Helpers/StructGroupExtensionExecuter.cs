@@ -7,15 +7,16 @@ namespace StateMatching.Helper
 {
     public abstract class StructGroupExtensionExecuter<T,V> : ExtensionExecuter where T : MonoBehaviour, IGroupItem<T, V> where V : struct
     {
-        public StructGroupController<T, V> groupController;
+        [FoldoutGroup("Reference"),PropertyOrder(-999999)] public StructGroupController<T, V> groupController;
+        [FoldoutGroup("Reference")] public StructGroupPreview<T,V> groupPreview;
         string typeName;
         public override void Initialize<_T>(_T instance = null, StateMatchingRoot stateMatchingRoot = null) //where _T : MonoBehaviour
         {
             base.Initialize<_T>(instance, stateMatchingRoot);
             typeName = typeof(V).Name;
             CreateGroupComponent();
-            StructGroupPreview<T,V> preview = this.gameObject.AddComponent(GetGroupPreviewType()) as StructGroupPreview<T,V>;
-            preview.Initiate(groupController);
+            groupPreview = this.gameObject.AddComponent(GetGroupPreviewType()) as StructGroupPreview<T,V>;
+            groupPreview.Initiate(groupController);
         }
 
         /*public void PreDestroy()

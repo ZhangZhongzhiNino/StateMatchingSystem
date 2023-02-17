@@ -10,8 +10,9 @@ namespace StateMatching.Input
         public InputPresetExtension inputPresets;
         public void InitiateExtensions()
         {
-            inputSystemContainer = Helpers.InitiateExtension<InputSystemContainerExtension>("Input System Container", this.gameObject, root);
-            inputPresets = Helpers.InitiateExtension<InputPresetExtension>("Input Presets", this.gameObject,root);
+            Helpers.SetUpExtensions<InputSystemContainerExtension>(ref inputSystemContainer, "Input System Container", this.gameObject, root);
+            Helpers.SetUpExtensions<InputPresetExtension>(ref inputPresets, "Input Presets", this.gameObject, root);
+        
         }
     }
 }

@@ -11,7 +11,7 @@ namespace StateMatching.Helper
 
         #region Odin
         #region Values
-        List<string> groupNames
+        public List<string> groupNames
         {
             get
             {

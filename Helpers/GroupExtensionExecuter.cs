@@ -8,14 +8,15 @@ namespace StateMatching.Helper
     public abstract class GroupExtensionExecuter<T,V> : ExtensionExecuter where T : MonoBehaviour, IGroupItem<T, V> where V : class
     {
         [PropertyOrder(-9999999),FoldoutGroup("Reference")] public GroupController<T, V> groupController;
+        [FoldoutGroup("Reference")] public GroupPreview<T, V> groupPreview;
         string typeName;
         public override void Initialize<_T>(_T instance = null, StateMatchingRoot stateMatchingRoot = null)
         {
             base.Initialize<_T>(instance, stateMatchingRoot);
             typeName = typeof(V).Name;
             CreateGroupComponent();
-            GroupPreview<T, V> preview = this.gameObject.AddComponent(GetGroupPreviewType()) as GroupPreview<T, V>;
-            preview.Initiate(groupController);
+            groupPreview = this.gameObject.AddComponent(GetGroupPreviewType()) as GroupPreview<T, V>;
+            groupPreview.Initiate(groupController);
         }
         void CreateGroupComponent()
         {

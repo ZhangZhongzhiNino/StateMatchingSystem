@@ -11,7 +11,7 @@ namespace StateMatching.Action
         [ShowInInspector]public AnimatorExtension animator;
         public void InitiateExtensions()
         {
-            animator = Helpers.InitiateExtension<AnimatorExtension>("animator", this.gameObject, root);
+            Helpers.SetUpExtensions<AnimatorExtension>(ref animator, "animator", this.gameObject, root);
         }
     }
     

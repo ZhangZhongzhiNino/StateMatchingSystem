@@ -73,7 +73,7 @@ namespace StateMatching.Helper
             //if (T == null || !T.IsAssignableFrom(typeof(_T))) return;
             T newItem = AddItem(itemName,item);
             StructGroup<T,V> findGroup = AddNewGroup(groupName);
-            findGroup.items.Add(newItem);
+            AddItemToGroup(groupName, itemName);
             UpdateItemsList();
             return newItem;
 
