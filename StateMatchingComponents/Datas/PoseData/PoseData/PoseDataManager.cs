@@ -9,7 +9,7 @@ using StateMatching.Helper;
 
 namespace StateMatching.Data
 {
-    public class PoseDataManager : MonoBehaviour
+    public class PoseDataManager : GroupExtensionExecuter<PoseData,PoseData>
     {
         //--------------Inspector Interface--------
         #region Reference
@@ -19,7 +19,6 @@ namespace StateMatching.Data
 
 
         [TitleGroup("Reference/Reference"), SerializeField] HumanoidInfoData infoController;
-        [TitleGroup("Reference/Reference"), SerializeField] PoseGroupController poseGroupController;
         [TitleGroup("Reference/Reference"), SerializeField] GameObject poseDataComponents;
         [TitleGroup("Reference/Reference"), SerializeField] GameObject poseDataGroups;
         [TitleGroup("Reference/Reference"), SerializeField] GameObject poseDataItems;
@@ -41,9 +40,9 @@ namespace StateMatching.Data
         void CreateOrUpdatePose(string poseName = "new pose", int poseAtFrame = 0 , string poseInGroup = null)
         {
             PoseData newPose = CreatePoseInstance(poseName, poseAtFrame);
-            if (string.IsNullOrWhiteSpace(poseInGroup)) poseGroupController.AddItem(poseName, newPose);
-            else poseGroupController.AddItem(poseName, newPose, poseInGroup);
-            UpdatePoseDatas();
+            if (string.IsNullOrWhiteSpace(poseInGroup)) groupController.AddItem(poseName, newPose);
+            else groupController.AddItem(poseName, newPose, poseInGroup);
+
         }
         private PoseData CreatePoseInstance(string poseName, int poseAtFrame)
         {
@@ -78,7 +77,7 @@ namespace StateMatching.Data
             get
             {
                 List<string> newPoseNames = new List<string>();
-                foreach (PoseData p in poseDatas)
+                foreach (PoseData p in groupController.items)
                 {
                     string newName = "\"" + p.GetPoseName() + "\" at " + p.GetStartFrame() + " frame";
                     newPoseNames.Add(newName);
@@ -283,79 +282,40 @@ namespace StateMatching.Data
 
         #endregion//Edit Pose
 
-        #region Pose Datas
-        [ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "odinListName")]
-        [FoldoutGroup("Pose Data", Order = -97)][SerializeField][ReadOnly] List<PoseData> poseDatas;
-
-        [FoldoutGroup("Pose Data")]
-        [Button]
-        [GUIColor(1, 0.4f, 0.4f)]
-        private void clearPoseDatas()
-        {
-            poseGroupController.RemoveAllItem();
-            UpdatePoseDatas();
-        }
-
-
-        [FoldoutGroup("Pose Data")]
-        [Button(ButtonStyle.Box)]
-        [GUIColor(1, 0.4f, 0.4f)]
-        private void clearPoseDatasByName(string name)
-        {
-            poseGroupController.RemoveItem(name);
-            UpdatePoseDatas();
-        }
-
-
-        [FoldoutGroup("Pose Data")]
-        [Button(ButtonStyle.Box)]
-        [GUIColor(1, 0.4f, 0.4f)]
-        private void clearPoseDatasByID(int index)
-        {
-            poseGroupController.RemoveItem(index);
-            UpdatePoseDatas();
-        }
-        void UpdatePoseDatas()
-        {
-            poseDatas = poseGroupController.items;
-        }
-        #endregion
 
         //--------------Inspector Interface End--------
 
         //--------------Functining group-----------
 
         #region initialize destory
-        public void Initialize()
+
+        public override void Initialize<_T>(_T instance = null, StateMatchingRoot stateMatchingRoot = null)
         {
+            base.Initialize(instance, stateMatchingRoot);
             InitializeVeriables();
             FindInfoController();
-            CreateComponent(ref poseDataComponents, "PoseDataComponents", this.transform);
-            CreateComponent(ref poseDataGroups, "_____poseDataGroup_____", poseDataComponents.transform);
-            CreateComponent(ref poseDataItems, "poseDataItems", poseDataGroups.transform, poseDataItemsPrefab);
-            CreateComponent(ref importancePresetsHolder, "ImportancePresetsHolder", poseDataComponents.transform, importancePresetsHolderPrefab);
-            
-            poseGroupController = poseDataGroups.AddComponent<PoseGroupController>();
-            poseGroupController.Initialize(poseDataItems);
-            poseGroupController.UpdateItemsList();
-
+            CreateComponent(ref importancePresetsHolder, "ImportancePresetsHolder", this.transform, importancePresetsHolderPrefab);
             UpdateBodyPartsData();
             AddDefaultImportancePreset();
         }
-        public void PreDestroy()
+        public override void PreDestroy()
         {
             EndEditMode();
             Helpers.RemoveGameObject(poseDataItems);
             Helpers.RemoveGameObject(poseDataGroups);
             Helpers.RemoveGameObject(importancePresetsHolder);
             Helpers.RemoveGameObject(poseDataComponents);
-            Helpers.RemoveComponent(this);
+            base.PreDestroy();
 
         }
         void FindInfoController()
         {
-            gameObject.TryGetComponent<HumanoidInfoData>(out infoController);
-            if (infoController == null) infoController = gameObject.AddComponent<HumanoidInfoData>();
+            if(root.dataController.humanoidInfoDatas.extension == null)
+            {
+                root.dataController.humanoidInfoDatas.CreateExtension();
+            }
+            infoController = root.dataController.humanoidInfoDatas.extension;
+            infoController.poseDataManager = this;
         }
         public void UpdateBodyPartsData()
         {
@@ -374,7 +334,6 @@ namespace StateMatching.Data
         }
         void InitializeVeriables()
         {
-            poseDatas = new List<PoseData>();
             importancePresetsNames = new List<string>();
             importancePresets = new List<ImportancePreset>();
         }
@@ -698,7 +657,7 @@ namespace StateMatching.Data
             get
             {
                 List<string> newList = new List<string>();
-                List<Group<PoseData,PoseData>> groups = poseGroupController.groups ;
+                List<Group<PoseData,PoseData>> groups = groupController.groups ;
                 foreach (PoseGroup g in groups)
                 {
                     newList.Add(g.groupName);
@@ -711,7 +670,7 @@ namespace StateMatching.Data
         [BoxGroup("Demo"),Button]
         void FindCloestTransition()
         {
-            List<PoseData> datas = poseGroupController.GetGroup(selectGroup).items;
+            List<PoseData> datas = groupController.GetGroup(selectGroup).items;
             List<float> difference = new List<float>();
             for (int i = 0; i < datas.Count; i++)
             {
@@ -723,30 +682,14 @@ namespace StateMatching.Data
             _ApplyTransform(datas[difference.IndexOf(difference.Min())]);
         }
         #region get
-        public List<PoseData> GetAllData()
-        {
-            return poseDatas;
-        }
+        
         public PoseData GetPose(string name, int startFrame)
         {
-            foreach (PoseData p in poseDatas)
+            foreach (PoseData p in groupController.items)
             {
                 if (p.GetPoseName() == name && p.GetStartFrame() == startFrame) return p;
             }
             return null;
-        }
-        public PoseData GetPose(string name)
-        {
-            foreach (PoseData p in poseDatas)
-            {
-                if (p.GetPoseName() == name) return p;
-            }
-            return null;
-        }
-        public PoseData GetPose(int index)
-        {
-            if (index > poseDatas.Count) return null;
-            return poseDatas[index];
         }
         public ImportancePreset GetImportancePreset(string name)
         {
@@ -765,8 +708,18 @@ namespace StateMatching.Data
             }
             return null;
         }
-        #endregion
 
+
+        #endregion
+        public override Type GetGroupControllerType()
+        {
+            return typeof(PoseGroupController);
+        }
+
+        public override Type GetGroupPreviewType()
+        {
+            return typeof(PoseDataGroupPreview);
+        }
     }
 }
 

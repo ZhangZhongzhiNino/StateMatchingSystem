@@ -9,11 +9,12 @@ namespace StateMatching.Data
 {
     public class DataController : CategoryController, IExtensionController
     {
-        [ShowInInspector] public HumanoidInfoDataExtension HumanoidInfoDatas;
+        public HumanoidInfoDataExtension humanoidInfoDatas;
+        public PoseDataExtension poseDatas;
         public void InitiateExtensions()
         {
-            HumanoidInfoDatas = Helpers.InitiateExtension<HumanoidInfoDataExtension>("HumanoidInfoData", this.gameObject, root);
-            
+            humanoidInfoDatas = Helpers.InitiateExtension<HumanoidInfoDataExtension>("Humanoid Info Data", this.gameObject, root);
+            poseDatas = Helpers.InitiateExtension<PoseDataExtension>("Pose Data", this.gameObject, root);
         }
     }
 

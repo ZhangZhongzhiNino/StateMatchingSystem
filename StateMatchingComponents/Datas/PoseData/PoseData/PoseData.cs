@@ -7,7 +7,7 @@ namespace StateMatching.Data
 {
     public class PoseData : MonoBehaviour,IGroupItem<PoseData, PoseData>
     {
-        string odinListName { get { return "\"" + poseName + "\"" + " at " + poseAtFrame + " frame"; } }
+        public string odinListName { get { return "\"" + poseName + "\"" + " at " + poseAtFrame + " frame"; } }
 
         public string itemName { get { return poseName; } set => poseName = value; }
 

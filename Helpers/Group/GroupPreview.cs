@@ -119,19 +119,20 @@ namespace StateMatching.Helper
             this.groupController = groupController;
         }
 
-        [FoldoutGroup("All Items", order: 100), ShowInInspector]
-        public List<string> AllItems
-        {
+        [FoldoutGroup("Items", order: -999), ShowInInspector]
+        public virtual List<string> AllItems
+        { 
             get
             {
-                List<string> newList = new List<string>();
-                newList = groupController.GetItemNameList();
-                if (newList == null) return null;
-                for (int i = 0; i < newList.Count; i++)
+                List<string> nameList = new List<string>();
+                nameList = groupController.GetItemNameList();
+                if (nameList == null) return null;
+                List<string> rList = new List<string>();
+                for (int i = 0; i < nameList.Count; i++)
                 {
-                    newList[i] += ": " + groupController.items[i].value.ToString();
+                    rList.Add( i.ToString() + ": " + nameList[i]);
                 }
-                return newList;
+                return rList;
             }
         }
         
@@ -195,7 +196,34 @@ namespace StateMatching.Helper
             selectItemsToRemove.Clear();
         }
         #endregion
+        #region Remove Item
 
+        [FoldoutGroup("Items")]
+        [Button]
+        [GUIColor(1, 0.4f, 0.4f)]
+        private void RemoveAllItems()
+        {
+            groupController.RemoveAllItem();
+        }
+
+
+        [FoldoutGroup("Items")]
+        [Button(ButtonStyle.Box)]
+        [GUIColor(1, 0.4f, 0.4f)]
+        private void RemoveItemByName(string name)
+        {
+            groupController.RemoveItem(name);
+        }
+
+
+        [FoldoutGroup("Items")]
+        [Button(ButtonStyle.Box)]
+        [GUIColor(1, 0.4f, 0.4f)]
+        private void RemoveItemByID(int index)
+        {
+            groupController.RemoveItem(index);
+        }
+        #endregion
 
         #region Custom Odin
         public IEnumerable<ValueDropdownItem<string>> selectList(List<string> list, List<string> selectList)

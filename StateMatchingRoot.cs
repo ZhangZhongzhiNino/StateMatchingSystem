@@ -76,7 +76,7 @@ namespace StateMatching
         [FoldoutGroup("State Matching Reference"), Button(ButtonSizes.Large), GUIColor(1, 0.4f, 0.4f)]
         void ClearAllStateMatchingComponent()
         {
-            dataController?.HumanoidInfoDatas?.extension?.PreDestroy();
+            dataController?.humanoidInfoDatas?.extension?.PreDestroy();
             Helpers.RemoveGameObject(stateMatchingComponent);
         }
         #endregion

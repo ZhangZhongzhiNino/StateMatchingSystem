@@ -7,7 +7,7 @@ namespace StateMatching.Helper
 {
     public abstract class GroupExtensionExecuter<T,V> : ExtensionExecuter where T : MonoBehaviour, IGroupItem<T, V> where V : class
     {
-        public GroupController<T, V> groupController;
+        [PropertyOrder(-9999999),FoldoutGroup("Reference")] public GroupController<T, V> groupController;
         string typeName;
         public override void Initialize<_T>(_T instance = null, StateMatchingRoot stateMatchingRoot = null)
         {

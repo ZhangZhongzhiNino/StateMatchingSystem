@@ -42,7 +42,8 @@ namespace StateMatching.Data
             }
             set { _partDataRoot = value; }
         }
-
+        [TitleGroup("Reference/Data")]
+        public PoseDataManager poseDataManager;
         #endregion//1 Reference
 
         #endregion//0 Reference
@@ -473,38 +474,7 @@ namespace StateMatching.Data
         [TitleGroup("Datas/Center of Mass Momentum")] public Vector3 COM_acceleration;
         [TitleGroup("Datas/Center of Mass Momentum")] public Quaternion torque;
         #endregion
-        #region 0 Extensions
-        [FoldoutGroup("Extensions", Order = 100)]
-        #region 1 Pose Data Manager
 
-        [FoldoutGroup("Extensions/Pose Data Manager", Order = -10)]
-        [field: SerializeField]
-        PoseDataManager poseDataManager;
-
-        [FoldoutGroup("Extensions/Pose Data Manager")]
-        [ShowIfGroup("Extensions/Pose Data Manager/0", Condition = "@poseDataManager == null")]
-        [Button]
-        [GUIColor(0.4f, 1, 0.4f)]
-        private void SetUpPoseDataManager()
-        {
-            if (poseDataManager != null) return;
-            poseDataManager = this.gameObject.AddComponent<PoseDataManager>();
-            poseDataManager.Initialize();
-        }
-
-        [FoldoutGroup("Extensions/Pose Data Manager")]
-        [ShowIfGroup("Extensions/Pose Data Manager/1", Condition = "@poseDataManager != null")]
-        [Button]
-        [GUIColor(1, 0.4f, 0.4f)]
-        private void DestroyPoseDataManager()
-        {
-            if (poseDataManager == null) return;
-            poseDataManager.PreDestroy();
-            Helpers.RemoveComponent(poseDataManager);
-        }
-
-        #endregion//1 Pose Data Manager
-        #endregion//0 Extensions
 
 
         #region 0 Unity routines
@@ -732,7 +702,7 @@ namespace StateMatching.Data
         }
         void ClearAllExtensions()
         {
-            if (poseDataManager != null) DestroyPoseDataManager();
+            if (poseDataManager != null) poseDataManager.PreDestroy();
         }
 
         
