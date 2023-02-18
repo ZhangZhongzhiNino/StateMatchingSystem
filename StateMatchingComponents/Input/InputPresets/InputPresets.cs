@@ -7,7 +7,7 @@ using UnityEditor;
 
 namespace StateMatching.Input
 {
-    public class InputPresets : ExtensionExecuter
+    public class InputPresets : InputExtensionExecuter
     {
         #region Prefabs
         [FoldoutGroup("Prefabs")]

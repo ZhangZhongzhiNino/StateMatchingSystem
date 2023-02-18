@@ -7,7 +7,7 @@ using StateMatching.Data;
 using StateMatching.Action;
 using StateMatching.Helper;
 using StateMatching.Input;
-using StateMatching.State;
+using StateMatching.StateMachine;
 using StateMatching.Variable;
 using StateMatching.InternalEvent;
 namespace StateMatching
@@ -76,6 +76,11 @@ namespace StateMatching
             if(dataController?.humanoidInfoDatas?.executer != null) dataController?.humanoidInfoDatas?.executer?.PreDestroy();
             Helpers.RemoveGameObject(stateMatchingComponent);
         }
+        [Button(ButtonSizes.Large),GUIColor(0.4f,1,1)]
+        void ResetHierarchy()
+        {
+            Helpers.ResetHierachy(this.gameObject);
+        }
         #endregion
         #region Helper Functions
         public void FindUnityComponent<T>(ref T component) where T : Component
@@ -105,6 +110,8 @@ namespace StateMatching
             UnityAnimationEventItem getEvent = getEventGroup.items[currentEventIndex] as UnityAnimationEventItem;
             getEvent.InvokeUnityEvent();
         }
+
+
     }
 
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 namespace StateMatching.Input
 {
-    public class InputSystemContainer : ExtensionExecuter
+    public class InputSystemContainer : InputExtensionExecuter
     {
         [ShowInInspector]
         [ListDrawerSettings(OnBeginListElementGUI = "DrawEventNames", DraggableItems = false)]

@@ -56,6 +56,7 @@ namespace StateMatching.Data
         {
 
         }
+        
         private void OnDrawGizmos()
         {
             if (!drawGizmo && !drawHandles) return;
@@ -63,7 +64,6 @@ namespace StateMatching.Data
             Vector3 position = transform.position;
             position.x += offset;
             float radius = mass * size * 0.001f;
-
             if (!writeInPose)
             {
                 Color c = Color.blue;

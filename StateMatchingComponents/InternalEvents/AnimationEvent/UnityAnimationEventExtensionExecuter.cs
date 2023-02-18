@@ -9,7 +9,7 @@ using UnityEngine.Events;
 
 namespace StateMatching.InternalEvent
 {
-    public class UnityAnimationEventExtensionExecuter : GroupExtensionExecuter<UnityAnimationEventItem>
+    public class UnityAnimationEventExtensionExecuter : InternalEventGroupExtensionExecuter<UnityAnimationEventItem>
     {
         [FoldoutGroup("Reference")] public UnityEngine.Animator animator;
         public override Type GetGroupControllerType()

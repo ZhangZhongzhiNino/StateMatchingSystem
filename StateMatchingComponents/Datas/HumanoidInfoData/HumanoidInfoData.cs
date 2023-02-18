@@ -9,7 +9,7 @@ using StateMatching;
 using StateMatching.Helper;
 namespace StateMatching.Data
 {
-    public class HumanoidInfoData : ExtensionExecuter                    //MonoBehaviour, IStateMatchingComponent
+    public class HumanoidInfoData : DataExtensionExecuter                    //MonoBehaviour, IStateMatchingComponent
     {
         #region 0 Body Part List
         [PropertySpace(SpaceBefore = 5, SpaceAfter = 5), ReadOnly]
@@ -705,8 +705,9 @@ namespace StateMatching.Data
             if (poseDataManager != null) poseDataManager.PreDestroy();
         }
 
-        
+
         #endregion
+
     }
 }
 

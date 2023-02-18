@@ -77,7 +77,6 @@ namespace StateMatching.Helper
             extension.Initiate(extensionName, obj, root);
             return extension;
         }
-
         public static void SetUpExtensions<T>(ref T extension, string name, GameObject parent, StateMatchingRoot root) where T : MonoBehaviour, IExtension
         {
             if (extension == null) parent.TryGetComponent<T>(out extension);
@@ -98,6 +97,15 @@ namespace StateMatching.Helper
                     OpenHierarchy(t.gameObject, false);
                 }
             }
+        }
+        public static void ResetHierachy(GameObject rootObj,GameObject OpenCategory = null)
+        {
+            StateMatchingRoot root = rootObj.GetComponent<StateMatchingRoot>();
+            OpenHierarchy(rootObj, false);
+            if (root == null) return;
+            OpenHierarchy(rootObj, true);
+            OpenHierarchy(root.stateMatchingComponent, true);
+            if (OpenCategory != null) OpenHierarchy(OpenCategory, true);
         }
     }
 }

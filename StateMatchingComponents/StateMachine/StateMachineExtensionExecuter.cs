@@ -5,11 +5,11 @@ using StateMatching.Helper;
 
 namespace StateMatching.StateMachine
 {
-    public class StateMachineController : CategoryController, IExtensionController
+    public class StateMachineExtensionExecuter : ExtensionExecuter
     {
-        public void InitiateExtensions()
+        public override CategoryController getCategory()
         {
-            
+            return root.stateMachineController;
         }
     }
 }

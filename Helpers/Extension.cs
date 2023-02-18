@@ -29,7 +29,7 @@ namespace StateMatching.Helper
             controller = _controller;
             extensionName = _extensionName;
         }
-        [ShowIfGroup("extension group/Create", Condition = "@extension == null")]
+        [ShowIfGroup("extension group/Create", Condition = "@executer == null")]
         [Button(name:"@createName"),GUIColor(0.4f,1,0.4f)]
         public void CreateExtension()
         {
@@ -40,7 +40,7 @@ namespace StateMatching.Helper
         
         
 
-        [ShowIfGroup("extension group/Remove", Condition = "@extension != null")]
+        [ShowIfGroup("extension group/Remove", Condition = "@executer != null")]
         [Button(name: "@removeName"),GUIColor(1, 0.4f, 0.4f)]
         public void RemoveExtension()
         {

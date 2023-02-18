@@ -7,7 +7,7 @@ using System;
 
 namespace StateMatching.Action
 {
-    public class CharacterControllerExecuter : GroupExtensionExecuter<CharacterController>
+    public class CharacterControllerExecuter : ActionGroupExtensionExecuter<CharacterController>
     {
         public override Type GetGroupControllerType()
         {

@@ -8,7 +8,7 @@ using System;
 
 namespace StateMatching.Action
 {
-    public class Animator : GroupExtensionExecuter<UnityStateReferenceValue>
+    public class Animator : ActionGroupExtensionExecuter<UnityStateReferenceValue>
     {
         
         public UnityEngine.Animator animator;

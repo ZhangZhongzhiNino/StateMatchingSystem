@@ -9,7 +9,7 @@ using StateMatching.Helper;
 
 namespace StateMatching.Data
 {
-    public class PoseDataExtensionExecuter : GroupExtensionExecuter<PoseDataItem>
+    public class PoseDataExtensionExecuter : DataGroupExtensionExecuter<PoseDataItem>
     {
         //--------------Inspector Interface--------
         #region Reference
