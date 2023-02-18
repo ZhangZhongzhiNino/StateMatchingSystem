@@ -1,4 +1,4 @@
 ﻿namespace StateMatching.Variable
 {
-    public class FloatGroup : VariableGroup<FloatItem, float> { }
+    public class FloatGroup : VariableGroup<float> { }
 }

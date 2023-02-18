@@ -8,27 +8,27 @@ using System;
 namespace StateMatching.Helper
 {
 
-    public abstract class GroupController<T,V> : MonoBehaviour where T: MonoBehaviour,IGroupItem<T,V> where V: class
+    public abstract class GroupController<V> : MonoBehaviour
     {
-        [FoldoutGroup("Reference")][ReadOnly] public List<T> items;
-        [FoldoutGroup("Reference")][ReadOnly] public List<Group<T,V>> groups;
+        [FoldoutGroup("Reference")][ReadOnly] public List<Item<V>> items;
+        [FoldoutGroup("Reference")][ReadOnly] public List<Group<V>> groups;
         [FoldoutGroup("Reference")][ReadOnly] public GameObject itemsHolder;
         public abstract System.Type getGroupType();
-
+        public abstract System.Type getItemType();
         //Need To Overide
-        public Group<T, V> addNewGroupToGameObject()
+        public Group<V> addNewGroupToGameObject()
         {
-            Group <T,V> newGroup = gameObject.AddComponent(getGroupType()) as Group<T,V>;
+            Group <V> newGroup = gameObject.AddComponent(getGroupType()) as Group<V>;
             return newGroup;
         }
         #region Item
         public void UpdateItemsList()
         {
-            if(itemsHolder) items = itemsHolder.GetComponents<T>().ToList();
+            if(itemsHolder) items = itemsHolder.GetComponents<Item<V>>().ToList();
         }
         public void RemoveItem(string itemName)
         {
-            T toRemoveItem = GetItem(itemName);
+            Item<V> toRemoveItem = GetItem(itemName);
             if (!toRemoveItem) return;
             Helpers.RemoveComponent(toRemoveItem);
             UpdateItemsList();
@@ -45,23 +45,23 @@ namespace StateMatching.Helper
         }
         public void RemoveAllItem()
         {
-            foreach(T item in items)
+            foreach(Item<V> item in items)
             {
                 Helpers.RemoveComponent(item);
             }
             ClearNullInGroups();
             
         }
-        public T AddItem(string itemName,T item)
+        public Item<V> AddItem(string itemName, Item<V> item)
         {
-            T tryGetItem = GetItem(itemName);
+            Item<V> tryGetItem = GetItem(itemName);
             if (tryGetItem)
             {
                 tryGetItem.AssignItem(item);
             }
             else
             {
-                tryGetItem = itemsHolder.AddComponent<T>();
+                tryGetItem = itemsHolder.AddComponent(getItemType()) as Item<V>;
                 tryGetItem.AssignItem(item);
                 tryGetItem.itemName = itemName;
             }
@@ -69,11 +69,11 @@ namespace StateMatching.Helper
             UpdateItemsList();
             return tryGetItem;
         }
-        public T AddItem(string itemName, T item, string groupName)
+        public Item<V> AddItem(string itemName, Item<V> item, string groupName)
         {
             //if (T == null || !T.IsAssignableFrom(typeof(_T))) return;
-            T newItem = AddItem(itemName,item);
-            Group<T,V> findGroup = AddNewGroup(groupName);
+            Item<V> newItem = AddItem(itemName,item);
+            Group<V> findGroup = AddNewGroup(groupName);
             AddItemToGroup(groupName, itemName);
             UpdateItemsList();
             return newItem;
@@ -83,11 +83,11 @@ namespace StateMatching.Helper
         #region Groups
         public void UpdateGroupsList()
         {
-            groups = this.GetComponents<Group<T,V>>().ToList();
+            groups = this.GetComponents<Group<V>>().ToList();
         }
-        public Group<T,V> AddNewGroup(string groupName)
+        public Group<V> AddNewGroup(string groupName)
         {
-            Group<T,V> newGroup = GetGroup(groupName);
+            Group<V> newGroup = GetGroup(groupName);
             if (newGroup) return newGroup;
             newGroup = addNewGroupToGameObject();
             newGroup.Initiate(groupName, this);
@@ -96,7 +96,7 @@ namespace StateMatching.Helper
         }
         public bool RemoveGroup(string groupName)
         {
-            Group<T,V> getGroup = GetGroup(groupName);
+            Group<V> getGroup = GetGroup(groupName);
             if (!getGroup) return false;
             Helpers.RemoveComponent(getGroup);
             UpdateGroupsList();
@@ -104,9 +104,9 @@ namespace StateMatching.Helper
         }
         public bool AddItemToGroup(string groupName, string itemName)
         {
-            T tryGetItem = GetItem(itemName);
+            Item<V> tryGetItem = GetItem(itemName);
             if (!tryGetItem) return false;
-            Group<T,V> newGroup = AddNewGroup(groupName);
+            Group<V> newGroup = AddNewGroup(groupName);
             newGroup.AddItem(tryGetItem);
             return true;
         }
@@ -126,37 +126,37 @@ namespace StateMatching.Helper
         }
         public bool GroupIsEmpty(string groupName)
         {
-            Group<T, V> getGroup = GetGroup(groupName);
+            Group<V> getGroup = GetGroup(groupName);
             return (getGroup.items == null || getGroup.items.Count == 0);
         }
         public bool GroupIsEmpty(int groupIndex)
         {
-            Group<T, V> getGroup = GetGroup(groupIndex);
+            Group<V> getGroup = GetGroup(groupIndex);
             return (getGroup.items == null || getGroup.items.Count == 0);
         }
         #endregion
         #region Get Set functions
-        public T GetItem(string groupName, string itemName)
+        public Item<V> GetItem(string groupName, string itemName)
         {
             //if (T == null || !T.IsAssignableFrom(typeof(_T))) return null;
-            Group<T,V> getGroup = GetGroup(groupName);
+            Group<V> getGroup = GetGroup(groupName);
             if (!getGroup) return null;
-            List<T> _items = getGroup.items.ToList();
+            List<Item<V>> _items = getGroup.items.ToList();
             if (_items == null) return null;
             return _items.Find(item => item.itemName == itemName);
         }
-        public T GetItem( string itemName)
+        public Item<V> GetItem( string itemName)
         {
             return items.Find(item => item.itemName == itemName);
         }
-        public List<T> GetItems() { return new List<T>(items); }
+        public List<Item<V>> GetItems() { return new List<Item<V>>(items); }
         public List<string> GetItemNameList(string groupName)
         {
             if (groupName == null || string.IsNullOrEmpty(groupName)) return null;
-            Group<T, V> getGroup = GetGroup(groupName);
+            Group<V> getGroup = GetGroup(groupName);
             if (!getGroup || getGroup.items==null || getGroup.items.Count ==0) return null;
             List<string> rList = new List<string>();
-            foreach(T item in getGroup.items)
+            foreach(Item<V> item in getGroup.items)
             {
                 rList.Add(item.itemName);
             }
@@ -164,15 +164,15 @@ namespace StateMatching.Helper
         }
         public List<string> GetItemNameList()
         {
-            List<T> itemList = items;
+            List<Item<V>> itemList = items;
             List<string> rList = new List<string>();
-            foreach (T item in itemList)
+            foreach (Item<V> item in itemList)
             {
                 rList.Add(item.itemName);
             }
             return rList;
         }
-        public Group<T,V> GetGroup(string groupName)
+        public Group<V> GetGroup(string groupName)
         {
             if (groups != null)
             {
@@ -186,7 +186,7 @@ namespace StateMatching.Helper
             }
             return null;
         }
-        public Group<T, V> GetGroup(int groupIndex)
+        public Group<V> GetGroup(int groupIndex)
         {
             if (groups != null && groupIndex < groups.Count)
             {
@@ -194,12 +194,12 @@ namespace StateMatching.Helper
             }
             return null;
         }
-        public List<Group<T,V>> GetGroups() { return new List<Group<T,V>>(groups); }
+        public List<Group<V>> GetGroups() { return new List<Group<V>>(groups); }
         public List<string> GetGroupNameList()
         {
             if (groups == null || groups.Count == 0) return null;
             List<string> rList = new List<string>();
-            foreach(Group<T,V> group in groups)
+            foreach(Group<V> group in groups)
             {
                 rList.Add(group.groupName);
             }
@@ -207,7 +207,7 @@ namespace StateMatching.Helper
         }
         public bool SetItemValue(string groupName, string itemName, V newValue)
         {
-            T getItem = GetItem(groupName, itemName);
+            Item<V> getItem = GetItem(groupName, itemName);
             if (!getItem) return false;
             getItem.value = newValue;
             return true;
@@ -222,14 +222,14 @@ namespace StateMatching.Helper
         }
         public void ClearNullInGroups()
         {
-            foreach(Group<T,V> group in groups)
+            foreach(Group<V> group in groups)
             {
                 group.items.RemoveAll(item => item == null);
             }
         }
-        public void RemoveAllInItems(Predicate<T> match)
+        public void RemoveAllInItems(Predicate<Item<V>> match)
         {
-            Helpers.RemoveAllComponentInGameObject<T>(itemsHolder,match);
+            Helpers.RemoveAllComponentInGameObject<Item<V>>(itemsHolder,match);
             ClearNullInItems();
             ClearNullInGroups();
             UpdateItemsList();
@@ -240,8 +240,8 @@ namespace StateMatching.Helper
         {
             if(!_itemsHolder) _itemsHolder = new GameObject();
             itemsHolder = _itemsHolder;
-            items = new List<T>();
-            groups = new List<Group<T,V>>();
+            items = new List<Item<V>>();
+            groups = new List<Group<V>>();
         }
         public void PreDestroy()
         {
@@ -257,7 +257,7 @@ namespace StateMatching.Helper
             get
             {
                 List<string> newList = new List<string>();
-                foreach (Group<T,V> group in groups)
+                foreach (Group<V> group in groups)
                 {
                     newList.Add(group.groupName);
                 }
@@ -265,7 +265,7 @@ namespace StateMatching.Helper
                 return newList;
             }
         }
-        Group<T,V> currentSelectGroup
+        Group<V> currentSelectGroup
         {
             get
             {
@@ -278,7 +278,7 @@ namespace StateMatching.Helper
             {
                 if (currentSelectGroup == null) return null;
                 List<string> newList = new List<string>();
-                foreach (T item in currentSelectGroup.items)
+                foreach (Item<V> item in currentSelectGroup.items)
                 {
                     newList.Add(item.itemName);
                 }
@@ -291,7 +291,7 @@ namespace StateMatching.Helper
             {
                 if (items ==null||items.Count == 0) return null;
                 List<string> newList = new List<string>();
-                foreach(T item in items)
+                foreach(Item<V> item in items)
                 {
                     newList.Add(item.itemName);
                 }
@@ -305,7 +305,7 @@ namespace StateMatching.Helper
             {
                 if (!currentSelectGroup) return null;
                 List<string> newList = new List<string>();
-                foreach(T item in currentSelectGroup.items)
+                foreach(Item<V> item in currentSelectGroup.items)
                 {
                     newList.Add(item.itemName);
                 }
@@ -333,10 +333,10 @@ namespace StateMatching.Helper
         {
             get
             {
-                Group<T,V> getGroup = GetGroup(selectGroup);
+                Group<V> getGroup = GetGroup(selectGroup);
                 if (!getGroup) return null;
                 List<string> newList = new List<string>();
-                foreach(T item in getGroup.items)
+                foreach(Item<V> item in getGroup.items)
                 {
                     newList.Add(item.itemName);
                 }
@@ -352,7 +352,7 @@ namespace StateMatching.Helper
         [Button(ButtonSizes.Large),GUIColor(0.4f,1,0.4f)]
         void CreatGroup()
         {
-            Group<T,V> newGroup = AddNewGroup(newGroupName);
+            Group<V> newGroup = AddNewGroup(newGroupName);
             if (newGroup) Debug.Log("Group \"" + newGroupName + "\" Created");
             else Debug.Log("Group \"" + newGroupName + "\" already exist");
         }

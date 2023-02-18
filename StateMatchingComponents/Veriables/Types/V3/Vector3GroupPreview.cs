@@ -3,6 +3,6 @@ using StateMatching.Helper;
 
 namespace StateMatching.Variable
 {
-    public class Vector3GroupPreview : StructGroupPreview<Vector3Item, Vector3> { }
+    public class Vector3GroupPreview : VeriableGroupPreview<Vector3> { }
 }
 

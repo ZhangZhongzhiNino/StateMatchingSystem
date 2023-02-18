@@ -9,7 +9,7 @@ using UnityEngine.Events;
 
 namespace StateMatching.InternalEvent
 {
-    public class UnityAnimationEventHandler : GroupExtensionExecuter<UnityAnimationEvent, UnityAnimationEvent>
+    public class UnityAnimationEventExtensionExecuter : GroupExtensionExecuter<UnityAnimationEventItem>
     {
         [FoldoutGroup("Reference")] public UnityEngine.Animator animator;
         public override Type GetGroupControllerType()
@@ -55,7 +55,7 @@ namespace StateMatching.InternalEvent
                     for(int i = 0; i < newAnimEvents.Length; i++)
                     {
                         string animEventName = "#" + i.ToString() + " Event in: " + clipName;
-                        UnityAnimationEvent newAnimationEvent = new UnityAnimationEvent(animEventName, newAnimEvents[i]);
+                        UnityAnimationEventItem newAnimationEvent = new UnityAnimationEventItem(animEventName, newAnimEvents[i]);
                         groupController.AddItem(animEventName, newAnimationEvent, clipName);
                     }
                 }
@@ -78,7 +78,7 @@ namespace StateMatching.InternalEvent
             List<string> newNames = new List<string>();
             UnityAnimationEventGroup group = groupController.GetGroup(selectGroup) as UnityAnimationEventGroup;
             if (group == null) return (null, null);
-            foreach (UnityAnimationEvent animEvent in group.items)
+            foreach (UnityAnimationEventItem animEvent in group.items)
             {
                 newEvents.Add(animEvent.unityEvent);
                 newNames.Add(animEvent.itemName);

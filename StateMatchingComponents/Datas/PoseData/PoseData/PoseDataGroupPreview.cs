@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using StateMatching.Helper;
-
+using System.Linq;
 namespace StateMatching.Data
 {
-    public class PoseDataGroupPreview : GroupPreview<PoseData,PoseData>
+    public class PoseDataGroupPreview : GroupPreview<PoseDataItem>
     {
-        public override List<string> AllItems 
+        /*public override List<string> AllItems 
         { 
             get 
             {
-                List<PoseData> itemList = new List<PoseData>();
-                itemList = groupController.items;
+                List<PoseDataItem> itemList = new List<PoseDataItem>();
+                itemList = groupController.items.Cast<PoseDataItem>().ToList();
                 if (itemList == null) return null;
                 List<string> rList = new List<string>();
                 for (int i = 0; i < itemList.Count; i++)
@@ -21,7 +21,7 @@ namespace StateMatching.Data
                 }
                 return rList;
             } 
-        }
+        }*/
     }
 }
 

@@ -8,7 +8,7 @@ using System;
 
 namespace StateMatching.Action
 {
-    public class Animator : GroupExtensionExecuter<UnityStateReference,UnityStateReferenceValue>
+    public class Animator : GroupExtensionExecuter<UnityStateReferenceValue>
     {
         
         public UnityEngine.Animator animator;
@@ -47,10 +47,10 @@ namespace StateMatching.Action
                 foreach (UnityEditor.Animations.ChildAnimatorState childState in childStates)
                 {
                     string stateName = childState.state.name;
-                    UnityStateReference getState = groupController.GetItem(i.ToString(), i.ToString() + ":" + stateName);
+                    UnityStateReferenceItem getState = groupController.GetItem(i.ToString(), i.ToString() + ":" + stateName) as UnityStateReferenceItem;
                     if(getState == null)
                     {
-                        UnityStateReference newStateReference = new UnityStateReference(i.ToString() + ":" + stateName,i,childState.state);
+                        UnityStateReferenceItem newStateReference = new UnityStateReferenceItem(i.ToString() + ":" + stateName,i,childState.state);
                         groupController.AddItem(i.ToString()+":"+stateName, newStateReference, i.ToString());
                     }
                 }

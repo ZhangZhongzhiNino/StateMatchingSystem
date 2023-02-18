@@ -5,9 +5,9 @@ using Sirenix.OdinInspector;
 
 namespace StateMatching.Helper
 {
-    public class GroupPreview<T, V> : MonoBehaviour where T : MonoBehaviour, IGroupItem<T, V> where V : class
+    public class GroupPreview<V> : MonoBehaviour
     {
-        [PropertyOrder(order: -999999)] public GroupController<T, V> groupController;
+        [PropertyOrder(order: -999999)] public GroupController<V> groupController;
 
         #region Odin
         #region Values
@@ -16,7 +16,7 @@ namespace StateMatching.Helper
             get
             {
                 List<string> newList = new List<string>();
-                foreach (Group<T, V> group in groupController.groups)
+                foreach (Group<V> group in groupController.groups)
                 {
                     newList.Add(group.groupName);
                 }
@@ -25,7 +25,7 @@ namespace StateMatching.Helper
             }
         }
         
-        Group<T, V> currentSelectGroup
+        Group<V> currentSelectGroup
         {
             get
             {
@@ -38,7 +38,7 @@ namespace StateMatching.Helper
             {
                 if (currentSelectGroup == null) return null;
                 List<string> newList = new List<string>();
-                foreach (T item in currentSelectGroup.items)
+                foreach (Item<V> item in currentSelectGroup.items)
                 {
                     newList.Add(item.itemName);
                 }
@@ -51,7 +51,7 @@ namespace StateMatching.Helper
             {
                 if (groupController.items == null || groupController.items.Count == 0) return null;
                 List<string> newList = new List<string>();
-                foreach (T item in groupController.items)
+                foreach (Item<V> item in groupController.items)
                 {
                     newList.Add(item.itemName);
                 }
@@ -65,7 +65,7 @@ namespace StateMatching.Helper
             {
                 if (!currentSelectGroup) return null;
                 List<string> newList = new List<string>();
-                foreach (T item in currentSelectGroup.items)
+                foreach (Item<V> item in currentSelectGroup.items)
                 {
                     newList.Add(item.itemName);
                 }
@@ -97,24 +97,24 @@ namespace StateMatching.Helper
         [TitleGroup("Edit groups/Remove item From Group", order: -997)]
         [ValueDropdown("groupNameList"), SerializeField]
         string selectGroup;
-        Group<T, V> _selectGroup { get { return groupController.GetGroup(selectGroup) as Group<T, V>; } }
+        Group<V> _selectGroup { get { return groupController.GetGroup(selectGroup) as Group<V>; } }
         [ShowIfGroup("View Group/List", Condition = "@ _selectGroup != null")]
         [ListDrawerSettings(Expanded = true), ShowInInspector, ReadOnly]
         List<string> contains
         {
             get
             {
-                Group<T, V> getGroup = groupController.GetGroup(selectGroup);
+                Group<V> getGroup = groupController.GetGroup(selectGroup);
                 if (!getGroup) return null;
                 List<string> newList = new List<string>();
-                foreach (T item in getGroup.items)
+                foreach (Item<V> item in getGroup.items)
                 {
                     newList.Add(item.itemName);
                 }
                 return newList;
             }
         }
-        public void Initiate(GroupController<T, V> groupController)
+        public void Initiate(GroupController<V> groupController)
         {
             this.groupController = groupController;
         }
@@ -144,7 +144,7 @@ namespace StateMatching.Helper
         [Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
         void CreatGroup()
         {
-            Group<T, V> newGroup = groupController.AddNewGroup(newGroupName);
+            Group<V> newGroup = groupController.AddNewGroup(newGroupName);
             if (newGroup) Debug.Log("Group \"" + newGroupName + "\" Created");
             else Debug.Log("Group \"" + newGroupName + "\" already exist");
         }

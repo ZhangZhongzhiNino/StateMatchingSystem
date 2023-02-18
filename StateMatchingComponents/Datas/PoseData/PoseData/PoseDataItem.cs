@@ -5,30 +5,29 @@ using StateMatching.Helper;
 
 namespace StateMatching.Data
 {
-    public class PoseData : MonoBehaviour,IGroupItem<PoseData, PoseData>
+    public class PoseDataItem : Item<PoseDataItem>
     {
-        public string odinListName { get { return "\"" + poseName + "\"" + " at " + poseAtFrame + " frame"; } }
+        public string odinListName { get { return "\"" + itemName + "\"" + " at " + poseAtFrame + " frame"; } }
 
-        public string itemName { get { return poseName; } set => poseName = value; }
 
-        public PoseData value { get { return this; } set { AssignItem(value); } }
+
+        public override PoseDataItem value { get { return this; } set { AssignItem(value); } }
 
         [SerializeField] List<string> partNames;
         [SerializeField] List<Vector3> partPositions;
         [SerializeField] List<Vector3> rootPositions;
         [SerializeField] List<Quaternion> rotations;
         [SerializeField] List<float> importance;
-        [SerializeField] string poseName;
         [SerializeField] int poseAtFrame;
 
-        public PoseData()
+        public PoseDataItem()
         {
             partNames = new List<string>();
             partPositions = new List<Vector3>();
             rootPositions = new List<Vector3>();
             rotations = new List<Quaternion>();
             importance = new List<float>();
-            poseName = "";
+            itemName = "";
             poseAtFrame = -1;
         }
         public void Initialize(List<string> _partNames, List<Vector3> _partPositions, List<Vector3> _rootPositions, List<Quaternion> _rotations, string _name, int _poseAtFrame)
@@ -37,7 +36,7 @@ namespace StateMatching.Data
             partPositions = _partPositions;
             rootPositions = _rootPositions;
             rotations = _rotations;
-            poseName = _name;
+            itemName = _name;
             poseAtFrame = _poseAtFrame;
             if (importance == null) importance = new List<float>();
             if (importance.Count != partPositions.Count)
@@ -50,7 +49,7 @@ namespace StateMatching.Data
         }
 
         public float GetStartFrame() { return poseAtFrame; }
-        public string GetPoseName() { return poseName; }
+        public string GetPoseName() { return itemName; }
         public List<Quaternion> GetRootRotations() { return new List<Quaternion>(rotations); }
         public List<Vector3> GetPartPositions() { return new List<Vector3>(partPositions); }
         public List<Vector3> GetRootPositions() { return new List<Vector3>(rootPositions); }
@@ -103,22 +102,24 @@ namespace StateMatching.Data
 
 
         public void SetStartFrame(int _startFrame) { poseAtFrame = _startFrame; }
-        public void SetPoseName(string _animationName) { poseName = _animationName; }
+        public void SetPoseName(string _animationName) { itemName = _animationName; }
         public void SetRotations(List<Quaternion> _rotations) { rotations = _rotations; }
         public void SetPartPositions(List<Vector3> _positions) { partPositions = _positions; }
         public void SetRootPositions(List<Vector3> _positions) { rootPositions = _positions; }
         public void SetImportance(List<float> _importance) { importance = _importance; }
         public void SetPartNames(List<string> _partNames) { partNames = _partNames; }
 
-        public void AssignItem(PoseData item)
+        public override void AssignItem(Item<PoseDataItem> _item)
         {
+            base.AssignItem(_item);
+            PoseDataItem item = _item as PoseDataItem;
             partNames = item.GetPartNames();
-            partPositions=item.GetPartPositions();
-            rootPositions=item.GetRootPositions();
+            partPositions = item.GetPartPositions();
+            rootPositions = item.GetRootPositions();
             rotations = item.GetRootRotations();
-            importance=item.GetImportances();
-            poseName=item.GetPoseName();
-            poseAtFrame=item.poseAtFrame;
+            importance = item.GetImportances();
+            itemName = item.GetPoseName();
+            poseAtFrame = item.poseAtFrame;
         }
     }
 }

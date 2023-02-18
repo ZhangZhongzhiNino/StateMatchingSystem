@@ -6,12 +6,17 @@ using System;
 
 namespace StateMatching.Data
 {
-    public class PoseGroupController : GroupController<PoseData, PoseData>
+    public class PoseDataGroupController : GroupController<PoseDataItem>
     {
         
         public override Type getGroupType()
         {
-            return typeof(PoseGroup);
+            return typeof(PoseDataGroup);
+        }
+
+        public override Type getItemType()
+        {
+            return typeof(PoseDataItem);
         }
     }
 }

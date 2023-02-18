@@ -5,33 +5,33 @@ using Sirenix.OdinInspector;
 
 namespace StateMatching.Helper
 {
-    public class Group<T,V> : MonoBehaviour where T : MonoBehaviour, IGroupItem<T,V> where V: class
+    public class Group<V> : MonoBehaviour
     {
         [ListDrawerSettings(ListElementLabelName = "itemName")]
         public string groupName;
-        public List<T> items;
+        public List<Item<V>> items;
         [HideInInspector]
-        public GroupController<T,V> controller;
-        public void Initiate(string _groupName, List<T> _items, GroupController<T,V> _controller)
+        public GroupController<V> controller;
+        public void Initiate(string _groupName, List<Item<V>> _items, GroupController<V> _controller)
         {
             controller = _controller;
             items = _items;
             groupName = _groupName;
         }
-        public void Initiate(string _groupName, T _item,GroupController<T,V> _controller)
+        public void Initiate(string _groupName, Item<V> _item,GroupController<V> _controller)
         {
             controller = _controller;
-            items = new List<T>();
+            items = new List<Item<V>>();
             items.Add(_item);
             groupName = _groupName;
         }
-        public void Initiate(string _groupName, GroupController<T,V> _controller)
+        public void Initiate(string _groupName, GroupController<V> _controller)
         {
             controller = _controller;
-            items = new List<T>();
+            items = new List<Item<V>>();
             groupName = _groupName;
         }
-        public void AddItem(T item)
+        public void AddItem(Item<V> item)
         {
             if (items.Contains(item)) return;
             items.Add(item);

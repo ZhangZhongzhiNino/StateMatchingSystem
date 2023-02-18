@@ -5,16 +5,16 @@ using UnityEngine;
 
 namespace StateMatching.Variable
 {
-    public class IntExecuter : VariableExecuter<IntItem, int>
+    public class IntExecuter : VariableExecuter<int>
     {
+        public override VariableItem<int> CreateNewItem()
+        {
+            return new IntItem();
+        }
+
         public override Type GetGroupControllerType()
         {
             return typeof(IntGroupController);
-        }
-
-        public override MonoBehaviour CreateNewItem()
-        {
-            return new IntItem();
         }
 
         public override Type GetGroupPreviewType()

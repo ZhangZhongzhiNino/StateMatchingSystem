@@ -9,7 +9,7 @@ using StateMatching.Helper;
 
 namespace StateMatching.Data
 {
-    public class PoseDataManager : GroupExtensionExecuter<PoseData,PoseData>
+    public class PoseDataExtensionExecuter : GroupExtensionExecuter<PoseDataItem>
     {
         //--------------Inspector Interface--------
         #region Reference
@@ -39,12 +39,13 @@ namespace StateMatching.Data
         [GUIColor(0.4f, 1, 0.4f)]
         void CreateOrUpdatePose(string poseName = "new pose", int poseAtFrame = 0 , string poseInGroup = null)
         {
-            PoseData newPose = CreatePoseInstance(poseName, poseAtFrame);
-            if (string.IsNullOrWhiteSpace(poseInGroup)) groupController.AddItem(poseName, newPose);
-            else groupController.AddItem(poseName, newPose, poseInGroup);
+            string newName = poseName + " / " + poseAtFrame.ToString();
+            PoseDataItem newPose = CreatePoseInstance(newName, poseAtFrame);
+            if (string.IsNullOrWhiteSpace(poseInGroup)) groupController.AddItem(newName, newPose);
+            else groupController.AddItem(newName, newPose, poseInGroup);
 
         }
-        private PoseData CreatePoseInstance(string poseName, int poseAtFrame)
+        private PoseDataItem CreatePoseInstance(string poseName, int poseAtFrame)
         {
             List<Vector3> partPositions = new List<Vector3>();
             List<Vector3> rootPositions = new List<Vector3>();
@@ -63,7 +64,7 @@ namespace StateMatching.Data
                 names.Add(bodyParts[i].GetName());
 
             }
-            PoseData newPose = new PoseData();
+            PoseDataItem newPose = new PoseDataItem();
             newPose.Initialize(names, partPositions, rootPositions, rotations, poseName, poseAtFrame);
             return newPose;
 
@@ -77,7 +78,7 @@ namespace StateMatching.Data
             get
             {
                 List<string> newPoseNames = new List<string>();
-                foreach (PoseData p in groupController.items)
+                foreach (PoseDataItem p in groupController.items)
                 {
                     string newName = "\"" + p.GetPoseName() + "\" at " + p.GetStartFrame() + " frame";
                     newPoseNames.Add(newName);
@@ -123,7 +124,7 @@ namespace StateMatching.Data
             }
         }
 
-        PoseData _currentSelectPose { get { return GetPose(_selectedPoseName, _selectedPoseAtFrame); } }
+        PoseDataItem _currentSelectPose { get { return GetPose(_selectedPoseName, _selectedPoseAtFrame); } }
         List<float> _currentSelectImportanceList { get { return _currentSelectPose.GetImportances(); } }
 
         #endregion// 1 Veriables
@@ -162,7 +163,7 @@ namespace StateMatching.Data
 
         }
 
-        void _ApplyTransform(PoseData pose)
+        void _ApplyTransform(PoseDataItem pose)
         {
             if (pose == null) return;
             List<Quaternion> rotations = pose.GetRootRotations();
@@ -198,7 +199,7 @@ namespace StateMatching.Data
             currentEditPose = selectPose;
             editMode = 1;
             List<float> currentImportance = _currentSelectPose.GetImportances();
-            for (int i = 0; i < bodyParts.Count; i++)
+            for (int i = 0; i < currentImportance.Count; i++)
             {
                 bodyParts[i].StartImportanceEdit(currentImportance[i]);
             }
@@ -310,11 +311,11 @@ namespace StateMatching.Data
         }
         void FindInfoController()
         {
-            if(root.dataController.humanoidInfoDatas.extension == null)
+            if(root.dataController.humanoidInfoDatas.executer == null)
             {
                 root.dataController.humanoidInfoDatas.CreateExtension();
             }
-            infoController = root.dataController.humanoidInfoDatas.extension;
+            infoController = root.dataController.humanoidInfoDatas.executer;
             infoController.poseDataManager = this;
         }
         public void UpdateBodyPartsData()
@@ -576,7 +577,7 @@ namespace StateMatching.Data
         #endregion
 
         #region Compair
-        public float CompairRotation(PoseData posedata)
+        public float CompairRotation(PoseDataItem posedata)
         {
             if (importanceDevider(posedata) == 0) return 999999;
             int size = bodyPartRoots.Count;
@@ -595,7 +596,7 @@ namespace StateMatching.Data
             return different;
 
         }
-        public float CompairPosition(PoseData posedata)
+        public float CompairPosition(PoseDataItem posedata)
         {
             if (importanceDevider(posedata) == 0) return 999999;
             int size = bodyPartRoots.Count;
@@ -613,7 +614,7 @@ namespace StateMatching.Data
             return different;
         }
 
-        float importanceDevider(PoseData pose)
+        float importanceDevider(PoseDataItem pose)
         {
             int size = pose.GetImportances().Count;
             float sum = 0;
@@ -657,8 +658,8 @@ namespace StateMatching.Data
             get
             {
                 List<string> newList = new List<string>();
-                List<Group<PoseData,PoseData>> groups = groupController.groups ;
-                foreach (PoseGroup g in groups)
+                List<Group<PoseDataItem>> groups = groupController.groups ;
+                foreach (PoseDataGroup g in groups)
                 {
                     newList.Add(g.groupName);
                 }
@@ -670,7 +671,7 @@ namespace StateMatching.Data
         [BoxGroup("Demo"),Button]
         void FindCloestTransition()
         {
-            List<PoseData> datas = groupController.GetGroup(selectGroup).items;
+            List<PoseDataItem> datas = groupController.GetGroup(selectGroup).items.Cast<PoseDataItem>().ToList();
             List<float> difference = new List<float>();
             for (int i = 0; i < datas.Count; i++)
             {
@@ -683,9 +684,9 @@ namespace StateMatching.Data
         }
         #region get
         
-        public PoseData GetPose(string name, int startFrame)
+        public PoseDataItem GetPose(string name, int startFrame)
         {
-            foreach (PoseData p in groupController.items)
+            foreach (PoseDataItem p in groupController.items)
             {
                 if (p.GetPoseName() == name && p.GetStartFrame() == startFrame) return p;
             }
@@ -713,7 +714,7 @@ namespace StateMatching.Data
         #endregion
         public override Type GetGroupControllerType()
         {
-            return typeof(PoseGroupController);
+            return typeof(PoseDataGroupController);
         }
 
         public override Type GetGroupPreviewType()

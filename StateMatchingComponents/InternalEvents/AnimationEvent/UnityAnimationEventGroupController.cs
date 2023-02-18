@@ -6,11 +6,16 @@ using System;
 
 namespace StateMatching.InternalEvent
 {
-    public class UnityAnimationEventGroupController : GroupController<UnityAnimationEvent, UnityAnimationEvent>
+    public class UnityAnimationEventGroupController : GroupController<UnityAnimationEventItem>
     {
         public override Type getGroupType()
         {
             return typeof(UnityAnimationEventGroup);
+        }
+
+        public override Type getItemType()
+        {
+            return typeof(UnityAnimationEventItem);
         }
     }
 }

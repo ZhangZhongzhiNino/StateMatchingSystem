@@ -13,6 +13,7 @@ namespace StateMatching.Variable
         public Vector2Extension vector2Values;
         public Vector3Extension vector3Values;
         public QuaternionExtension quaternionValues;
+        public StringExtension stringValues;
         public void InitiateExtensions()
         {
             Helpers.SetUpExtensions<BoolExtension>(ref boolValues,"Bool", this.gameObject, root);
@@ -21,6 +22,7 @@ namespace StateMatching.Variable
             Helpers.SetUpExtensions<Vector2Extension>(ref vector2Values, "Vector2", this.gameObject, root);
             Helpers.SetUpExtensions<Vector3Extension>(ref vector3Values, "Vector3", this.gameObject, root);
             Helpers.SetUpExtensions<QuaternionExtension>(ref quaternionValues, "Quaternion", this.gameObject, root);
+            Helpers.SetUpExtensions<StringExtension>(ref stringValues, "String", this.gameObject, root);
         }
     }
 }

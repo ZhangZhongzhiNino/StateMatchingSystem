@@ -4,7 +4,7 @@ using UnityEngine;
 using StateMatching.Helper;
 namespace StateMatching.Action
 {
-    public class UnityStateReferenceGroup : Group<UnityStateReference,UnityStateReferenceValue>
+    public class UnityStateReferenceGroup : Group<UnityStateReferenceValue>
     {
         
     }

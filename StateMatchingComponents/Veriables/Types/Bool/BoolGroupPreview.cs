@@ -4,6 +4,6 @@ using StateMatching.Helper;
 
 namespace StateMatching.Variable
 {
-    public class BoolGroupPreview : StructGroupPreview<BoolItem, bool> { }
+    public class BoolGroupPreview : VeriableGroupPreview<bool> { }
 }
 

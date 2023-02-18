@@ -2,7 +2,7 @@
 
 namespace StateMatching.Variable
 {
-    public class Vector3Item : VariableItem<Vector3Item, Vector3>
+    public class Vector3Item : VariableItem< Vector3>
     {
         public Vector3Item(string itemName, Vector3 itemValue)
         {

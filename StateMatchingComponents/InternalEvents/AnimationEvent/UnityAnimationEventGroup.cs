@@ -5,7 +5,7 @@ using StateMatching.Helper;
 
 namespace StateMatching.InternalEvent
 {
-    public class UnityAnimationEventGroup : Group<UnityAnimationEvent,UnityAnimationEvent>
+    public class UnityAnimationEventGroup : Group<UnityAnimationEventItem>
     {
         
     }

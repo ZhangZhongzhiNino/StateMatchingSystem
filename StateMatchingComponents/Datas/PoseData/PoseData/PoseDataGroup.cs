@@ -5,7 +5,7 @@ using StateMatching.Helper;
 
 namespace StateMatching.Data
 {
-    public class PoseGroup : Group<PoseData,PoseData>
+    public class PoseDataGroup : Group<PoseDataItem>
     {
         
     }

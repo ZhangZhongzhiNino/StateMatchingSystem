@@ -5,23 +5,16 @@ using StateMatching.Helper;
 
 namespace StateMatching.Variable
 {
-    public class VariableItem<T, V> : MonoBehaviour, IGroupItem<T, V> where T : MonoBehaviour where V : struct
+    public class VariableItem<V> : Item<V>
     {
-        public string variableName;
-        public V _value;
-        public string itemName { get { return variableName; } set { variableName = value; } }
-        public V value { get { return _value; } set { _value = value; } }
 
-        public void AssignItem(T item)
-        {
-            VariableItem<T, V> _item = item as VariableItem<T, V>;
-            variableName = _item.variableName;
-            _value = _item._value;
-        }
+        public V _value;
+        public override V value { get { return _value; } set { _value = value; } }
+
         public VariableItem()
         {
-            variableName = "";
-            _value = default(V);
+            itemName = "";
+            value = default(V);
 
         }
     }

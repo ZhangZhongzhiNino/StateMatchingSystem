@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace StateMatching.Variable
 {
-    public class QuaternionItem : VariableItem<QuaternionItem, Quaternion>
+    public class QuaternionItem : VariableItem<Quaternion>
     {
         public QuaternionItem(string itemName, Quaternion itemValue)
         {

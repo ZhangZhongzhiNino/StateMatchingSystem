@@ -66,10 +66,10 @@ namespace StateMatching.Input
         void CreateInputSystem()
         {
             GameObject prefabToAdd = selectedPreset;
-            if (root.inputController.inputSystemContainer.extension == null) root.inputController.inputSystemContainer.CreateExtension();
-            if (root.inputController.inputSystemContainer.extension.Contain(prefabToAdd.name) )return;
+            if (root.inputController.inputSystemContainer.executer == null) root.inputController.inputSystemContainer.CreateExtension();
+            if (root.inputController.inputSystemContainer.executer.Contain(prefabToAdd.name) )return;
             GameObject newObj = GameObject.Instantiate(selectedPreset);
-            newObj.transform.SetParent(root.inputController.inputSystemContainer.extension.transform);
+            newObj.transform.SetParent(root.inputController.inputSystemContainer.executer.transform);
             Helpers.ResetLocalTransform(newObj);
             newObj.name = prefabToAdd.name;
         }

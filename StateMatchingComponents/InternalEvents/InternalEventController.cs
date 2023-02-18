@@ -8,10 +8,10 @@ namespace StateMatching.InternalEvent
     public class InternalEventController : CategoryController, IExtensionController
     {
 
-        public UnityAnimationEventHandlerExtension unityAnimationEventHandler;
+        public UnityAnimationEventExtension unityAnimationEventHandler;
         public void InitiateExtensions()
         {
-            Helpers.SetUpExtensions<UnityAnimationEventHandlerExtension>(ref unityAnimationEventHandler, "Unity Animation Event Handler", this.gameObject, root);
+            Helpers.SetUpExtensions<UnityAnimationEventExtension>(ref unityAnimationEventHandler, "Unity Animation Event Handler", this.gameObject, root);
 
         }
     }

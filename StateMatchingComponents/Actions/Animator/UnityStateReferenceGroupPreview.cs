@@ -5,7 +5,7 @@ using StateMatching.Helper;
 
 namespace StateMatching.Action
 {
-    public class UnityStateReferenceGroupPreview : GroupPreview<UnityStateReference,UnityStateReferenceValue>
+    public class UnityStateReferenceGroupPreview : GroupPreview<UnityStateReferenceValue>
     {
     }
 

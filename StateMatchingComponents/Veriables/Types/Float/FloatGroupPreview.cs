@@ -2,6 +2,6 @@
 
 namespace StateMatching.Variable
 {
-    public class FloatGroupPreview : StructGroupPreview<FloatItem, float> { }
+    public class FloatGroupPreview : VeriableGroupPreview<float> { }
 }
 

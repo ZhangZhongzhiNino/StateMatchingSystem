@@ -1,6 +1,6 @@
 ﻿namespace StateMatching.Variable
 {
-    public class BoolItem : VariableItem<BoolItem, bool>
+    public class BoolItem : VariableItem<bool>
     {
         public BoolItem(string itemName, bool itemValue)
         {
@@ -13,6 +13,5 @@
             this.value = default(bool);
         }
     }
-
 }
 

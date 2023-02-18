@@ -1,6 +1,6 @@
 ﻿namespace StateMatching.Variable
 {
-    public class IntItem : VariableItem<IntItem, int>
+    public class IntItem : VariableItem<int>
     {
         public IntItem(string itemName, int itemValue)
         {

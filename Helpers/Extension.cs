@@ -16,7 +16,7 @@ namespace StateMatching.Helper
         string createName { get { return "Create " + extensionName; } }
         string removeName { get { return "Remove " + extensionName; } }
         [BoxGroup("extension group",GroupName = "@extensionName")]
-        public T extension;
+        public T executer;
         public Extension(string _extensionName, GameObject _controller, StateMatchingRoot _root)
         {
             root = _root;
@@ -34,7 +34,7 @@ namespace StateMatching.Helper
         public void CreateExtension()
         {
             GameObject extensionObj = Helpers.CreateGameObject("____"+extensionName, controller.transform);
-            extension = Helpers.AddStateMatchingComponent<T>(extensionObj, root: root);
+            executer = Helpers.AddStateMatchingComponent<T>(extensionObj, root: root);
             Helpers.OpenHierarchy(controller,true);
         }
         
@@ -44,7 +44,7 @@ namespace StateMatching.Helper
         [Button(name: "@removeName"),GUIColor(1, 0.4f, 0.4f)]
         public void RemoveExtension()
         {
-            extension.PreDestroy();
+            executer.PreDestroy();
         }
     }
 }

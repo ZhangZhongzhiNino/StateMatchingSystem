@@ -5,7 +5,7 @@ using StateMatching.Helper;
 
 namespace StateMatching.Variable
 {
-    public class VariableGroup<T, V> : StructGroup<T, V> where T : MonoBehaviour, IGroupItem<T,V> where V : struct
+    public class VariableGroup<V> : Group<V>
     {
 
     }

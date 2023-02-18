@@ -5,7 +5,7 @@ using StateMatching.Helper;
 
 namespace StateMatching.Data
 {
-    public class PoseDataExtension : Extension<PoseDataManager>
+    public class PoseDataExtension : Extension<PoseDataExtensionExecuter>
     {
         public PoseDataExtension(string _extensionName, GameObject _controller, StateMatchingRoot _root) : base(_extensionName, _controller, _root)
         {

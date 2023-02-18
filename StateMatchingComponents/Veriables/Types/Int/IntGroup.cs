@@ -1,4 +1,4 @@
 ﻿namespace StateMatching.Variable
 {
-    public class IntGroup : VariableGroup<IntItem, int> { }
+    public class IntGroup : VariableGroup<int> { }
 }

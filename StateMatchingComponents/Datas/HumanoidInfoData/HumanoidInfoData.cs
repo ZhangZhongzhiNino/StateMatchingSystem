@@ -43,7 +43,7 @@ namespace StateMatching.Data
             set { _partDataRoot = value; }
         }
         [TitleGroup("Reference/Data")]
-        public PoseDataManager poseDataManager;
+        public PoseDataExtensionExecuter poseDataManager;
         #endregion//1 Reference
 
         #endregion//0 Reference

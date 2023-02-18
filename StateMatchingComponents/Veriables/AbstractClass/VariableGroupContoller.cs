@@ -6,7 +6,7 @@ using System;
 
 namespace StateMatching.Variable
 {
-    public abstract class VariableGroupContoller<T, V> : StructGroupController<T, V> where T : MonoBehaviour, IGroupItem<T, V> where V : struct
+    public abstract class VariableGroupContoller<V> : GroupController<V>
     {
 
     }

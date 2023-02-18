@@ -65,13 +65,15 @@ namespace StateMatching
             CreateGameObjectWithScript<ActionController>("Category: Actions ____", stateMatchingComponent.transform, ref actionObj, ref actionController);
             CreateGameObjectWithScript<StateMachineController>("Category: StateMachine ____", stateMatchingComponent.transform, ref stateMachineObj,ref stateMachineController);
 
-            
+            Helpers.OpenHierarchy(this.gameObject,true);
+            Helpers.OpenHierarchy(stateMatchingComponent, true);
         }
 
         [FoldoutGroup("State Matching Reference"), Button(ButtonSizes.Large), GUIColor(1, 0.4f, 0.4f)]
         void ClearAllStateMatchingComponent()
         {
-            dataController?.humanoidInfoDatas?.extension?.PreDestroy();
+            
+            if(dataController?.humanoidInfoDatas?.executer != null) dataController?.humanoidInfoDatas?.executer?.PreDestroy();
             Helpers.RemoveGameObject(stateMatchingComponent);
         }
         #endregion
@@ -97,10 +99,10 @@ namespace StateMatching
         {
             string animationClipName = animationEvent.animatorClipInfo.clip.name;
             int currentEventIndex = animationEvent.intParameter;
-            if (internalEventController.unityAnimationEventHandler.extension == null) return;
-            UnityAnimationEventHandler animEventHandler = internalEventController.unityAnimationEventHandler.extension;
+            if (internalEventController.unityAnimationEventHandler.executer == null) return;
+            UnityAnimationEventExtensionExecuter animEventHandler = internalEventController.unityAnimationEventHandler.executer;
             UnityAnimationEventGroup getEventGroup = animEventHandler.groupController.GetGroup(animationClipName) as UnityAnimationEventGroup;
-            UnityAnimationEvent getEvent = getEventGroup.items[currentEventIndex];
+            UnityAnimationEventItem getEvent = getEventGroup.items[currentEventIndex] as UnityAnimationEventItem;
             getEvent.InvokeUnityEvent();
         }
     }

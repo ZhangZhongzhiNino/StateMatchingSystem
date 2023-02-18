@@ -2,6 +2,6 @@
 
 namespace StateMatching.Variable
 {
-    public class IntGroupPreview : StructGroupPreview<IntItem, int> { }
+    public class IntGroupPreview : VeriableGroupPreview<int> { }
 }
 

@@ -1,6 +1,6 @@
 ﻿namespace StateMatching.Variable
 {
-    public class FloatItem : VariableItem<FloatItem, float>
+    public class FloatItem : VariableItem<float>
     {
         public FloatItem(string itemName, float itemValue)
         {

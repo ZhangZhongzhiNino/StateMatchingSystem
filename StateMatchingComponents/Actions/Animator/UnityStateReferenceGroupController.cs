@@ -7,11 +7,16 @@ using System;
 using Sirenix.OdinInspector;
 namespace StateMatching.Action
 {
-    public class UnityStateReferenceGroupController : GroupController<UnityStateReference, UnityStateReferenceValue>
+    public class UnityStateReferenceGroupController : GroupController<UnityStateReferenceValue>
     {
         public override Type getGroupType()
         {
             return typeof(UnityStateReferenceGroup);
+        }
+
+        public override Type getItemType()
+        {
+            return typeof(UnityStateReferenceItem);
         }
     }
 }

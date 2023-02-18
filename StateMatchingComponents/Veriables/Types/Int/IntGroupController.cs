@@ -2,11 +2,16 @@
 
 namespace StateMatching.Variable
 {
-    public class IntGroupController : VariableGroupContoller<IntItem, int>
+    public class IntGroupController : VariableGroupContoller<int>
     {
         public override Type getGroupType()
         {
             return typeof(IntGroup);
+        }
+
+        public override Type getItemType()
+        {
+            return typeof(IntItem);
         }
     }
 }

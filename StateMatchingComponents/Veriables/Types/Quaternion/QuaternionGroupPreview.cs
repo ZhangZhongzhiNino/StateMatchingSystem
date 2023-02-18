@@ -3,6 +3,6 @@ using StateMatching.Helper;
 
 namespace StateMatching.Variable
 {
-    public class QuaternionGroupPreview : StructGroupPreview<QuaternionItem, Quaternion> { }
+    public class QuaternionGroupPreview : VeriableGroupPreview<Quaternion> { }
 }
 
