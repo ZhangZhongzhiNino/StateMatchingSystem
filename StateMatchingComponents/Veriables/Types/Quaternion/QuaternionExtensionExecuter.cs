@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-namespace StateMatching.Variable
+namespace Nino.StateMatching.Variable
 {
-    public class QuaternionExecuter : VariableExecuter<Quaternion>
+    public class QuaternionExtensionExecuter : VariableExtensionExecuter<Quaternion>
     {
         public override VariableItem<Quaternion> CreateNewItem()
         {

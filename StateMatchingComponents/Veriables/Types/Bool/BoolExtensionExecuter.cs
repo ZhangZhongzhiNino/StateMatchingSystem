@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
-using StateMatching.Helper;
-namespace StateMatching.Variable
+using Nino.StateMatching.Helper;
+namespace Nino.StateMatching.Variable
 {
-    public class BoolExecuter : VariableExecuter<bool>
+    public class BoolExtensionExecuter : VariableExtensionExecuter<bool>
     {
         public override VariableItem<bool> CreateNewItem()
         {

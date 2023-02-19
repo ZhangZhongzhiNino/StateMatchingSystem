@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 
-namespace StateMatching.Data
+namespace Nino.StateMatching.Data
 {
     public class PoseDataItem : Item<PoseDataItem>
     {
@@ -30,7 +30,7 @@ namespace StateMatching.Data
             itemName = "";
             poseAtFrame = -1;
         }
-        public void Initialize(List<string> _partNames, List<Vector3> _partPositions, List<Vector3> _rootPositions, List<Quaternion> _rotations, string _name, int _poseAtFrame)
+        public void Initiate(List<string> _partNames, List<Vector3> _partPositions, List<Vector3> _rootPositions, List<Quaternion> _rotations, string _name, int _poseAtFrame)
         {
             partNames = _partNames;
             partPositions = _partPositions;

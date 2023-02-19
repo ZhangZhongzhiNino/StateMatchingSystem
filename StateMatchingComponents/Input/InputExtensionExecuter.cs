@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 
-namespace StateMatching.Input
+namespace Nino.StateMatching.Input
 {
     public class InputExtensionExecuter : ExtensionExecuter
     {
         public override CategoryController getCategory()
         {
-            return root.inputController;
+            return root.inputCategory;
         }
     }
 

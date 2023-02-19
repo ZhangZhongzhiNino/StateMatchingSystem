@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace StateMatching.Variable
+namespace Nino.StateMatching.Variable
 {
     public class Vector3GroupController : VariableGroupContoller< Vector3>
     {

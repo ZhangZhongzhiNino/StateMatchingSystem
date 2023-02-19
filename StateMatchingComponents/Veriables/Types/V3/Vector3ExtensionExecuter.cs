@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-namespace StateMatching.Variable
+namespace Nino.StateMatching.Variable
 {
-    public class Vector3Executer : VariableExecuter<Vector3>
+    public class Vector3ExtensionExecuter : VariableExtensionExecuter<Vector3>
     {
         public override VariableItem<Vector3> CreateNewItem()
         {

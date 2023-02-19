@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 using Sirenix.OdinInspector;
 using System;
 
-namespace StateMatching.Action
+namespace Nino.StateMatching.Action
 {
-    public class CharacterControllerExecuter : ActionGroupExtensionExecuter<CharacterController>
+    public class CharacterControllerExtensionExecuter : ActionGroupExtensionExecuter<CharacterController>
     {
         public override Type GetGroupControllerType()
         {
@@ -23,20 +23,20 @@ namespace StateMatching.Action
         List<CharacterController> controlers;
 
 
-        public override void Initialize<_T>(_T instance = null, StateMatchingRoot stateMatchingRoot = null)
+        public override void Initiate<_T>(_T instance = null, StateMatchingRoot stateMatchingRoot = null)
         {
-            base.Initialize(instance, stateMatchingRoot);
+            base.Initiate(instance, stateMatchingRoot);
             if (controlers == null) controlers = new List<CharacterController>();
         }
         [Button(ButtonSizes.Large),GUIColor(0.4f,1,0.4f)]
         void CreateNewController()
         {
             string newControllerName = "C: "+controlers.Count.ToString();
-            GameObject newControllerObj = Helpers.CreateGameObject(newControllerName, this.transform);
+            GameObject newControllerObj = GeneralUtility.CreateGameObject(newControllerName, this.transform);
             CharacterController newController = newControllerObj.AddComponent<CharacterController>();
             controlers.Add(newController);
             UpdateGroupItems();
-            Helpers.OpenHierarchy(this.gameObject, true);
+            EditorUtility.OpenHierarchy(this.gameObject, true);
         }
         #region Update Items List
         [FoldoutGroup("Update Items List")]

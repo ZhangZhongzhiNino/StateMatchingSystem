@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using Sirenix.OdinInspector;
 using UnityEngine.EventSystems;
 using System;
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 public class SlideGestureInput : MonoBehaviour,IEventContainer
 {
     [BoxGroup("Reference")][Required][field: SerializeField] InputControl inputControl;

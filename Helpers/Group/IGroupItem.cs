@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-namespace StateMatching.Helper
+namespace Nino.StateMatching.Helper
 {
     public interface IGroupItem<T,V> where T : MonoBehaviour 
     {

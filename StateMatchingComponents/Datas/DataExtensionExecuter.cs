@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 
-namespace StateMatching.Data
+namespace Nino.StateMatching.Data
 {
     public class DataExtensionExecuter : ExtensionExecuter
     {
         public override CategoryController getCategory()
         {
-            return root.dataController;
+            return root.dataCategory;
         }
     }
 }

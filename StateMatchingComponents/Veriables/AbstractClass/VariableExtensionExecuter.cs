@@ -1,14 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StateMatching.Helper;
-using StateMatching;
+using Nino.StateMatching.Helper;
+using Nino.StateMatching;
 using Sirenix.OdinInspector;
 using System;
 
-namespace StateMatching.Variable
+namespace Nino.StateMatching.Variable
 {
-    public abstract class VariableExecuter<V> : VariableGroupExtensionExecuter<V> 
+    public abstract class VariableExtensionExecuter<V> : VariableGroupExtensionExecuter<V> 
     {
         [FoldoutGroup("Create Veriable"), Button(ButtonStyle.Box), GUIColor(0.4f, 1, 0.4f)]
         public void CreateItem(string name, V value)

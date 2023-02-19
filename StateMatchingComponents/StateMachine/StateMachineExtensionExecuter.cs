@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 
-namespace StateMatching.StateMachine
+namespace Nino.StateMatching.StateMachine
 {
     public class StateMachineExtensionExecuter : ExtensionExecuter
     {
         public override CategoryController getCategory()
         {
-            return root.stateMachineController;
+            return root.stateMachineCategory;
         }
     }
 }

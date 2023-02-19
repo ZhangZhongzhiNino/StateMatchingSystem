@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-namespace StateMatching.Helper
+namespace Nino.StateMatching.Helper
 {
     public class Group<V> : MonoBehaviour
     {

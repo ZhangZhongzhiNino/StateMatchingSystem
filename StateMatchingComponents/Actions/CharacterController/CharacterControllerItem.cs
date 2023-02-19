@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 
-namespace StateMatching.Action
+namespace Nino.StateMatching.Action
 {
     public class CharacterControllerItem : Item<CharacterController>
     {

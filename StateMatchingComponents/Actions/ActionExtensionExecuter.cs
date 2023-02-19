@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 using System;
 
-namespace StateMatching.Action
+namespace Nino.StateMatching.Action
 {
     public class ActionExtensionExecuter : ExtensionExecuter
     {
         public override CategoryController getCategory()
         {
-            return root.actionController;
+            return root.actionCategory;
         }
     }
 

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace StateMatching.Data
+namespace Nino.StateMatching.Data
 {
     public class ImportancePreset : MonoBehaviour
     {
@@ -20,7 +20,7 @@ namespace StateMatching.Data
             presetName = _presetName;
             importance = _importance;
         }
-        public void Initialize(string _presetName, List<float> _importance)
+        public void Initiate(string _presetName, List<float> _importance)
         {
             presetName = _presetName;
             importance = _importance;

@@ -1,4 +1,4 @@
-﻿namespace StateMatching.Variable
+﻿namespace Nino.StateMatching.Variable
 {
     public class StringGroup : VariableGroup<string> { }
 }

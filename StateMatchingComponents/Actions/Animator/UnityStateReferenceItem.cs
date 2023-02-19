@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 using UnityEditor.Animations;
 
-namespace StateMatching.Action
+namespace Nino.StateMatching.Action
 {
     public class UnityStateReferenceItem :Item<UnityStateReferenceValue>
     {

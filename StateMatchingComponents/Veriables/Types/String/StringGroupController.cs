@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StateMatching.Variable
+namespace Nino.StateMatching.Variable
 {
     public class StringGroupController : VariableGroupContoller<string>
     {

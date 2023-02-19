@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StateMatching.Helper;
-namespace StateMatching
+using Nino.StateMatching.Helper;
+namespace Nino.StateMatching
 {
     public interface IStateMatchingComponent
     {
-        public void Initialize<T>(T instance = null,StateMatchingRoot stateMatchingRoot=null) where T : MonoBehaviour;
+        public void Initiate<T>(T instance = null,StateMatchingRoot stateMatchingRoot=null) where T : MonoBehaviour;
         public void PreDestroy();
     }
 }

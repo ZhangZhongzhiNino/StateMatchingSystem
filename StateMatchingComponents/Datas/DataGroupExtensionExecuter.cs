@@ -1,12 +1,12 @@
-﻿using StateMatching.Helper;
+﻿using Nino.StateMatching.Helper;
 
-namespace StateMatching.Data
+namespace Nino.StateMatching.Data
 {
     public abstract class DataGroupExtensionExecuter<V> : GroupExtensionExecuter<V>
     {
         public override CategoryController getCategory()
         {
-            return root.dataController;
+            return root.dataCategory;
         }
     }
 }

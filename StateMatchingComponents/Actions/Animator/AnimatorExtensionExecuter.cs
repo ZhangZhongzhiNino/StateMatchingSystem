@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 using System;
 
-namespace StateMatching.Action
+namespace Nino.StateMatching.Action
 {
-    public class Animator : ActionGroupExtensionExecuter<UnityStateReferenceValue>
+    public class AnimatorExtensionExecuter : ActionGroupExtensionExecuter<UnityStateReferenceValue>
     {
         
         public UnityEngine.Animator animator;
@@ -18,9 +18,9 @@ namespace StateMatching.Action
             if(autoUpdate && animator!=null && groupController != null) UpdateAnimatorStates();
         }
 
-        public override void Initialize<T>(T instance = null, StateMatchingRoot stateMatchingRoot = null) 
+        public override void Initiate<T>(T instance = null, StateMatchingRoot stateMatchingRoot = null) 
         {
-            base.Initialize<T>(instance, stateMatchingRoot);
+            base.Initiate<T>(instance, stateMatchingRoot);
             animator = root.animator;
             UpdateAnimatorStates();
         }

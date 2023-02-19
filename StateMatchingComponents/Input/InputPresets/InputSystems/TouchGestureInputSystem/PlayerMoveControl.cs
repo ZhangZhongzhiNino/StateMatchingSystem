@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Sirenix.OdinInspector;
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 public class PlayerMoveControl : MonoBehaviour,IEventContainer
 {
     [BoxGroup("Reference")] [field:SerializeField] InputControl inputControl;

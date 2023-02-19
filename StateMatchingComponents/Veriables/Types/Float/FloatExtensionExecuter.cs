@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-namespace StateMatching.Variable
+namespace Nino.StateMatching.Variable
 {
-    public class FloatExecuter : VariableExecuter<float>
+    public class FloatExtensionExecuter : VariableExtensionExecuter<float>
     {
         public override VariableItem<float> CreateNewItem()
         {

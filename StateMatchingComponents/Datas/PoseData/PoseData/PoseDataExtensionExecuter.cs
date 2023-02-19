@@ -5,9 +5,9 @@ using Sirenix.OdinInspector;
 using System;
 using System.Linq;
 
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 
-namespace StateMatching.Data
+namespace Nino.StateMatching.Data
 {
     public class PoseDataExtensionExecuter : DataGroupExtensionExecuter<PoseDataItem>
     {
@@ -18,7 +18,7 @@ namespace StateMatching.Data
         [TitleGroup("Reference/Prefabs"), SerializeField] GameObject importancePresetsHolderPrefab;
 
 
-        [TitleGroup("Reference/Reference"), SerializeField] HumanoidInfoData infoController;
+        [TitleGroup("Reference/Reference"), SerializeField] HumanoidInfoDataExtensionExecuter infoController;
         [TitleGroup("Reference/Reference"), SerializeField] GameObject poseDataComponents;
         [TitleGroup("Reference/Reference"), SerializeField] GameObject poseDataGroups;
         [TitleGroup("Reference/Reference"), SerializeField] GameObject poseDataItems;
@@ -65,7 +65,7 @@ namespace StateMatching.Data
 
             }
             PoseDataItem newPose = new PoseDataItem();
-            newPose.Initialize(names, partPositions, rootPositions, rotations, poseName, poseAtFrame);
+            newPose.Initiate(names, partPositions, rootPositions, rotations, poseName, poseAtFrame);
             return newPose;
 
         }
@@ -240,7 +240,7 @@ namespace StateMatching.Data
             if (preset == null)
             {
                 ImportancePreset newPreset = importancePresetsHolder.AddComponent<ImportancePreset>();
-                newPreset.Initialize(presetName, importance);
+                newPreset.Initiate(presetName, importance);
                 importancePresets.Add(newPreset);
                 if(debugLog)Debug.Log("New Preset: \"" + presetName + "\" Created");
             }
@@ -288,12 +288,12 @@ namespace StateMatching.Data
 
         //--------------Functining group-----------
 
-        #region initialize destory
+        #region Initiate destory
 
-        public override void Initialize<_T>(_T instance = null, StateMatchingRoot stateMatchingRoot = null)
+        public override void Initiate<_T>(_T instance = null, StateMatchingRoot stateMatchingRoot = null)
         {
-            base.Initialize(instance, stateMatchingRoot);
-            InitializeVeriables();
+            base.Initiate(instance, stateMatchingRoot);
+            InitiateVeriables();
             FindInfoController();
             CreateComponent(ref importancePresetsHolder, "ImportancePresetsHolder", this.transform, importancePresetsHolderPrefab);
             UpdateBodyPartsData();
@@ -302,20 +302,20 @@ namespace StateMatching.Data
         public override void PreDestroy()
         {
             EndEditMode();
-            Helpers.RemoveGameObject(poseDataItems);
-            Helpers.RemoveGameObject(poseDataGroups);
-            Helpers.RemoveGameObject(importancePresetsHolder);
-            Helpers.RemoveGameObject(poseDataComponents);
+            GeneralUtility.RemoveGameObject(poseDataItems);
+            GeneralUtility.RemoveGameObject(poseDataGroups);
+            GeneralUtility.RemoveGameObject(importancePresetsHolder);
+            GeneralUtility.RemoveGameObject(poseDataComponents);
             base.PreDestroy();
 
         }
         void FindInfoController()
         {
-            if(root.dataController.humanoidInfoDatas.executer == null)
+            if(root.dataCategory.humanoidInfoDataExtension.executer == null)
             {
-                root.dataController.humanoidInfoDatas.CreateExtension();
+                root.dataCategory.humanoidInfoDataExtension.CreateExtension();
             }
-            infoController = root.dataController.humanoidInfoDatas.executer;
+            infoController = root.dataCategory.humanoidInfoDataExtension.executer;
             infoController.poseDataManager = this;
         }
         public void UpdateBodyPartsData()
@@ -333,7 +333,7 @@ namespace StateMatching.Data
                 bodyPartRoots.Add(part.transform.parent.gameObject);
             }
         }
-        void InitializeVeriables()
+        void InitiateVeriables()
         {
             importancePresetsNames = new List<string>();
             importancePresets = new List<ImportancePreset>();

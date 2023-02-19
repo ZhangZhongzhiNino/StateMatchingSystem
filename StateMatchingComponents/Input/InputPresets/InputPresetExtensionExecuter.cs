@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 using Sirenix.OdinInspector;
 using UnityEditor;
 
-namespace StateMatching.Input
+namespace Nino.StateMatching.Input
 {
-    public class InputPresets : InputExtensionExecuter
+    public class InputPresetExtensionExecuter : InputExtensionExecuter
     {
         #region Prefabs
         [FoldoutGroup("Prefabs")]
@@ -66,11 +66,11 @@ namespace StateMatching.Input
         void CreateInputSystem()
         {
             GameObject prefabToAdd = selectedPreset;
-            if (root.inputController.inputSystemContainer.executer == null) root.inputController.inputSystemContainer.CreateExtension();
-            if (root.inputController.inputSystemContainer.executer.Contain(prefabToAdd.name) )return;
+            if (root.inputCategory.inputSystemContainerExtension.executer == null) root.inputCategory.inputSystemContainerExtension.CreateExtension();
+            if (root.inputCategory.inputSystemContainerExtension.executer.Contain(prefabToAdd.name) )return;
             GameObject newObj = GameObject.Instantiate(selectedPreset);
-            newObj.transform.SetParent(root.inputController.inputSystemContainer.executer.transform);
-            Helpers.ResetLocalTransform(newObj);
+            newObj.transform.SetParent(root.inputCategory.inputSystemContainerExtension.executer.transform);
+            GeneralUtility.ResetLocalTransform(newObj);
             newObj.name = prefabToAdd.name;
         }
     }

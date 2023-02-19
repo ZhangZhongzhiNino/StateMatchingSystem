@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace StateMatching.Variable
+namespace Nino.StateMatching.Variable
 {
     public class Vector2Item : VariableItem<Vector2>
     {

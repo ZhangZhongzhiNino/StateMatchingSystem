@@ -5,9 +5,9 @@ using System.Linq;
 using System;
 using UnityEditor;
 
-namespace StateMatching.Helper
+namespace Nino.StateMatching.Helper
 {
-    public static class Helpers
+    public static class GeneralUtility
     {
         public static GameObject CreateGameObject(string objName, Transform parent)
         {
@@ -26,7 +26,7 @@ namespace StateMatching.Helper
         public static T AddStateMatchingComponent<T>(GameObject obj,T instance = null, StateMatchingRoot root = null) where T: MonoBehaviour, IStateMatchingComponent
         {
             T newComponent = obj.AddComponent<T>();
-            newComponent.Initialize<T>(instance, root);
+            newComponent.Initiate<T>(instance, root);
             return newComponent;
         }
         public static void RemoveGameObject( GameObject obj)
@@ -81,8 +81,12 @@ namespace StateMatching.Helper
         {
             if (extension == null) parent.TryGetComponent<T>(out extension);
             if (extension != null) extension.Initiate(name, parent, root);
-            else extension = Helpers.InitiateExtension<T>(name, parent, root);
+            else extension = GeneralUtility.InitiateExtension<T>(name, parent, root);
         }
+        
+    }
+    public class EditorUtility
+    {
         public static void OpenHierarchy(GameObject obj, bool open)
         {
             EditorApplication.ExecuteMenuItem("Window/Panels/7 Hierarchy");
@@ -98,7 +102,7 @@ namespace StateMatching.Helper
                 }
             }
         }
-        public static void ResetHierachy(GameObject rootObj,GameObject OpenCategory = null)
+        public static void ResetHierachy(GameObject rootObj, GameObject OpenCategory = null)
         {
             StateMatchingRoot root = rootObj.GetComponent<StateMatchingRoot>();
             OpenHierarchy(rootObj, false);
@@ -106,6 +110,52 @@ namespace StateMatching.Helper
             OpenHierarchy(rootObj, true);
             OpenHierarchy(root.stateMatchingComponent, true);
             if (OpenCategory != null) OpenHierarchy(OpenCategory, true);
+        }
+
+    }
+    public class ActionUtility
+    {
+        public static T CreateAction<T>(string newActionName, ExtensionExecuter executer,ActionGroup actionGroup) where T:Action
+        {
+            foreach(Action action in actionGroup.actions)
+            {
+                if (action.name == newActionName) return action as T;
+            }
+            T newAction = executer.gameObject.AddComponent<T>();
+            newAction.Initiate(newActionName, executer);
+            actionGroup.actions.Add(newAction);
+            return newAction;
+        }
+        public static ActionGroup CreateActionGroup(string newGroupName,GameObject addToObj, ActionType actionType)
+        {
+            foreach(ActionGroup group in actionType.groups)
+            {
+                if (group.groupName == newGroupName) return group;
+            }
+            ActionGroup newActionGroup = addToObj.AddComponent<ActionGroup>();
+            newActionGroup.Initiate(newGroupName);
+            actionType.groups.Add(newActionGroup);
+            return newActionGroup;
+        }
+        public static ActionType CreateActionType(string newTypeName, GameObject addToObj, ActionRoot actionRoot)
+        {
+            foreach(ActionType type in actionRoot.types)
+            {
+                if (type.typeName == newTypeName) return type;
+            }
+            ActionType newActionType = addToObj.AddComponent<ActionType>();
+            newActionType.Initiate(newTypeName);
+            actionRoot.types.Add(newActionType);
+            return newActionType;
+        }
+        public static ActionRoot CreateActionRoot(StateMatchingRoot root)
+        {
+            if (root.actionRoot != null) return root.actionRoot;
+            ActionRoot newActionRoot = root.gameObject.GetComponent<ActionRoot>();
+            if (newActionRoot != null) return newActionRoot;
+            newActionRoot = root.gameObject.AddComponent<ActionRoot>();
+            newActionRoot.Initiate(root.stateMatchingName);
+            return newActionRoot;
         }
     }
 }

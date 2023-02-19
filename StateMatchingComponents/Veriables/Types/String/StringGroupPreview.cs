@@ -1,6 +1,6 @@
-﻿using StateMatching.Helper;
+﻿using Nino.StateMatching.Helper;
 
-namespace StateMatching.Variable
+namespace Nino.StateMatching.Variable
 {
     public class StringGroupPreview : VeriableGroupPreview<string> { }
 }

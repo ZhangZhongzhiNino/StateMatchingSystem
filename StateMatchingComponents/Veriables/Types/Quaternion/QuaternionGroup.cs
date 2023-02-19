@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-namespace StateMatching.Variable
+namespace Nino.StateMatching.Variable
 {
     public class QuaternionGroup : VariableGroup<Quaternion > { }
 }

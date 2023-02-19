@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 using System.Linq;
-namespace StateMatching.Data
+namespace Nino.StateMatching.Data
 {
     public class PoseDataGroupPreview : GroupPreview<PoseDataItem>
     {

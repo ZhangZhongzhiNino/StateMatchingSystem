@@ -1,12 +1,12 @@
-﻿using StateMatching.Helper;
+﻿using Nino.StateMatching.Helper;
 
-namespace StateMatching.InternalEvent
+namespace Nino.StateMatching.InternalEvent
 {
     public abstract class InternalEventGroupExtensionExecuter<V> : GroupExtensionExecuter<V>
     {
         public override CategoryController getCategory()
         {
-            return root.internalEventController;
+            return root.internalEventCategory;
         }
     }
 }

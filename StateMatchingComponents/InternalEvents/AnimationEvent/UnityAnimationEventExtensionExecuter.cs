@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 using System;
 using Sirenix.OdinInspector;
 using UnityEngine.Events;
 
-namespace StateMatching.InternalEvent
+namespace Nino.StateMatching.InternalEvent
 {
     public class UnityAnimationEventExtensionExecuter : InternalEventGroupExtensionExecuter<UnityAnimationEventItem>
     {
@@ -20,9 +20,9 @@ namespace StateMatching.InternalEvent
         {
             return typeof(UnityAnimationEventGroupPreview);
         }
-        public override void Initialize<_T>(_T instance = null, StateMatchingRoot stateMatchingRoot = null)
+        public override void Initiate<_T>(_T instance = null, StateMatchingRoot stateMatchingRoot = null)
         {
-            base.Initialize(instance, stateMatchingRoot);
+            base.Initiate(instance, stateMatchingRoot);
             animator = root.animator;
         }
         [Button(ButtonSizes.Large),GUIColor(0.4f,1,0.4f),PropertyOrder(-100)]

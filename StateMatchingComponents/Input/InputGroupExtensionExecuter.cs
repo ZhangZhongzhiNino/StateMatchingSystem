@@ -1,12 +1,12 @@
-﻿using StateMatching.Helper;
+﻿using Nino.StateMatching.Helper;
 
-namespace StateMatching.Input
+namespace Nino.StateMatching.Input
 {
     public abstract class InputGroupExtensionExecuter<V> : GroupExtensionExecuter<V>
     {
         public override CategoryController getCategory()
         {
-            return root.inputController;
+            return root.inputCategory;
         }
     }
 

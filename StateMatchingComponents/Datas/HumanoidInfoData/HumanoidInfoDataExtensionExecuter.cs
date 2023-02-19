@@ -5,11 +5,11 @@ using Sirenix.OdinInspector;
 using System;
 using UnityEditor;
 
-using StateMatching;
-using StateMatching.Helper;
-namespace StateMatching.Data
+using Nino.StateMatching;
+using Nino.StateMatching.Helper;
+namespace Nino.StateMatching.Data
 {
-    public class HumanoidInfoData : DataExtensionExecuter                    //MonoBehaviour, IStateMatchingComponent
+    public class HumanoidInfoDataExtensionExecuter : DataExtensionExecuter                    //MonoBehaviour, IStateMatchingComponent
     {
         #region 0 Body Part List
         [PropertySpace(SpaceBefore = 5, SpaceAfter = 5), ReadOnly]
@@ -89,7 +89,7 @@ namespace StateMatching.Data
         private BodyPartInfoHolder TrySetInfo(GameObject root, string name, float mass, float size, float offset, bool customPart = false)
         {
             GameObject newBodypart = Instantiate(bodyPartPrefab);
-            newBodypart.GetComponent<BodyPartInfoHolder>().Initialize(name, mass, size, offset, this, _customPart: customPart);
+            newBodypart.GetComponent<BodyPartInfoHolder>().Initiate(name, mass, size, offset, this, _customPart: customPart);
             newBodypart.name = name;
             newBodypart.transform.SetParent(root.transform);
             newBodypart.transform.localPosition = Vector3.zero;
@@ -203,7 +203,7 @@ namespace StateMatching.Data
             foreach (BodyPartInfoHolder part in toRemove)
             {
                 bodyParts.Remove(part);
-                Helpers.RemoveGameObject(part.gameObject);
+                GeneralUtility.RemoveGameObject(part.gameObject);
             }
             if (poseDataManager == null) return;
             poseDataManager?.UpdateBodyPartsData();
@@ -230,13 +230,13 @@ namespace StateMatching.Data
             foreach (BodyPartInfoHolder part in bodyParts)
             {
                 if (part.customPart != custom) continue;
-                Helpers.RemoveGameObject(part?.gameObject);
+                GeneralUtility.RemoveGameObject(part?.gameObject);
             }
             bodyParts.RemoveAll(item => item.customPart == custom);
             if (custom == false)
             {
-                if (rightFootCenter != null) Helpers.RemoveGameObject(rightFootCenter.gameObject);
-                if (leftFootCenter != null) Helpers.RemoveGameObject(leftFootCenter.gameObject);
+                if (rightFootCenter != null) GeneralUtility.RemoveGameObject(rightFootCenter.gameObject);
+                if (leftFootCenter != null) GeneralUtility.RemoveGameObject(leftFootCenter.gameObject);
             }
             if (poseDataManager != null) poseDataManager?.UpdateBodyPartsData();
 
@@ -286,7 +286,7 @@ namespace StateMatching.Data
                 IEnumerator<BodyPartInfoHolder> parts = bodyParts.GetEnumerator();
                 while (parts.MoveNext())
                 {
-                    parts.Current.Initialize(parts.Current.GetName(), defaultMass, gizmoSize, editDisplayOffset, this);
+                    parts.Current.Initiate(parts.Current.GetName(), defaultMass, gizmoSize, editDisplayOffset, this);
                 }
                 centerOfMass?.setOffest(editDisplayOffset);
                 centerOfMass?.setGizmoSize(gizmoSize);
@@ -684,10 +684,10 @@ namespace StateMatching.Data
         }
         #endregion
 
-        #region Initialize & Destroy
-        public override void Initialize<T>(T instance = null, StateMatchingRoot _stateMatchingRoot = null)
+        #region Initiate & Destroy
+        public override void Initiate<T>(T instance = null, StateMatchingRoot _stateMatchingRoot = null)
         {
-            base.Initialize(instance, _stateMatchingRoot);
+            base.Initiate(instance, _stateMatchingRoot);
             MoveCenterOfMass();
             createRoot();
             if (bodyParts == null) bodyParts = new List<BodyPartInfoHolder>();
@@ -697,7 +697,7 @@ namespace StateMatching.Data
         {
             ClearAllExtensions();
             ClearAllBodyPart();
-            if (partDataRoot) Helpers.RemoveGameObject(partDataRoot.gameObject);
+            if (partDataRoot) GeneralUtility.RemoveGameObject(partDataRoot.gameObject);
             base.PreDestroy();
         }
         void ClearAllExtensions()

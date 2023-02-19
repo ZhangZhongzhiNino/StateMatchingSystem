@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
-namespace StateMatching
+namespace Nino.StateMatching
 {
     public class StateMatchingGlobalReference : MonoBehaviour
     {
@@ -16,7 +16,7 @@ namespace StateMatching
                 int i = 0;
                 foreach (StateMatchingRoot root in stateMatchingSystems)
                 {
-                    stringList.Add(i.ToString() + ": "+ root.StateMatchingName);
+                    stringList.Add(i.ToString() + ": "+ root.stateMatchingName);
                     i++;
                 }
                 return stringList;
@@ -27,7 +27,7 @@ namespace StateMatching
             if (stateMatchingSystems == null) return null;
             foreach(StateMatchingRoot root in stateMatchingSystems)
             {
-                if (root.StateMatchingName == instanceName) return root;
+                if (root.stateMatchingName == instanceName) return root;
             }
             int i =  getIndex(instanceName);
             if (i != -1) return stateMatchingSystems[i];

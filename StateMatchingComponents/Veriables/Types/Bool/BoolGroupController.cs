@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace StateMatching.Variable
+namespace Nino.StateMatching.Variable
 {
     public class BoolGroupController : VariableGroupContoller<bool>
     {

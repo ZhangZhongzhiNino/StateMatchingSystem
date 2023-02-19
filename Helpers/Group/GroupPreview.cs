@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-namespace StateMatching.Helper
+namespace Nino.StateMatching.Helper
 {
-    public class GroupPreview<V> : MonoBehaviour
+    public abstract class GroupPreview<V> : MonoBehaviour
     {
         [PropertyOrder(order: -999999)] public GroupController<V> groupController;
 
         #region Odin
         #region Values
-        public List<string> groupNames
+        public virtual List<string> groupNames
         {
             get
             {
@@ -24,15 +24,15 @@ namespace StateMatching.Helper
                 return newList;
             }
         }
-        
-        Group<V> currentSelectGroup
+
+        public virtual Group<V> currentSelectGroup
         {
             get
             {
                 return groupController.GetGroup(selectGroup);
             }
         }
-        List<string> namesOfItemInGroup
+        public virtual List<string> namesOfItemInGroup
         {
             get
             {
@@ -45,7 +45,7 @@ namespace StateMatching.Helper
                 return newList;
             }
         }
-        List<string> allItemNames
+        public virtual List<string> allItemNames
         {
             get
             {
@@ -59,7 +59,7 @@ namespace StateMatching.Helper
 
             }
         }
-        List<string> allItemInSelectedGroup
+        public virtual List<string> allItemInSelectedGroup
         {
             get
             {
@@ -72,7 +72,7 @@ namespace StateMatching.Helper
                 return newList;
             }
         }
-        List<string> allItemOutSelectedGroup
+        public virtual List<string> allItemOutSelectedGroup
         {
             get
             {
@@ -89,18 +89,18 @@ namespace StateMatching.Helper
         #endregion
         #region View Group
 
-        List<string> groupNameList { get { return groupController?.GetGroupNameList(); } }
+        public virtual List<string> groupNameList { get { return groupController?.GetGroupNameList(); } }
 
         [FoldoutGroup("View Group", order: -10)]
         [FoldoutGroup("Edit groups", order: -8)]
         [TitleGroup("Edit groups/Add item to Group", order: -998)]
         [TitleGroup("Edit groups/Remove item From Group", order: -997)]
         [ValueDropdown("groupNameList"), SerializeField]
-        string selectGroup;
-        Group<V> _selectGroup { get { return groupController.GetGroup(selectGroup) as Group<V>; } }
+        public string selectGroup;
+        public virtual Group<V> _selectGroup { get { return groupController.GetGroup(selectGroup) as Group<V>; } }
         [ShowIfGroup("View Group/List", Condition = "@ _selectGroup != null")]
         [ListDrawerSettings(Expanded = true), ShowInInspector, ReadOnly]
-        List<string> contains
+        public virtual List<string> contains
         {
             get
             {
@@ -113,8 +113,9 @@ namespace StateMatching.Helper
                 }
                 return newList;
             }
+            set { }
         }
-        public void Initiate(GroupController<V> groupController)
+        public virtual void Initiate(GroupController<V> groupController)
         {
             this.groupController = groupController;
         }
@@ -139,10 +140,10 @@ namespace StateMatching.Helper
         #endregion
         #region Create & Remove Group
         [FoldoutGroup("Create Groups", order: -9), TitleGroup("Create Groups/Create Group", order: -999), SerializeField]
-        string newGroupName;
+        public string newGroupName;
         [TitleGroup("Create Groups/Create Group")]
         [Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
-        void CreatGroup()
+        public virtual void CreatGroup()
         {
             Group<V> newGroup = groupController.AddNewGroup(newGroupName);
             if (newGroup) Debug.Log("Group \"" + newGroupName + "\" Created");
@@ -152,10 +153,10 @@ namespace StateMatching.Helper
         [TitleGroup("Create Groups/Remove Group", order: -998)]
         [ValueDropdown("@selectList(groupNames,selectGroupToRemove)"), SerializeField]
         [ListDrawerSettings(Expanded = true)]
-        List<string> selectGroupToRemove;
+        public List<string> selectGroupToRemove;
         [TitleGroup("Create Groups/Remove Group")]
         [Button(ButtonSizes.Large), GUIColor(1, 0.4f, 0.4f)]
-        void _RemoveGroup()
+        public virtual void _RemoveGroup()
         {
             foreach (string name in selectGroupToRemove)
             {
@@ -169,9 +170,9 @@ namespace StateMatching.Helper
         [TitleGroup("Edit groups/Add item to Group")]
         [SerializeField, ValueDropdown("@selectList(allItemOutSelectedGroup,selectItemsToAdd)")]
         [ListDrawerSettings(Expanded = true)]
-        List<string> selectItemsToAdd;
+        public List<string> selectItemsToAdd;
         [TitleGroup("Edit groups/Add item to Group"), Button(buttonSize: 50), GUIColor(0.4f, 1, 0.4f)]
-        void _AddItemToGroup()
+        public virtual void _AddItemToGroup()
         {
             foreach (string name in selectItemsToAdd)
             {
@@ -185,9 +186,9 @@ namespace StateMatching.Helper
         [TitleGroup("Edit groups/Remove item From Group")]
         [ValueDropdown("@selectList(allItemInSelectedGroup,selectItemsToRemove)"), SerializeField]
         [ListDrawerSettings(Expanded = true)]
-        List<string> selectItemsToRemove;
+        public List<string> selectItemsToRemove;
         [TitleGroup("Edit groups/Remove item From Group"), Button(buttonSize: 50), GUIColor(1f, 0.4f, 0.4f)]
-        void _RemoveItemFromGroup()
+        public virtual void _RemoveItemFromGroup()
         {
             foreach (string name in selectItemsToRemove)
             {
@@ -201,7 +202,7 @@ namespace StateMatching.Helper
         [FoldoutGroup("Items")]
         [Button]
         [GUIColor(1, 0.4f, 0.4f)]
-        private void RemoveAllItems()
+        public virtual void RemoveAllItems()
         {
             groupController.RemoveAllItem();
         }
@@ -210,7 +211,7 @@ namespace StateMatching.Helper
         [FoldoutGroup("Items")]
         [Button(ButtonStyle.Box)]
         [GUIColor(1, 0.4f, 0.4f)]
-        private void RemoveItemByName(string name)
+        public virtual void RemoveItemByName(string name)
         {
             groupController.RemoveItem(name);
         }
@@ -219,14 +220,14 @@ namespace StateMatching.Helper
         [FoldoutGroup("Items")]
         [Button(ButtonStyle.Box)]
         [GUIColor(1, 0.4f, 0.4f)]
-        private void RemoveItemByID(int index)
+        public virtual void RemoveItemByID(int index)
         {
             groupController.RemoveItem(index);
         }
         #endregion
 
         #region Custom Odin
-        public IEnumerable<ValueDropdownItem<string>> selectList(List<string> list, List<string> selectList)
+        public virtual IEnumerable<ValueDropdownItem<string>> selectList(List<string> list, List<string> selectList)
         {
             if (list == null) return new List<ValueDropdownItem<string>>();
             var items = new List<ValueDropdownItem<string>>();

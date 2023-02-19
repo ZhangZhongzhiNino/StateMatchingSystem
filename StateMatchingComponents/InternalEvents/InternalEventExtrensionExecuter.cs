@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 
-namespace StateMatching.InternalEvent
+namespace Nino.StateMatching.InternalEvent
 {
     public class InternalEventExtrensionExecuter : ExtensionExecuter
     {
         public override CategoryController getCategory()
         {
-            return root.internalEventController;
+            return root.internalEventCategory;
         }
     }
 }

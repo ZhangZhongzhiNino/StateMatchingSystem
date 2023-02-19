@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace StateMatching.Helper
+namespace Nino.StateMatching.Helper
 {
     public interface IEventContainer
     {

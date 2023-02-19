@@ -4,7 +4,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEditor;
 
-namespace StateMatching.Data
+namespace Nino.StateMatching.Data
 {
     public class BodyPartInfoHolder : MonoBehaviour
     {
@@ -46,7 +46,7 @@ namespace StateMatching.Data
     
 
         float offset;
-        [BoxGroup("Others Value")][field: SerializeField] HumanoidInfoData infoController;
+        [BoxGroup("Others Value")][field: SerializeField] HumanoidInfoDataExtensionExecuter infoController;
 
         Vector3 defaultPosition = Vector3.zero;
 
@@ -120,7 +120,7 @@ namespace StateMatching.Data
         void matchAllSize()
         {
             if (infoController == null) return;
-            HumanoidInfoData controller = infoController.GetComponent<HumanoidInfoData>();
+            HumanoidInfoDataExtensionExecuter controller = infoController.GetComponent<HumanoidInfoDataExtensionExecuter>();
             controller.SetGizmoSize(size);
             controller.ApplySize();
         }
@@ -249,7 +249,7 @@ namespace StateMatching.Data
 
             Vector3 toPosition = infoController.GetRoot().transform.TransformPoint(localPosition);
 
-            mirrorBodyPart.Initialize(mass, size, toPosition);
+            mirrorBodyPart.Initiate(mass, size, toPosition);
 
         }
 
@@ -269,9 +269,9 @@ namespace StateMatching.Data
     
         #endregion
 
-        #region Get Set Initialize
-        #region Initialize
-        public void Initialize (string newName,float newMass,float newSize,float newOffset,HumanoidInfoData controller,bool _customPart = false)
+        #region Get Set Initiate
+        #region Initiate
+        public void Initiate (string newName,float newMass,float newSize,float newOffset,HumanoidInfoDataExtensionExecuter controller,bool _customPart = false)
         {
             SetMass(newMass);
             SetSize(newSize);
@@ -282,7 +282,7 @@ namespace StateMatching.Data
             transform.rotation = controller.transform.rotation;
             customPart = _customPart;
         }
-        public void Initialize(float newMass, float newSize, Vector3 globalPosition)
+        public void Initiate(float newMass, float newSize, Vector3 globalPosition)
         {
             SetMass(newMass);
             SetSize(newSize);

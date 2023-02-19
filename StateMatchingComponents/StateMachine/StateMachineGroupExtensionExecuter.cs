@@ -1,12 +1,12 @@
-﻿using StateMatching.Helper;
+﻿using Nino.StateMatching.Helper;
 
-namespace StateMatching.StateMachine
+namespace Nino.StateMatching.StateMachine
 {
     public abstract class StateMachineGroupExtensionExecuter<V> : GroupExtensionExecuter<V>
     {
         public override CategoryController getCategory()
         {
-            return root.stateMachineController;
+            return root.stateMachineCategory;
         }
     }
 }

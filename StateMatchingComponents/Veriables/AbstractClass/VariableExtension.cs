@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 
-namespace StateMatching.Variable
+namespace Nino.StateMatching.Variable
 {
     public class VariableExtension<T> : Extension<T> where T : MonoBehaviour, IStateMatchingComponent
     {

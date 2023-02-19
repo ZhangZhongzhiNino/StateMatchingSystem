@@ -5,7 +5,7 @@ using UnityEngine;
 using System;
 
 
-namespace StateMatching.Helper
+namespace Nino.StateMatching.Helper
 {
 
     public abstract class GroupController<V> : MonoBehaviour
@@ -30,7 +30,7 @@ namespace StateMatching.Helper
         {
             Item<V> toRemoveItem = GetItem(itemName);
             if (!toRemoveItem) return;
-            Helpers.RemoveComponent(toRemoveItem);
+            GeneralUtility.RemoveComponent(toRemoveItem);
             UpdateItemsList();
             ClearNullInGroups();
             ClearNullInItems();
@@ -39,7 +39,7 @@ namespace StateMatching.Helper
         public void RemoveItem(int index)
         {
             if (index >= items.Count) return;
-            Helpers.RemoveComponent(items[index]);
+            GeneralUtility.RemoveComponent(items[index]);
             ClearNullInGroups();
             ClearNullInItems();
         }
@@ -47,7 +47,7 @@ namespace StateMatching.Helper
         {
             foreach(Item<V> item in items)
             {
-                Helpers.RemoveComponent(item);
+                GeneralUtility.RemoveComponent(item);
             }
             ClearNullInGroups();
             
@@ -98,7 +98,7 @@ namespace StateMatching.Helper
         {
             Group<V> getGroup = GetGroup(groupName);
             if (!getGroup) return false;
-            Helpers.RemoveComponent(getGroup);
+            GeneralUtility.RemoveComponent(getGroup);
             UpdateGroupsList();
             return true;
         }
@@ -120,7 +120,7 @@ namespace StateMatching.Helper
         {
             for(int i = 0; i < groups.Count; i++)
             {
-                Helpers.RemoveComponent(groups[i]);
+                GeneralUtility.RemoveComponent(groups[i]);
             }
             UpdateGroupsList();
         }
@@ -229,14 +229,14 @@ namespace StateMatching.Helper
         }
         public void RemoveAllInItems(Predicate<Item<V>> match)
         {
-            Helpers.RemoveAllComponentInGameObject<Item<V>>(itemsHolder,match);
+            GeneralUtility.RemoveAllComponentInGameObject<Item<V>>(itemsHolder,match);
             ClearNullInItems();
             ClearNullInGroups();
             UpdateItemsList();
         }
         #endregion
         #region SetUp Destroy
-        public void Initialize( GameObject _itemsHolder)
+        public void Initiate( GameObject _itemsHolder)
         {
             if(!_itemsHolder) _itemsHolder = new GameObject();
             itemsHolder = _itemsHolder;
@@ -245,8 +245,8 @@ namespace StateMatching.Helper
         }
         public void PreDestroy()
         {
-            Helpers.RemoveGameObject(itemsHolder);
-            Helpers.RemoveGameObject(this.gameObject);
+            GeneralUtility.RemoveGameObject(itemsHolder);
+            GeneralUtility.RemoveGameObject(this.gameObject);
         }
         #endregion
 

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-namespace StateMatching.Helper
+namespace Nino.StateMatching.Helper
 {
     public abstract class Item<V> : MonoBehaviour
     {

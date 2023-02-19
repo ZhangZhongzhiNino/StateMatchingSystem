@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 using UnityEngine.Events;
 using Sirenix.OdinInspector;
-namespace StateMatching.InternalEvent
+namespace Nino.StateMatching.InternalEvent
 {
     public class UnityAnimationEventItem : Item<UnityAnimationEventItem>
     {

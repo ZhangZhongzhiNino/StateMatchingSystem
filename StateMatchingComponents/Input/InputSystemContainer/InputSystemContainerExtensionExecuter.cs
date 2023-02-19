@@ -1,12 +1,12 @@
-using StateMatching.Helper;
+using Nino.StateMatching.Helper;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Linq;
 using Sirenix.OdinInspector;
-namespace StateMatching.Input
+namespace Nino.StateMatching.Input
 {
-    public class InputSystemContainer : InputExtensionExecuter
+    public class InputSystemContainerExtensionExecuter : InputExtensionExecuter
     {
         [ShowInInspector]
         [ListDrawerSettings(OnBeginListElementGUI = "DrawEventNames", DraggableItems = false)]
