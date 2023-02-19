@@ -31,7 +31,7 @@ namespace Nino.StateMatching.Helper
             root.editModeUpdater.call -= EditModeUpdateCalls;
             GeneralUtility.RemoveGameObject(this.gameObject);
         }
-        public abstract void InitiateActions();
+        
         
         [Button(ButtonSizes.Large), GUIColor(0.4f, 1, 1),PropertyOrder(-99999999999)]
         void ResetHierarchy()
@@ -43,6 +43,7 @@ namespace Nino.StateMatching.Helper
         public abstract CategoryController GetCategory();
         public abstract string GetActionGroupName();
         public abstract void EditModeUpdateCalls();
+        public abstract void InitiateActions();
     }
 }
 

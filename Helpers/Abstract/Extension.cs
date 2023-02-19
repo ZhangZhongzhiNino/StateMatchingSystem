@@ -8,7 +8,7 @@ using UnityEditor;
 
 namespace Nino.StateMatching.Helper
 {
-    public class Extension<T>:MonoBehaviour,IExtension where T: MonoBehaviour, IStateMatchingComponent
+    public abstract class Extension<T>:MonoBehaviour,IExtension where T: MonoBehaviour, IStateMatchingComponent
     {
         [HideInInspector] public StateMatchingRoot root;
         [HideInInspector] public GameObject controller;
@@ -25,11 +25,13 @@ namespace Nino.StateMatching.Helper
             controller = _controller;
             extensionName = _extensionName;
         }
-        public void Initiate(string _extensionName, GameObject _controller, StateMatchingRoot _root)
+        public virtual void Initiate(string _extensionName, GameObject _controller, StateMatchingRoot _root)
         {
             root = _root;
             controller = _controller;
             extensionName = _extensionName;
+            if (executer == null) executer = this.gameObject.GetComponentInChildren<T>();
+            if (executer != null) executer.Initiate<T>(stateMatchingRoot: root);
         }
         [ShowIfGroup("Create", Condition = "@executer == null")]
         [Button(name:"@createName"),GUIColor(0.4f,1,0.4f)]

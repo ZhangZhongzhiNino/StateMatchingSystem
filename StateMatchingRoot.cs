@@ -101,9 +101,8 @@ namespace Nino.StateMatching
         public void CreateGameObjectWithScript<T>(string objName, Transform parent,ref GameObject objReference,ref T scriptReference) where T: CategoryController
         {
             if (objReference == null) GeneralUtility.CreateGameObjectWithScript<T>(objName, parent, out objReference, out scriptReference, root: this);
-            if (scriptReference == null) GeneralUtility.AddStateMatchingComponent<T>(objReference, root: this);
+            if (scriptReference == null) scriptReference = GeneralUtility.AddStateMatchingComponent<T>(objReference, root: this);
             else scriptReference.Initiate<T>(stateMatchingRoot: this);
-            scriptReference.InitiateExtensions();
         }
         #endregion
 

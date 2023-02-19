@@ -18,6 +18,7 @@ namespace Nino.StateMatching.Helper
                 root = _instance.root;
             }
             actionType = ActionUtility.CreateActionType(GetActionTypeName(), this.gameObject, root.actionRoot);
+            InitiateExtensions();
         }
         public abstract void InitiateExtensions();
         public abstract string GetActionTypeName();
