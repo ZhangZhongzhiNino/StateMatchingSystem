@@ -6,9 +6,10 @@ using System;
 
 namespace Nino.StateMatching.Action
 {
-    public class ActionExtensionExecuter : ExtensionExecuter
+    public abstract class ActionExtensionExecuter : ExtensionExecuter
     {
-        public override CategoryController getCategory()
+        
+        public override CategoryController GetCategory()
         {
             return root.actionCategory;
         }

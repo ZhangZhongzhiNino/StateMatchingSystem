@@ -11,15 +11,25 @@ namespace Nino.StateMatching.Variable
         {
             return new IntItem();
         }
-
+        public override string GetActionGroupName()
+        {
+            return "Int Variable";
+        }
         public override Type GetGroupControllerType()
         {
             return typeof(IntGroupController);
         }
-
         public override Type GetGroupPreviewType()
         {
             return typeof(IntGroupPreview);
+        }
+        public override void InitiateActions()
+        {
+
+        }
+        public override void EditModeUpdateCalls()
+        {
+
         }
     }
 }

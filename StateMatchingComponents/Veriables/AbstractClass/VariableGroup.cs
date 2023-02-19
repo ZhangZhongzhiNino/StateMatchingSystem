@@ -5,7 +5,7 @@ using Nino.StateMatching.Helper;
 
 namespace Nino.StateMatching.Variable
 {
-    public class VariableGroup<V> : Group<V>
+    public abstract class VariableGroup<V> : Group<V>
     {
 
     }

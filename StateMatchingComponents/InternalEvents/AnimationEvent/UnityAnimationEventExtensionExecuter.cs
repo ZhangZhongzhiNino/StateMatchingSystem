@@ -12,22 +12,11 @@ namespace Nino.StateMatching.InternalEvent
     public class UnityAnimationEventExtensionExecuter : InternalEventGroupExtensionExecuter<UnityAnimationEventItem>
     {
         [FoldoutGroup("Reference")] public UnityEngine.Animator animator;
-        public override Type GetGroupControllerType()
-        {
-            return typeof(UnityAnimationEventGroupController);
-        }
-        public override Type GetGroupPreviewType()
-        {
-            return typeof(UnityAnimationEventGroupPreview);
-        }
-        public override void Initiate<_T>(_T instance = null, StateMatchingRoot stateMatchingRoot = null)
-        {
-            base.Initiate(instance, stateMatchingRoot);
-            animator = root.animator;
-        }
+        
         [Button(ButtonSizes.Large),GUIColor(0.4f,1,0.4f),PropertyOrder(-100)]
         void UpdateAnimationEvents()
         {
+            if (animator == null || groupController == null) return;
             groupController.RemoveAllInItems(items => items.value == null || items.value.animationEvent == null);
             UnityEditor.Animations.AnimatorController animatorController;
             animatorController = animator.runtimeAnimatorController as UnityEditor.Animations.AnimatorController;
@@ -62,10 +51,6 @@ namespace Nino.StateMatching.InternalEvent
             }
         }
         public bool autoUpdate = true;
-        private void OnDrawGizmos()
-        {
-            if (autoUpdate && animator != null && groupController != null) UpdateAnimationEvents();
-        }
 
         #region Edit Events
         List<string> groupNames { get { return groupPreview.groupNames; } }
@@ -112,8 +97,34 @@ namespace Nino.StateMatching.InternalEvent
                 GUI.Label(GUILayoutUtility.GetRect(80, 30), eventNames[index]);
             }
         }
-        #endregion
 
+
+        #endregion
+        public override Type GetGroupControllerType()
+        {
+            return typeof(UnityAnimationEventGroupController);
+        }
+        public override Type GetGroupPreviewType()
+        {
+            return typeof(UnityAnimationEventGroupPreview);
+        }
+        public override string GetActionGroupName()
+        {
+            return "Animation Event";
+        }
+        public override void InitiateActions()
+        {
+
+        }
+        public override void EditModeUpdateCalls()
+        {
+            if (autoUpdate) UpdateAnimationEvents();
+        }
+        public override void Initiate<_T>(_T instance = null, StateMatchingRoot stateMatchingRoot = null)
+        {
+            base.Initiate(instance, stateMatchingRoot);
+            animator = root.animator;
+        }
     }
 
 }

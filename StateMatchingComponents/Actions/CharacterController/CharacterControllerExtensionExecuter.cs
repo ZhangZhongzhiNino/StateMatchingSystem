@@ -9,15 +9,7 @@ namespace Nino.StateMatching.Action
 {
     public class CharacterControllerExtensionExecuter : ActionGroupExtensionExecuter<CharacterController>
     {
-        public override Type GetGroupControllerType()
-        {
-            return typeof(CharacterControllerGroupController);
-        }
-        public override Type GetGroupPreviewType()
-        {
-            return typeof(CharacterControllerGroupPreview);
-        }
-
+        
 
         CharacterController currentController;
         List<CharacterController> controlers;
@@ -39,13 +31,7 @@ namespace Nino.StateMatching.Action
             EditorUtility.OpenHierarchy(this.gameObject, true);
         }
         #region Update Items List
-        [FoldoutGroup("Update Items List")]
         public bool autoUpdate = true;
-        private void OnDrawGizmos()
-        {
-            if (autoUpdate) UpdateGroupItems();
-        }
-        [FoldoutGroup("Update Items List")]
         [Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
         void UpdateGroupItems()
         {
@@ -62,8 +48,7 @@ namespace Nino.StateMatching.Action
             autoUpdate = false;
         }
         #endregion
-        [Button]
-        public CharacterController SetActiveController(int i)
+        [Button] public CharacterController SetActiveController(int i)
         {
             autoUpdate = false;
             foreach (CharacterController cc in controlers) cc.gameObject.SetActive(false);
@@ -76,6 +61,27 @@ namespace Nino.StateMatching.Action
             return currentController;
         }
 
+        public override Type GetGroupControllerType()
+        {
+            return typeof(CharacterControllerGroupController);
+        }
+        public override Type GetGroupPreviewType()
+        {
+            return typeof(CharacterControllerGroupPreview);
+        }
+        public override string GetActionGroupName()
+        {
+            return "Character Controller";
+        }
+
+        public override void InitiateActions()
+        {
+
+        }
+        public override void EditModeUpdateCalls()
+        {
+            if (autoUpdate) UpdateGroupItems();
+        }
     }
 
 }

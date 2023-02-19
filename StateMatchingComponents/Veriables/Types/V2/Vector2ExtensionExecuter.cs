@@ -9,16 +9,25 @@ namespace Nino.StateMatching.Variable
         {
             return new Vector2Item();
         }
-
+        public override string GetActionGroupName()
+        {
+            return "Vector2 Variable";
+        }
         public override Type GetGroupControllerType()
         {
             return typeof(Vector2GroupController);
         }
-
-
         public override Type GetGroupPreviewType()
         {
             return typeof(Vector2GroupPreview);
+        }
+        public override void InitiateActions()
+        {
+
+        }
+        public override void EditModeUpdateCalls()
+        {
+
         }
     }
 }

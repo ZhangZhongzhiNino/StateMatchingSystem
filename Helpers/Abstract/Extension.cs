@@ -10,14 +10,15 @@ namespace Nino.StateMatching.Helper
 {
     public class Extension<T>:MonoBehaviour,IExtension where T: MonoBehaviour, IStateMatchingComponent
     {
-        [HideInInspector]public StateMatchingRoot root;
-        GameObject controller;
-        string extensionName;
+        [HideInInspector] public StateMatchingRoot root;
+        [HideInInspector] public GameObject controller;
+        [HideInInspector] public string extensionName;
+        [ReadOnly] public T executer;
+        
         string createName { get { return "Create " + extensionName; } }
         string removeName { get { return "Remove " + extensionName; } }
         
-        [ReadOnly]
-        public T executer;
+        
         public Extension(string _extensionName, GameObject _controller, StateMatchingRoot _root)
         {
             root = _root;
@@ -38,10 +39,8 @@ namespace Nino.StateMatching.Helper
             GameObject extensionObj = GeneralUtility.CreateGameObject("____"+extensionName, controller.transform);
             executer = GeneralUtility.AddStateMatchingComponent<T>(extensionObj, root: root);
             EditorUtility.OpenHierarchy(controller,true);
-        }
-        
-        
 
+        }
         [ShowIfGroup("Remove", Condition = "@executer != null")]
         [Button(name: "@removeName"),GUIColor(1, 0.4f, 0.4f)]
         [TitleGroup("Remove/Title", GroupName = "@extensionName", Alignment = TitleAlignments.Centered, HorizontalLine = true, BoldTitle = true)]

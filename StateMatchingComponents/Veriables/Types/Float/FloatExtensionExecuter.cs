@@ -9,15 +9,26 @@ namespace Nino.StateMatching.Variable
         {
             return new FloatItem();
         }
-
+        public override string GetActionGroupName()
+        {
+            return "Float Variable";
+        }
         public override Type GetGroupControllerType()
         {
             return typeof(FloatGroupController);
         }
-
         public override Type GetGroupPreviewType()
         {
             return typeof(FloatGroupPreview);
+        }
+
+        public override void InitiateActions()
+        {
+            
+        }
+        public override void EditModeUpdateCalls()
+        {
+
         }
     }
 }

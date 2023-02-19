@@ -2,7 +2,7 @@ using Sirenix.OdinInspector;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 using Nino.StateMatching.Data;
 using Nino.StateMatching.Action;
 using Nino.StateMatching.Helper;
@@ -27,22 +27,16 @@ namespace Nino.StateMatching
         #endregion
         #region UnityReference
         [FoldoutGroup("Unity Reference")] public UnityEngine.Animator animator;
-        [FoldoutGroup("Unity Reference")] public CharacterController characterController;
-        [FoldoutGroup("Unity Reference")] public Rigidbody rigidBody;
 
         [FoldoutGroup("Unity Reference"),Button(ButtonSizes.Large),GUIColor(0.4f,1,0.4f)]
         public void FindUnityComponents()
         {
             FindUnityComponent(ref animator);
-            FindUnityComponent<CharacterController>(ref characterController);
-            FindUnityComponent<Rigidbody>(ref rigidBody);
         }
         [FoldoutGroup("Unity Reference"), Button(ButtonSizes.Large), GUIColor(1, 0.4f, 0.4f)]
         void ClearUnityReference()
         {
             animator = null;
-            characterController = null;
-            rigidBody = null;
         }
 
         
@@ -62,11 +56,16 @@ namespace Nino.StateMatching
         [TitleGroup("State Matching Reference/Script Reference")] public DataCategory dataCategory;
         [TitleGroup("State Matching Reference/Script Reference")] public ActionCategory actionCategory;
         [TitleGroup("State Matching Reference/Script Reference")] public StateMachineCategory stateMachineCategory;
-        [TitleGroup("State Matching Reference/Action Reference")] public ActionRoot actionRoot;
-        [FoldoutGroup("State Matching Reference"),Button(ButtonSizes.Large),GUIColor(0.4f,1,0.4f)]
+        [TitleGroup("State Matching Reference/Other Reference")] public ActionRoot actionRoot;
+        [TitleGroup("State Matching Reference/Other Reference")] public EditModeUpdater editModeUpdater;
+        [Button(ButtonSizes.Large),GUIColor(0.4f,1,0.4f)]
         void SetUpStateMatchingComponent()
         {
+            FindUnityComponents();
+
             actionRoot = ActionUtility.CreateActionRoot(this);
+            if (editModeUpdater == null) editModeUpdater = this.gameObject.AddComponent<EditModeUpdater>();
+
             if(stateMatchingComponent == null) stateMatchingComponent = GeneralUtility.CreateGameObject("_____stateMatchingComponent_____", this.transform);
             CreateGameObjectWithScript<InputCategory>("Category: Inputs ____", stateMatchingComponent.transform,ref inputObj, ref inputCategory);
             CreateGameObjectWithScript<InternalEventCategory>("Category: Internal Event ____", stateMatchingComponent.transform, ref internalEventObj, ref internalEventCategory);
@@ -77,9 +76,11 @@ namespace Nino.StateMatching
              
             EditorUtility.OpenHierarchy(this.gameObject,true);
             EditorUtility.OpenHierarchy(stateMatchingComponent, true);
+
+            AddFunctionToUpdater();
         }
 
-        [FoldoutGroup("State Matching Reference"), Button(ButtonSizes.Large), GUIColor(1, 0.4f, 0.4f)]
+        [Button(ButtonSizes.Large), GUIColor(1, 0.4f, 0.4f)]
         void ClearAllStateMatchingComponent()
         {
             
@@ -118,7 +119,22 @@ namespace Nino.StateMatching
             getEvent.InvokeUnityEvent();
         }
 
-
+        #region Updater
+        public void RemoveDirtyBodyParts()
+        {
+            if (dataCategory.humanoidInfoDataExtension.executer != null) return;
+            List<BodyPartInfoHolder> parts = this.gameObject.GetComponentsInChildren<BodyPartInfoHolder>().ToList();
+            if (parts == null) return;
+            for(int i = 0;i<parts.Count; i++)
+            {
+                GeneralUtility.RemoveComponent(parts[i]);
+            }
+        }
+        private void AddFunctionToUpdater()
+        {
+            if(!editModeUpdater.Contain((System.Action) RemoveDirtyBodyParts)) editModeUpdater.call += RemoveDirtyBodyParts;
+        }
+        #endregion
     }
 
 }

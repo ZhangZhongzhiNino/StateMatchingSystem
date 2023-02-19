@@ -5,9 +5,9 @@ using Nino.StateMatching.Helper;
 
 namespace Nino.StateMatching.Input
 {
-    public class InputExtensionExecuter : ExtensionExecuter
+    public abstract class InputExtensionExecuter : ExtensionExecuter
     {
-        public override CategoryController getCategory()
+        public override CategoryController GetCategory()
         {
             return root.inputCategory;
         }

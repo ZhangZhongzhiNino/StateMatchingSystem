@@ -644,16 +644,13 @@ namespace Nino.StateMatching.Data
         }
         private void OnDrawGizmos()
         {
-            if (!compairDebug) return;
-            if (!_currentSelectPose) return;
-            rotationDifference = CompairRotation(_currentSelectPose) * rotationDifferenceMultier;
-            positionDifference = CompairPosition(_currentSelectPose) * positionDifferenceMultier;
+            
 
         }
         [BoxGroup("IF0/CompairDebug")] public float rotationDifference;
         [BoxGroup("IF0/CompairDebug")] public float positionDifference;
         #endregion//Unity Events
-        List<string> groupNames
+        /*List<string> groupNames
         {
             get
             {
@@ -681,7 +678,7 @@ namespace Nino.StateMatching.Data
                 difference.Add(dif);
             }
             _ApplyTransform(datas[difference.IndexOf(difference.Min())]);
-        }
+        }*/
         #region get
         
         public PoseDataItem GetPose(string name, int startFrame)
@@ -716,10 +713,24 @@ namespace Nino.StateMatching.Data
         {
             return typeof(PoseDataGroupController);
         }
-
         public override Type GetGroupPreviewType()
         {
             return typeof(PoseDataGroupPreview);
+        }
+        public override string GetActionGroupName()
+        {
+            return "Pose Data";
+        }
+        public override void InitiateActions()
+        {
+
+        }
+        public override void EditModeUpdateCalls()
+        {
+            if (!compairDebug) return;
+            if (!_currentSelectPose) return;
+            rotationDifference = CompairRotation(_currentSelectPose) * rotationDifferenceMultier;
+            positionDifference = CompairPosition(_currentSelectPose) * positionDifferenceMultier;
         }
     }
 }

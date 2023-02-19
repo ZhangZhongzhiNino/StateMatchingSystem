@@ -117,6 +117,7 @@ namespace Nino.StateMatching.Helper
     {
         public static T CreateAction<T>(string newActionName, ExtensionExecuter executer,ActionGroup actionGroup) where T:Action
         {
+            actionGroup.actions.RemoveAll(item => item == null);
             foreach(Action action in actionGroup.actions)
             {
                 if (action.name == newActionName) return action as T;
@@ -128,6 +129,7 @@ namespace Nino.StateMatching.Helper
         }
         public static ActionGroup CreateActionGroup(string newGroupName,GameObject addToObj, ActionType actionType)
         {
+            actionType.groups.RemoveAll(item => item == null);
             foreach(ActionGroup group in actionType.groups)
             {
                 if (group.groupName == newGroupName) return group;
@@ -139,6 +141,7 @@ namespace Nino.StateMatching.Helper
         }
         public static ActionType CreateActionType(string newTypeName, GameObject addToObj, ActionRoot actionRoot)
         {
+            actionRoot.types.RemoveAll(item => item == null);
             foreach(ActionType type in actionRoot.types)
             {
                 if (type.typeName == newTypeName) return type;

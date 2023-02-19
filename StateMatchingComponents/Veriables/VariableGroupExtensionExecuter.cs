@@ -4,7 +4,7 @@ namespace Nino.StateMatching.Variable
 {
     public abstract class VariableGroupExtensionExecuter<V> : GroupExtensionExecuter<V>
     {
-        public override CategoryController getCategory()
+        public override CategoryController GetCategory()
         {
             return root.variableCategory;
         }

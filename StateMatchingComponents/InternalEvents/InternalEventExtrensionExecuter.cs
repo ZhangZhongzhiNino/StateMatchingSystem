@@ -5,9 +5,9 @@ using Nino.StateMatching.Helper;
 
 namespace Nino.StateMatching.InternalEvent
 {
-    public class InternalEventExtrensionExecuter : ExtensionExecuter
+    public abstract class InternalEventExtrensionExecuter : ExtensionExecuter
     {
-        public override CategoryController getCategory()
+        public override CategoryController GetCategory()
         {
             return root.internalEventCategory;
         }

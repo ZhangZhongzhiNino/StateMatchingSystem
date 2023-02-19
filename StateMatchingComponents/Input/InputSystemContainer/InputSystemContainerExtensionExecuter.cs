@@ -88,6 +88,21 @@ namespace Nino.StateMatching.Input
             }
             return false;
         }
+
+        public override string GetActionGroupName()
+        {
+            return "Input System Container";
+        }
+
+        public override void EditModeUpdateCalls()
+        {
+
+        }
+
+        public override void InitiateActions()
+        {
+
+        }
     }
 }
 

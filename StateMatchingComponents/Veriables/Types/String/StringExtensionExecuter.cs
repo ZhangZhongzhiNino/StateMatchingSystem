@@ -9,7 +9,10 @@ namespace Nino.StateMatching.Variable
         {
             return new StringItem();
         }
-
+        public override string GetActionGroupName()
+        {
+            return "String Variable";
+        }
         public override Type GetGroupControllerType()
         {
             return typeof(StringGroupController);
@@ -17,6 +20,14 @@ namespace Nino.StateMatching.Variable
         public override Type GetGroupPreviewType()
         {
             return typeof(StringGroupPreview);
+        }
+        public override void InitiateActions()
+        {
+
+        }
+        public override void EditModeUpdateCalls()
+        {
+
         }
     }
 }

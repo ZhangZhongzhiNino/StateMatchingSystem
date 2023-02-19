@@ -18,6 +18,7 @@ namespace Nino.StateMatching.Helper
             this.actionName = actionName;
             this.executerReference = executerReference;
         }
+        
     }
     public class ActionGroup : MonoBehaviour
     {
@@ -27,6 +28,10 @@ namespace Nino.StateMatching.Helper
         {
             this.groupName = groupName;
             actions = new List<Action>();
+        }
+        private void OnDrawGizmos()
+        {
+            actions.RemoveAll(x => x == null);
         }
     }
     public class ActionType: MonoBehaviour
@@ -38,6 +43,10 @@ namespace Nino.StateMatching.Helper
             this.typeName = categoryName;
             groups = new List<ActionGroup>();
         }
+        private void OnDrawGizmos()
+        {
+            groups.RemoveAll(x => x == null);
+        }
     }
     public class ActionRoot : MonoBehaviour
     {
@@ -47,6 +56,10 @@ namespace Nino.StateMatching.Helper
         {
             this.rootName = rootName;
             types = new List<ActionType>();
+        }
+        private void OnDrawGizmos()
+        {
+            types.RemoveAll(x => x == null);
         }
     }
 }

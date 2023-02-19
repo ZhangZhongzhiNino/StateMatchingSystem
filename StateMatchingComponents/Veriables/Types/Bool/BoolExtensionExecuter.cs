@@ -9,15 +9,26 @@ namespace Nino.StateMatching.Variable
         {
             return new BoolItem();
         }
-
+        public override string GetActionGroupName()
+        {
+            return "Bool Variable";
+        }
         public override Type GetGroupControllerType()
         {
             return typeof(BoolGroupController);
         }
-
         public override Type GetGroupPreviewType()
         {
             return typeof(BoolGroupPreview);
+        }
+
+        public override void InitiateActions()
+        {
+
+        }
+        public override void EditModeUpdateCalls()
+        {
+
         }
     }
 }

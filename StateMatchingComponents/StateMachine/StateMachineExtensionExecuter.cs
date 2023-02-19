@@ -5,9 +5,9 @@ using Nino.StateMatching.Helper;
 
 namespace Nino.StateMatching.StateMachine
 {
-    public class StateMachineExtensionExecuter : ExtensionExecuter
+    public abstract class StateMachineExtensionExecuter : ExtensionExecuter
     {
-        public override CategoryController getCategory()
+        public override CategoryController GetCategory()
         {
             return root.stateMachineCategory;
         }

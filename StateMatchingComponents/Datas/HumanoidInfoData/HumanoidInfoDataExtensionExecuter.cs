@@ -489,12 +489,6 @@ namespace Nino.StateMatching.Data
             MoveCenterOfMass();
             UpdateFootCenter();
         }
-        private void OnDrawGizmos()
-        {
-            if (EditorApplication.isPlaying) return;
-            MoveCenterOfMass();
-            UpdateFootCenter();
-        }
 
         #endregion//1 Routines
         #region 1 Helpers
@@ -707,7 +701,24 @@ namespace Nino.StateMatching.Data
 
 
         #endregion
+        [PropertyOrder(-99999999)]public bool autoUpdate = true;
+        public override void EditModeUpdateCalls()
+        {
+            if (!autoUpdate) return;
+            if (EditorApplication.isPlaying) return;
+            MoveCenterOfMass();
+            UpdateFootCenter();
+        }
 
+        public override void InitiateActions()
+        {
+
+        }
+
+        public override string GetActionGroupName()
+        {
+            return "Humanoid Info Data";
+        }
     }
 }
 

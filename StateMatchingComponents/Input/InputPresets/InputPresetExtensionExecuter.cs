@@ -73,6 +73,21 @@ namespace Nino.StateMatching.Input
             GeneralUtility.ResetLocalTransform(newObj);
             newObj.name = prefabToAdd.name;
         }
+
+        public override void EditModeUpdateCalls()
+        {
+            
+        }
+
+        public override string GetActionGroupName()
+        {
+            return "Input Preset";
+        }
+
+        public override void InitiateActions()
+        {
+            
+        }
     }
 }
 

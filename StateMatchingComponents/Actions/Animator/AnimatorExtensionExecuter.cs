@@ -13,10 +13,7 @@ namespace Nino.StateMatching.Action
         
         public UnityEngine.Animator animator;
 
-        private void OnDrawGizmos()
-        {
-            if(autoUpdate && animator!=null && groupController != null) UpdateAnimatorStates();
-        }
+
 
         public override void Initiate<T>(T instance = null, StateMatchingRoot stateMatchingRoot = null) 
         {
@@ -28,6 +25,7 @@ namespace Nino.StateMatching.Action
         public bool autoUpdate = true;
         void UpdateAnimatorStates()
         {
+            
             groupController.RemoveAllInItems(items =>items.value==null|| items.value.state == null);
 
             UnityEditor.Animations.AnimatorController animatorController;
@@ -55,22 +53,29 @@ namespace Nino.StateMatching.Action
                     }
                 }
             }
-           
-            
-            
         }
 
         public override Type GetGroupControllerType()
         {
             return typeof(UnityStateReferenceGroupController);
         }
-
         public override Type GetGroupPreviewType()
         {
             return typeof(UnityStateReferenceGroupPreview);
         }
+        public override string GetActionGroupName()
+        {
+            return "Animator";
+        }
 
-        
+        public override void InitiateActions()
+        {
+
+        }
+        public override void EditModeUpdateCalls()
+        {
+            if (autoUpdate && animator != null && groupController != null) UpdateAnimatorStates();
+        }
     }
 }
 

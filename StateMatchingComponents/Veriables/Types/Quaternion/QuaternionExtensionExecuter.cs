@@ -9,7 +9,10 @@ namespace Nino.StateMatching.Variable
         {
             return new QuaternionItem();
         }
-
+        public override string GetActionGroupName()
+        {
+            return "Quaternion Variable";
+        }
         public override Type GetGroupControllerType()
         {
             return typeof(QuaternionGroupController);
@@ -17,6 +20,14 @@ namespace Nino.StateMatching.Variable
         public override Type GetGroupPreviewType()
         {
             return typeof(QuaternionGroupPreview);
+        }
+        public override void InitiateActions()
+        {
+
+        }
+        public override void EditModeUpdateCalls()
+        {
+
         }
     }
 }

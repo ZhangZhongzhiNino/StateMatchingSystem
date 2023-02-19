@@ -9,6 +9,10 @@ namespace Nino.StateMatching.Variable
         {
             return new Vector3Item();
         }
+        public override string GetActionGroupName()
+        {
+            return "Vector3 Variable";
+        }
         public override Type GetGroupControllerType()
         {
             return typeof(Vector3GroupController);    
@@ -16,6 +20,14 @@ namespace Nino.StateMatching.Variable
         public override Type GetGroupPreviewType()
         {
             return typeof(Vector3GroupPreview);
+        }
+        public override void InitiateActions()
+        {
+
+        }
+        public override void EditModeUpdateCalls()
+        {
+
         }
     }
 }

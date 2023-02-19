@@ -4,7 +4,7 @@ namespace Nino.StateMatching.Input
 {
     public abstract class InputGroupExtensionExecuter<V> : GroupExtensionExecuter<V>
     {
-        public override CategoryController getCategory()
+        public override CategoryController GetCategory()
         {
             return root.inputCategory;
         }

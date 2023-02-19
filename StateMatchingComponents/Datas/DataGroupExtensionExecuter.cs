@@ -4,7 +4,7 @@ namespace Nino.StateMatching.Data
 {
     public abstract class DataGroupExtensionExecuter<V> : GroupExtensionExecuter<V>
     {
-        public override CategoryController getCategory()
+        public override CategoryController GetCategory()
         {
             return root.dataCategory;
         }

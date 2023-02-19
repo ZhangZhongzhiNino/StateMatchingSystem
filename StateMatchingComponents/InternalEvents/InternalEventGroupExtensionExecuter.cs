@@ -4,7 +4,7 @@ namespace Nino.StateMatching.InternalEvent
 {
     public abstract class InternalEventGroupExtensionExecuter<V> : GroupExtensionExecuter<V>
     {
-        public override CategoryController getCategory()
+        public override CategoryController GetCategory()
         {
             return root.internalEventCategory;
         }
