@@ -11,7 +11,7 @@ using Nino.StateMatching.StateMachine;
 using Nino.StateMatching.Variable;
 using Nino.StateMatching.InternalEvent;
 
-namespace Nino.StateMatching.Helper.Scriptables
+namespace Nino.StateMatching.Helper.Data
 {
     public class RootReferences : ScriptableObject
     {

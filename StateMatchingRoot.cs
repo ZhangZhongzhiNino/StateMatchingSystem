@@ -10,7 +10,7 @@ using Nino.StateMatching.Input;
 using Nino.StateMatching.StateMachine;
 using Nino.StateMatching.Variable;
 using Nino.StateMatching.InternalEvent;
-using Nino.StateMatching.Helper.Scriptables;
+using Nino.StateMatching.Helper.Data;
 namespace Nino.StateMatching
 {
     public class StateMatchingRoot : MonoBehaviour

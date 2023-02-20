@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-using Nino.StateMatching.Helper.Scriptables;
+using Nino.StateMatching.Helper.Data;
 using Nino.StateMatching.Helper;
 
 namespace Nino.StateMatching
