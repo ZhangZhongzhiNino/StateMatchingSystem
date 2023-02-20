@@ -6,7 +6,7 @@ namespace Nino.StateMatching.Input
     {
         public override CategoryController GetCategory()
         {
-            return root.inputCategory;
+            return root.rootReferences.inputCategory;
         }
     }
 

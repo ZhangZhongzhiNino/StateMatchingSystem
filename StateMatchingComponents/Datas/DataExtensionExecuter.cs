@@ -9,7 +9,7 @@ namespace Nino.StateMatching.Data
     {
         public override CategoryController GetCategory()
         {
-            return root.dataCategory;
+            return root.rootReferences.dataCategory;
         }
     }
 }

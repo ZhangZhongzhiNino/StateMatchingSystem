@@ -9,12 +9,22 @@ namespace Nino.StateMatching.Input
 {
     public class InputPresetExtensionExecuter : InputExtensionExecuter
     {
-        #region Prefabs
-        [FoldoutGroup("Prefabs")]
+        #region Prefabs Folder Path
+        [FoldoutGroup("Prefab Folder Path")]
         [FolderPath]
         public string prefabFolder = "Assets/Nino/StateMatchingSystem/StateMatchingComponents/Input/InputPresets/Prefabs";
+        [FoldoutGroup("Prefab Folder Path")]
+        [Button(ButtonSizes.Large), GUIColor(1, 1, 0.4f)]
+        void RestoreFolderPath()
+        {
+            prefabFolder = root.rootReferences.folderPathManager.GetPath("Input Prefabs");
+        }
+        #endregion
+        #region Prefabs
         [FoldoutGroup("Prefabs")] 
         public List<GameObject> presets = new List<GameObject>();
+        [FoldoutGroup("Prefabs")]
+        public bool autoUpdate = true;
         [FoldoutGroup("Prefabs")]
         [Button]
         void UpdatePresets()
@@ -28,11 +38,8 @@ namespace Nino.StateMatching.Input
                 if(!presets.Contains(go)) presets.Add(go);
             }
         }
-        private void OnValidate()
-        {
-            UpdatePresets();
-        }
         #endregion
+        #region Create Preset
         List<string> presetsName
         {
             get
@@ -61,22 +68,24 @@ namespace Nino.StateMatching.Input
 
         [FoldoutGroup("Create Input System"),ValueDropdown("presetsName"),SerializeField]
         string selectPrefab;
+        
         [FoldoutGroup("Create Input System")]
         [Button(ButtonSizes.Large),GUIColor(0.4f,1,0.4f)]
         void CreateInputSystem()
         {
             GameObject prefabToAdd = selectedPreset;
-            if (root.inputCategory.inputSystemContainerExtension.executer == null) root.inputCategory.inputSystemContainerExtension.CreateExtension();
-            if (root.inputCategory.inputSystemContainerExtension.executer.Contain(prefabToAdd.name) )return;
+            if (root.rootReferences.inputCategory.inputSystemContainerExtension.executer == null) root.rootReferences.inputCategory.inputSystemContainerExtension.CreateExtension();
+            if (root.rootReferences.inputCategory.inputSystemContainerExtension.executer.Contain(prefabToAdd.name) )return;
             GameObject newObj = GameObject.Instantiate(selectedPreset);
-            newObj.transform.SetParent(root.inputCategory.inputSystemContainerExtension.executer.transform);
+            newObj.transform.SetParent(root.rootReferences.inputCategory.inputSystemContainerExtension.executer.transform);
             GeneralUtility.ResetLocalTransform(newObj);
             newObj.name = prefabToAdd.name;
         }
+        #endregion
 
         public override void EditModeUpdateCalls()
         {
-            
+            if (autoUpdate) UpdatePresets();
         }
 
         public override string GetActionGroupName()
@@ -88,6 +97,7 @@ namespace Nino.StateMatching.Input
         {
             
         }
+        
     }
 }
 

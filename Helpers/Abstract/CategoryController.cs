@@ -6,6 +6,11 @@ namespace Nino.StateMatching.Helper
 {
     public abstract class CategoryController : MonoBehaviour,IStateMatchingComponent
     {
+        [Button(ButtonSizes.Large), GUIColor(0.4f, 1, 1), PropertyOrder(-99999999999)]
+        void ResetHierarchy()
+        {
+            EditorUtility.ResetHierachy(root.gameObject,this.gameObject);
+        }
         [FoldoutGroup("Reference")] public StateMatchingRoot root;
         [FoldoutGroup("Reference")] public ActionType actionType;
         public virtual void PreDestroy(){ }
@@ -17,7 +22,7 @@ namespace Nino.StateMatching.Helper
                 CategoryController _instance = instance as CategoryController;
                 root = _instance.root;
             }
-            actionType = ActionUtility.CreateActionType(GetActionTypeName(), this.gameObject, root.actionRoot);
+            actionType = ActionUtility.CreateActionType(GetActionTypeName(), this.gameObject, root.rootReferences.actionRoot);
             InitiateExtensions();
         }
         public abstract void InitiateExtensions();

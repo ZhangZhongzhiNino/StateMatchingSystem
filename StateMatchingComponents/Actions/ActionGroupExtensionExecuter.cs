@@ -6,7 +6,7 @@ namespace Nino.StateMatching.Action
     {
         public override CategoryController GetCategory()
         {
-            return root.actionCategory;
+            return root.rootReferences.actionCategory;
         }
     }
 

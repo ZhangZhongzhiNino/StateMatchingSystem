@@ -10,6 +10,7 @@ using Nino.StateMatching.Input;
 using Nino.StateMatching.StateMachine;
 using Nino.StateMatching.Variable;
 using Nino.StateMatching.InternalEvent;
+using Nino.StateMatching.Helper.Scriptables;
 namespace Nino.StateMatching
 {
     public class StateMatchingRoot : MonoBehaviour
@@ -42,54 +43,62 @@ namespace Nino.StateMatching
         
         #endregion
         #region StateMatchingReference
-        [FoldoutGroup("State Matching Reference")] 
-        [TitleGroup("State Matching Reference/Game Object")]public GameObject stateMatchingComponent;
-        [TitleGroup("State Matching Reference/Game Object")] public GameObject inputObj;
-        [TitleGroup("State Matching Reference/Game Object")] public GameObject internalEventObj;
-        [TitleGroup("State Matching Reference/Game Object")] public GameObject variableObj; 
-        [TitleGroup("State Matching Reference/Game Object")] public GameObject dataObj;
-        [TitleGroup("State Matching Reference/Game Object")] public GameObject actionObj;
-        [TitleGroup("State Matching Reference/Game Object")] public GameObject stateMachineObj;
-        [TitleGroup("State Matching Reference/Script Reference")] public InputCategory inputCategory;
-        [TitleGroup("State Matching Reference/Script Reference")] public InternalEventCategory internalEventCategory;
-        [TitleGroup("State Matching Reference/Script Reference")] public VariableCategory variableCategory;
-        [TitleGroup("State Matching Reference/Script Reference")] public DataCategory dataCategory;
-        [TitleGroup("State Matching Reference/Script Reference")] public ActionCategory actionCategory;
-        [TitleGroup("State Matching Reference/Script Reference")] public StateMachineCategory stateMachineCategory;
-        [TitleGroup("State Matching Reference/Other Reference")] public ActionRoot actionRoot;
-        [TitleGroup("State Matching Reference/Other Reference")] public EditModeUpdater editModeUpdater;
+        [FoldoutGroup("State Matching Reference")] public GameObject componentHolderObj;
+        [FoldoutGroup("State Matching Reference")] public StateMatchingComponentRoot componentHolder;
+
+        [FoldoutGroup("State Matching Reference")] [InlineEditor] public RootReferences rootReferences;
+
         [Button(ButtonSizes.Large),GUIColor(0.4f,1,0.4f)]
         void SetUpStateMatchingComponent()
         {
+            if (!rootReferences) rootReferences = new RootReferences();
             FindUnityComponents();
-
-            actionRoot = ActionUtility.CreateActionRoot(this);
-            if (editModeUpdater == null) editModeUpdater = this.gameObject.AddComponent<EditModeUpdater>();
-
-            if(stateMatchingComponent == null) stateMatchingComponent = GeneralUtility.CreateGameObject("_____stateMatchingComponent_____", this.transform);
-            CreateGameObjectWithScript<InputCategory>("Category: Inputs ____", stateMatchingComponent.transform,ref inputObj, ref inputCategory);
-            CreateGameObjectWithScript<InternalEventCategory>("Category: Internal Event ____", stateMatchingComponent.transform, ref internalEventObj, ref internalEventCategory);
-            CreateGameObjectWithScript<VariableCategory>("Category: Variable ____", stateMatchingComponent.transform, ref variableObj, ref variableCategory); 
-            CreateGameObjectWithScript<DataCategory>("Category: Datas ____", stateMatchingComponent.transform, ref dataObj, ref dataCategory);
-            CreateGameObjectWithScript<ActionCategory>("Category: Actions ____", stateMatchingComponent.transform, ref actionObj, ref actionCategory);
-            CreateGameObjectWithScript<StateMachineCategory>("Category: StateMachine ____", stateMatchingComponent.transform, ref stateMachineObj,ref stateMachineCategory);
-             
-            EditorUtility.OpenHierarchy(this.gameObject,true);
-            EditorUtility.OpenHierarchy(stateMatchingComponent, true);
-
+            SetUpComponentHolder();
+            SetUpComponentInComponentHolder();
+            ReadComponentRoot();
+            SetUpCategories();
             AddFunctionToUpdater();
+            WriteComponentRoot();
+            EditorUtility.ResetHierachy(this.gameObject);
         }
-
-        [Button(ButtonSizes.Large), GUIColor(1, 0.4f, 0.4f)]
-        void ClearAllStateMatchingComponent()
+        void SetUpComponentHolder()
         {
-            
-            if(dataCategory?.humanoidInfoDataExtension?.executer != null) dataCategory?.humanoidInfoDataExtension?.executer?.PreDestroy();
-            GeneralUtility.RemoveGameObject(stateMatchingComponent);
+            componentHolder = this.gameObject.GetComponentInChildren<StateMatchingComponentRoot>();
+            if (componentHolder == null) CreateComponentHolder();
+            else componentHolderObj = componentHolder.gameObject;
+            if (componentHolder.rootReferences == null) componentHolder.rootReferences = new RootReferences();
         }
-        
-        #endregion
-        #region Helper Functions
+        void CreateComponentHolder()
+        {
+            componentHolderObj = GeneralUtility.CreateGameObject("_____stateMatchingComponent_____", this.transform);
+            componentHolder = componentHolderObj.AddComponent<StateMatchingComponentRoot>();
+        }
+        void SetUpComponentInComponentHolder()
+        {
+            componentHolder.rootReferences.actionRoot = componentHolderObj.GetComponent<ActionRoot>();
+            componentHolder.rootReferences.editModeUpdater = componentHolderObj.GetComponent<EditModeUpdater>();
+            componentHolder.rootReferences.folderPathManager = componentHolder.GetComponent<FolderPathManager>();
+            if (componentHolder.rootReferences.actionRoot == null) componentHolder.rootReferences.actionRoot = ActionUtility.CreateActionRoot(this);
+            if (componentHolder.rootReferences.editModeUpdater == null) componentHolder.rootReferences.editModeUpdater = componentHolderObj.AddComponent<EditModeUpdater>();
+            if (componentHolder.rootReferences.folderPathManager == null) componentHolder.rootReferences.folderPathManager = componentHolderObj.AddComponent<FolderPathManager>();
+        }
+        void SetUpCategories()
+        {
+            CreateGameObjectWithScript<InputCategory>("Category: Inputs ____", componentHolderObj.transform, ref rootReferences.inputObj, ref rootReferences.inputCategory);
+            CreateGameObjectWithScript<InternalEventCategory>("Category: Internal Event ____", componentHolderObj.transform, ref rootReferences.internalEventObj, ref rootReferences.internalEventCategory);
+            CreateGameObjectWithScript<VariableCategory>("Category: Variable ____", componentHolderObj.transform, ref rootReferences.variableObj, ref rootReferences.variableCategory);
+            CreateGameObjectWithScript<DataCategory>("Category: Datas ____", componentHolderObj.transform, ref rootReferences.dataObj, ref rootReferences.dataCategory);
+            CreateGameObjectWithScript<ActionCategory>("Category: Actions ____", componentHolderObj.transform, ref rootReferences.actionObj, ref rootReferences.actionCategory);
+            CreateGameObjectWithScript<StateMachineCategory>("Category: StateMachine ____", componentHolderObj.transform, ref rootReferences.stateMachineObj, ref rootReferences.stateMachineCategory);
+        }
+        public void ReadComponentRoot()
+        {
+            rootReferences = componentHolder.rootReferences;
+        }
+        public void WriteComponentRoot()
+        {
+            componentHolder.rootReferences = rootReferences;
+        }
         public void FindUnityComponent<T>(ref T component) where T : Component
         {
             if (component == null)
@@ -97,13 +106,22 @@ namespace Nino.StateMatching
                 component = GetComponent<T>();
             }
         }
-
-        public void CreateGameObjectWithScript<T>(string objName, Transform parent,ref GameObject objReference,ref T scriptReference) where T: CategoryController
+        public void CreateGameObjectWithScript<T>(string objName, Transform parent, ref GameObject objReference, ref T scriptReference) where T : CategoryController
         {
             if (objReference == null) GeneralUtility.CreateGameObjectWithScript<T>(objName, parent, out objReference, out scriptReference, root: this);
             if (scriptReference == null) scriptReference = GeneralUtility.AddStateMatchingComponent<T>(objReference, root: this);
             else scriptReference.Initiate<T>(stateMatchingRoot: this);
         }
+        
+        [Button(ButtonSizes.Large), GUIColor(1, 0.4f, 0.4f)]
+        void ClearAllStateMatchingComponent()
+        {
+            bool confirm = UnityEditor.EditorUtility.DisplayDialog("Confirmation", "Do you conform to remove everything?", "Yes", "No");
+            if (!confirm) return;
+            if (rootReferences.dataCategory?.humanoidInfoDataExtension?.executer != null) rootReferences.dataCategory?.humanoidInfoDataExtension?.executer?.PreDestroy();
+            GeneralUtility.RemoveGameObject(componentHolderObj);
+        }
+        
         #endregion
 
 
@@ -111,8 +129,8 @@ namespace Nino.StateMatching
         {
             string animationClipName = animationEvent.animatorClipInfo.clip.name;
             int currentEventIndex = animationEvent.intParameter;
-            if (internalEventCategory.unityAnimationEventExtension.executer == null) return;
-            UnityAnimationEventExtensionExecuter animEventHandler = internalEventCategory.unityAnimationEventExtension.executer;
+            if (rootReferences.internalEventCategory.unityAnimationEventExtension.executer == null) return;
+            UnityAnimationEventExtensionExecuter animEventHandler = rootReferences.internalEventCategory.unityAnimationEventExtension.executer;
             UnityAnimationEventGroup getEventGroup = animEventHandler.groupController.GetGroup(animationClipName) as UnityAnimationEventGroup;
             UnityAnimationEventItem getEvent = getEventGroup.items[currentEventIndex] as UnityAnimationEventItem;
             getEvent.InvokeUnityEvent();
@@ -121,7 +139,7 @@ namespace Nino.StateMatching
         #region Updater
         public void RemoveDirtyBodyParts()
         {
-            if (dataCategory.humanoidInfoDataExtension.executer != null) return;
+            if (rootReferences.dataCategory.humanoidInfoDataExtension.executer != null) return;
             List<BodyPartInfoHolder> parts = this.gameObject.GetComponentsInChildren<BodyPartInfoHolder>().ToList();
             if (parts == null) return;
             for(int i = 0;i<parts.Count; i++)
@@ -131,9 +149,10 @@ namespace Nino.StateMatching
         }
         private void AddFunctionToUpdater()
         {
-            if(!editModeUpdater.Contain((System.Action) RemoveDirtyBodyParts)) editModeUpdater.call += RemoveDirtyBodyParts;
+            if(!rootReferences.editModeUpdater.Contain((System.Action) RemoveDirtyBodyParts)) rootReferences.editModeUpdater.call += RemoveDirtyBodyParts;
         }
         #endregion
+
     }
 
 }

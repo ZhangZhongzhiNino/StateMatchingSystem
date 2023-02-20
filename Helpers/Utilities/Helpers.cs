@@ -108,7 +108,7 @@ namespace Nino.StateMatching.Helper
             OpenHierarchy(rootObj, false);
             if (root == null) return;
             OpenHierarchy(rootObj, true);
-            OpenHierarchy(root.stateMatchingComponent, true);
+            OpenHierarchy(root.componentHolderObj, true);
             if (OpenCategory != null) OpenHierarchy(OpenCategory, true);
         }
 
@@ -117,7 +117,7 @@ namespace Nino.StateMatching.Helper
     {
         public static T CreateAction<T>(string newActionName, ExtensionExecuter executer,ActionGroup actionGroup) where T:Action
         {
-            actionGroup.actions.RemoveAll(item => item == null);
+            actionGroup?.actions?.RemoveAll(item => item == null);
             foreach(Action action in actionGroup.actions)
             {
                 if (action.name == newActionName) return action as T;
@@ -129,7 +129,7 @@ namespace Nino.StateMatching.Helper
         }
         public static ActionGroup CreateActionGroup(string newGroupName,GameObject addToObj, ActionType actionType)
         {
-            actionType.groups.RemoveAll(item => item == null);
+            actionType?.groups?.RemoveAll(item => item == null);
             foreach(ActionGroup group in actionType.groups)
             {
                 if (group.groupName == newGroupName) return group;
@@ -141,7 +141,7 @@ namespace Nino.StateMatching.Helper
         }
         public static ActionType CreateActionType(string newTypeName, GameObject addToObj, ActionRoot actionRoot)
         {
-            actionRoot.types.RemoveAll(item => item == null);
+            actionRoot?.types?.RemoveAll(item => item == null);
             foreach(ActionType type in actionRoot.types)
             {
                 if (type.typeName == newTypeName) return type;
@@ -153,10 +153,11 @@ namespace Nino.StateMatching.Helper
         }
         public static ActionRoot CreateActionRoot(StateMatchingRoot root)
         {
-            if (root.actionRoot != null) return root.actionRoot;
-            ActionRoot newActionRoot = root.gameObject.GetComponent<ActionRoot>();
+            StateMatchingComponentRoot componentRoot = root.componentHolder;
+            if (componentRoot.rootReferences.actionRoot != null) return componentRoot.rootReferences.actionRoot;
+            ActionRoot newActionRoot = componentRoot.gameObject.GetComponent<ActionRoot>();
             if (newActionRoot != null) return newActionRoot;
-            newActionRoot = root.gameObject.AddComponent<ActionRoot>();
+            newActionRoot = componentRoot.gameObject.AddComponent<ActionRoot>();
             newActionRoot.Initiate(root.stateMatchingName);
             return newActionRoot;
         }

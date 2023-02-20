@@ -9,7 +9,7 @@ namespace Nino.StateMatching.StateMachine
     {
         public override CategoryController GetCategory()
         {
-            return root.stateMachineCategory;
+            return root.rootReferences.stateMachineCategory;
         }
     }
 }

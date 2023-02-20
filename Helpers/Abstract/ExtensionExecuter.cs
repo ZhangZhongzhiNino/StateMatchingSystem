@@ -22,13 +22,13 @@ namespace Nino.StateMatching.Helper
             category = GetCategory();
             category.actionType.groups.Add(actionGroup);
             InitiateActions();
-            if (!root.editModeUpdater.Contain((System.Action)EditModeUpdateCalls))
-                root.editModeUpdater.call += EditModeUpdateCalls;
+            if (!root.rootReferences.editModeUpdater.Contain((System.Action)EditModeUpdateCalls))
+                root.rootReferences.editModeUpdater.call += EditModeUpdateCalls;
 
         }
         public virtual void PreDestroy()
         {
-            root.editModeUpdater.call -= EditModeUpdateCalls;
+            root.rootReferences.editModeUpdater.call -= EditModeUpdateCalls;
             GeneralUtility.RemoveGameObject(this.gameObject);
         }
         

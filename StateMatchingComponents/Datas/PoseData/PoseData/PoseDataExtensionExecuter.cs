@@ -311,11 +311,11 @@ namespace Nino.StateMatching.Data
         }
         void FindInfoController()
         {
-            if(root.dataCategory.humanoidInfoDataExtension.executer == null)
+            if(root.rootReferences.dataCategory.humanoidInfoDataExtension.executer == null)
             {
-                root.dataCategory.humanoidInfoDataExtension.CreateExtension();
+                root.rootReferences.dataCategory.humanoidInfoDataExtension.CreateExtension();
             }
-            infoController = root.dataCategory.humanoidInfoDataExtension.executer;
+            infoController = root.rootReferences.dataCategory.humanoidInfoDataExtension.executer;
             infoController.poseDataManager = this;
         }
         public void UpdateBodyPartsData()

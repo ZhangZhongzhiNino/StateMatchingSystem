@@ -6,7 +6,7 @@ namespace Nino.StateMatching.InternalEvent
     {
         public override CategoryController GetCategory()
         {
-            return root.internalEventCategory;
+            return root.rootReferences.internalEventCategory;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Nino.StateMatching.Variable
     {
         public override CategoryController GetCategory()
         {
-            return root.variableCategory;
+            return root.rootReferences.variableCategory;
         }
     }
 }
