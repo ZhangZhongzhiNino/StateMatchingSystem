@@ -54,6 +54,11 @@ namespace Nino.StateMatching.Helper.Data
         {
             return "This is a test data controller \nhave fun! \n\nSome hint here";
         }
+        [Button,GUIColor(0.3f,0.4f,0.5f)]
+        void AddItem(string ItemName)
+        {
+            collection.AddItem(ItemName);
+        }
     }
 }
 

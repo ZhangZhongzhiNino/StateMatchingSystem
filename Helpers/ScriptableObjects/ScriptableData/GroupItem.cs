@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
 using UnityEngine;
 
 
@@ -13,9 +14,21 @@ namespace Nino.StateMatching.Helper.Data
     [InlineEditor]
     public abstract class Item : StateMatchingScriptableObject
     {
-        public string itemName;
-        public string inGroup;
-        public List<string> tags;
+        [LabelWidth(80), PropertyOrder(-102)] public string itemName;
+        [LabelWidth(80), PropertyOrder(-101)] public string inGroup;
+        [FoldoutGroup("tags",Order = -100)] public List<string> tags;
+        [FoldoutGroup("tags"), Button,GUIColor(0.4f,1,0.4f),PropertyOrder(-1)] public void RemoveRedundantTags()
+        {
+            tags.RemoveAll(x => string.IsNullOrEmpty(x));
+            tags.RemoveAll(x => string.IsNullOrWhiteSpace(x));
+            List<string> newList = new List<string>();
+            foreach(string tag in tags)
+            {
+                if (!newList.Contains(tag)) newList.Add(tag);
+            }
+            tags = newList;
+        }
+        #region Helpers
         protected override void InitializeScriptableObject()
         {
             itemName = "";
@@ -56,8 +69,12 @@ namespace Nino.StateMatching.Helper.Data
             return i;
         }
         public int RemoveTags(List<string> _tags) => RemoveTags(_tags.ToArray());
-        public bool InGroup() => string.IsNullOrEmpty(inGroup);
+        public bool InGroup() => !string.IsNullOrWhiteSpace(inGroup)&&!string.IsNullOrEmpty(inGroup);
         public bool InGroup(string group) => inGroup == group;
+        public bool HaveTag()
+        {
+            return tags != null && tags.Count != 0;
+        }
         public bool HaveTag(string tag) => tags.Contains(tag);
         public bool HaveTags(List<string> _tags)
         {
@@ -132,16 +149,37 @@ namespace Nino.StateMatching.Helper.Data
         }
         public static bool HaveSameTags(Item[] items) => HaveSameTags(items.ToList());
         public static bool HaveSameTags(Item A, Item B) => HaveSameTags(new List<Item> { A, B });
+        #endregion
     }
     [InlineEditor]
     public abstract class ItemCollection<Item> : StateMatchingScriptableObject where Item: Data.Item
     {
-        public List<Item> items;
+        [ListDrawerSettings(ShowIndexLabels = true,ListElementLabelName = "itemName")] public List<Item> items;
         protected override void InitializeScriptableObject()
         {
             items = new List<Item>();
         }
-
+        public List<string> GetAllTags()
+        {
+            List<string> r = new List<string>();
+            foreach(Item i in items)
+            {
+                if (i.HaveTag())
+                {
+                    r = r.Concat(i.HaveMoreTagsThan(r)).ToList();
+                }
+            }
+            return new List<string>(r);
+        }
+        public List<string> GetAllGroups()
+        {
+            List<string> r = new List<string>();
+            foreach (Item i in items)
+            {
+                if (i.InGroup() && !r.Contains(i.inGroup)) r.Add(i.inGroup);
+            }
+            return new List<string>(r);
+        }
         public bool Contain(Predicate<Item> match) => DataUtility.ListContainItem(match, items);
         public Item GetItem(Predicate<Item> match) => DataUtility.GetItemInList(match, items);
         public List<Item> GetItems(Predicate<Item> match) => DataUtility.GetItemsInList(match, items);
@@ -158,7 +196,12 @@ namespace Nino.StateMatching.Helper.Data
         [ReadOnly,LabelWidth(80)]public string dataType;
         [FoldoutGroup("Hint"),ReadOnly,TextArea(minLines:5,maxLines:20),SerializeField] string hint;
         [FoldoutGroup("Note"), TextArea(minLines: 5, maxLines: 20), SerializeField] string note;
-        public ItemCollection collection;
+        [FoldoutGroup("Datas")]public ItemCollection collection;
+        [FoldoutGroup("Datas"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
+        public void RemoveAllRedundantTags()
+        {
+            foreach (Item i in collection.items) i.RemoveRedundantTags();
+        }
         protected override void InitializeScriptableObject()
         {
             hint = WriteHint();

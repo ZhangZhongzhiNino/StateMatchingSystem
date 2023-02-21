@@ -178,7 +178,7 @@ namespace Nino.StateMatching.Helper
         public static bool ListContainItem<T>(Predicate<T> match, List<T> list) where T : ScriptableObject
         {
             T getItem = GetItemInList<T>(match, list);
-            return getItem == null;
+            return getItem != null;
         }
         public static T GetItemInList<T>(Predicate<T>match,List<T> list) where T: ScriptableObject
         {
