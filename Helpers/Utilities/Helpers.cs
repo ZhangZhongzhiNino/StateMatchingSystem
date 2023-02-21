@@ -221,6 +221,17 @@ namespace Nino.StateMatching.Helper
             list.Add(v);
             return true;
         }
+        public static List<string> RemoveAllRedundantStringInList(List<string> list)
+        {
+            list.RemoveAll(x => string.IsNullOrEmpty(x));
+            list.RemoveAll(x => string.IsNullOrWhiteSpace(x));
+            List<string> newList = new List<string>();
+            foreach (string tag in list)
+            {
+                if (!newList.Contains(tag)) newList.Add(tag);
+            }
+            return newList;
+        }
     }
     public static class AssetUtility
     {
@@ -239,6 +250,7 @@ namespace Nino.StateMatching.Helper
         }
         public static bool CreateFolder(string path, string folder)
         {
+            Debug.Log(path);
             if (!Directory.Exists(path)) return false;
             if(!Directory.Exists(path+"/"+folder)) Directory.CreateDirectory(path + "/" + folder);
             return Directory.Exists(path + "/" + folder);

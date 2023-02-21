@@ -19,14 +19,7 @@ namespace Nino.StateMatching.Helper.Data
         [FoldoutGroup("tags",Order = -100)] public List<string> tags;
         [FoldoutGroup("tags"), Button,GUIColor(0.4f,1,0.4f),PropertyOrder(-1)] public void RemoveRedundantTags()
         {
-            tags.RemoveAll(x => string.IsNullOrEmpty(x));
-            tags.RemoveAll(x => string.IsNullOrWhiteSpace(x));
-            List<string> newList = new List<string>();
-            foreach(string tag in tags)
-            {
-                if (!newList.Contains(tag)) newList.Add(tag);
-            }
-            tags = newList;
+            tags = DataUtility.RemoveAllRedundantStringInList(tags);
         }
         #region Helpers
         protected override void InitializeScriptableObject()
@@ -155,11 +148,15 @@ namespace Nino.StateMatching.Helper.Data
     public abstract class ItemCollection<Item> : StateMatchingScriptableObject where Item: Data.Item
     {
         [ListDrawerSettings(ShowIndexLabels = true,ListElementLabelName = "itemName")] public List<Item> items;
+        [ListDrawerSettings(ShowIndexLabels = true),LabelWidth(50), GUIColor(0.9f, 0.9f, 1f)] public List<string> groups;
+        [ListDrawerSettings(ShowIndexLabels = true), LabelWidth(50),GUIColor(0.8f,1,1f)] public List<string> tags;
         protected override void InitializeScriptableObject()
         {
             items = new List<Item>();
+            groups = new List<string>();
+            tags = new List<string>();
         }
-        public List<string> GetAllTags()
+        public List<string> GetAllTagsInItems()
         {
             List<string> r = new List<string>();
             foreach(Item i in items)
@@ -171,7 +168,17 @@ namespace Nino.StateMatching.Helper.Data
             }
             return new List<string>(r);
         }
-        public List<string> GetAllGroups()
+        public void UpdateTagListInCollection()
+        {
+            foreach(Item i in items)
+            {
+                if (i.HaveTag())
+                {
+                    tags = tags.Concat(i.HaveMoreTagsThan(tags)).ToList();
+                }
+            }
+        }
+        public List<string> GetAllGroupsInItems()
         {
             List<string> r = new List<string>();
             foreach (Item i in items)
@@ -179,6 +186,13 @@ namespace Nino.StateMatching.Helper.Data
                 if (i.InGroup() && !r.Contains(i.inGroup)) r.Add(i.inGroup);
             }
             return new List<string>(r);
+        }
+        public void UpdateGroupListInCollection()
+        {
+            foreach (Item i in items)
+            {
+                if (i.InGroup() && ! groups.Contains(i.inGroup)) groups.Add(i.inGroup);
+            }
         }
         public bool Contain(Predicate<Item> match) => DataUtility.ListContainItem(match, items);
         public Item GetItem(Predicate<Item> match) => DataUtility.GetItemInList(match, items);
@@ -197,11 +211,8 @@ namespace Nino.StateMatching.Helper.Data
         [FoldoutGroup("Hint"),ReadOnly,TextArea(minLines:5,maxLines:20),SerializeField] string hint;
         [FoldoutGroup("Note"), TextArea(minLines: 5, maxLines: 20), SerializeField] string note;
         [FoldoutGroup("Datas")]public ItemCollection collection;
-        [FoldoutGroup("Datas"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
-        public void RemoveAllRedundantTags()
-        {
-            foreach (Item i in collection.items) i.RemoveRedundantTags();
-        }
+
+        #region Odin
         [FoldoutGroup("Datas/Save"), ReadOnly, LabelWidth(100),SerializeField] string savedPath;
         [FoldoutGroup("Datas/Save"),Button(Style = ButtonStyle.Box,ButtonHeight = 40),GUIColor(0.4f,1,0.4f)]
         public void SaveDataToFolder([FolderPath(RequireExistingPath = true)]string path = "Assets")
@@ -212,20 +223,90 @@ namespace Nino.StateMatching.Helper.Data
                 if (AssetUtility.CreateFolder(rootPath, dataType)) rootPath = rootPath + "/" + dataType;
                 else throw new Exception("Please give a valid address");
             }
-            if(!AssetUtility.SaveAsset(this, rootPath + dataType + "Controller.asset"))
+            if(!AssetUtility.SaveAsset(this, rootPath + "/" + dataType + "_Controller.asset"))
             {
                 rootPath = AssetDatabase.GetAssetPath(this);
                 rootPath = System.IO.Path.GetDirectoryName(rootPath);
             }
-            AssetUtility.SaveAsset(collection, rootPath + dataType + "DataCollection.asset");
+            AssetUtility.SaveAsset(collection, rootPath + "/" + dataType + "_DataCollection.asset");
             if (AssetUtility.CreateFolder(rootPath, "Datas")) rootPath = rootPath + "/Datas";
             else throw new Exception("Path Error");
-            foreach(Item i in collection.items)
+            foreach (Item i in collection.items)
             {
-                AssetUtility.SaveAsset(i, rootPath + i.itemName + ".asset");
+                AssetUtility.SaveAsset(i, rootPath + "/" + i.itemName + ".asset");
             }
+            savedPath = AssetDatabase.GetAssetPath(this);
             UnityEditor.EditorGUIUtility.PingObject(this);
         }
+
+
+        [FoldoutGroup("Datas/Group"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
+        void RemoveRedundantGroup()
+        {
+            collection.groups = DataUtility.RemoveAllRedundantStringInList(collection.groups);
+        }
+        [FoldoutGroup("Datas/Group"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
+        void UpdateGroupList()
+        {
+            RemoveRedundantGroup();
+            collection.UpdateGroupListInCollection();
+        }
+        [FoldoutGroup("Datas/Group"), Button(ButtonSizes.Large), GUIColor(1f, 0.4f, 0.4f)]
+        void RemoveGroupsDontContainItem()
+        {
+            collection.groups = collection.GetAllGroupsInItems();
+        }
+        [FoldoutGroup("Datas/Group"), Button(Style = ButtonStyle.Box,ButtonHeight = 40), GUIColor(1f, 0.4f, 0.4f)]
+        void RemoveGroup([ValueDropdown("@collection.groups")]string selectGroup,[LabelWidth(180)] bool removeContainedItem = false, [LabelWidth(180)] bool removeGroupInGroupList = true)
+        {
+            if (string.IsNullOrWhiteSpace(selectGroup)) return;
+            if (removeGroupInGroupList) collection.groups.RemoveAll(x => x == selectGroup);
+            if (removeContainedItem) collection.RemoveItems(x => x.inGroup == selectGroup);
+            else
+            {
+                foreach(Item i in collection.items)
+                {
+                    if (i.inGroup == selectGroup) i.inGroup = "";
+                }
+            }
+        }
+        
+        [FoldoutGroup("Datas/Tag"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
+        void RemoveAllRedundantTags()
+        {
+            foreach (Item i in collection.items) i.RemoveRedundantTags();
+            collection.tags = DataUtility.RemoveAllRedundantStringInList(collection.tags);
+        }
+        [FoldoutGroup("Datas/Tag"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
+        void UpdateTagList()
+        {
+            RemoveAllRedundantTags();
+            collection.UpdateTagListInCollection();
+        }
+        [FoldoutGroup("Datas/Tag"), Button(ButtonSizes.Large), GUIColor(1f, 0.4f, 0.4f)]
+        void RemoveTagsNotAssignedToItem()
+        {
+            RemoveAllRedundantTags();
+            collection.tags = collection.GetAllTagsInItems();
+        }
+        [FoldoutGroup("Datas/Tag"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(1f, 0.4f, 0.4f)]
+        void RemoveTag([ValueDropdown("@collection.tags")]string selectTag ,[LabelWidth(180)] bool removeAttachedItem = false, [LabelWidth(180)] bool removeTagInTagList = true)
+        {
+            if (string.IsNullOrWhiteSpace(selectTag)) return;
+            if (removeTagInTagList) collection.tags.RemoveAll(x=>x==selectTag);
+            if (removeAttachedItem) collection.RemoveItems(x => x.HaveTag(selectTag));
+            else
+            {
+                foreach(Item i in collection.items)
+                {
+                    i.RemoveTag(selectTag);
+                }
+            }
+        }
+
+
+
+        #endregion
         protected override void InitializeScriptableObject()
         {
             hint = WriteHint();
