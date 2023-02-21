@@ -30,6 +30,32 @@ namespace Nino.StateMatching.Helper.Data
             AssignItem(newItem);
         }
         protected abstract void AssignItem(Item newItem);
+        public bool AddTag(string tag)
+        {
+            if (tags.Contains(tag)) return false;
+            tags.Add(tag);
+            return true;
+        }
+        public int AddTags(string[] _tags) 
+        { 
+            int i = 0;
+            foreach (string s in _tags) if (AddTag(s)) i++;
+            return i;
+        }
+        public int AddTags(List<string> _tags) => AddTags(_tags.ToArray());
+        public bool RemoveTag(string tag)
+        {
+            if (!tags.Contains(tag)) return false;
+            tags.Remove(tag);
+            return true;
+        }
+        public int RemoveTags(string[] _tags)
+        {
+            int i = 0;
+            foreach (string s in _tags) if (RemoveTag(s)) i++;
+            return i;
+        }
+        public int RemoveTags(List<string> _tags) => RemoveTags(_tags.ToArray());
         public bool InGroup() => string.IsNullOrEmpty(inGroup);
         public bool InGroup(string group) => inGroup == group;
         public bool HaveTag(string tag) => tags.Contains(tag);
@@ -120,6 +146,7 @@ namespace Nino.StateMatching.Helper.Data
         public Item GetItem(Predicate<Item> match) => DataUtility.GetItemInList(match, items);
         public List<Item> GetItems(Predicate<Item> match) => DataUtility.GetItemsInList(match, items);
         public bool AddItem(Item newItem) => DataUtility.AddItemToList(newItem, items);
+        public bool AddItem(string newItemName) => DataUtility.AddItemToList(newItemName, items);
         public int RemoveItems(Predicate<Item> match) => DataUtility.RemoveItemsInList(match, items);
     }
 

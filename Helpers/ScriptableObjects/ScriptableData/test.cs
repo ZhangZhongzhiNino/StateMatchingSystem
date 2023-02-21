@@ -17,9 +17,18 @@ namespace Nino.StateMatching.Helper.Data
     }
     public class NewItem : Item
     {
-        float f;
-        string s;
-        Quaternion q;
+        public float f;
+        public string s;
+        public Quaternion q;
+
+        protected override void AssignItem(Item newItem)
+        {
+            NewItem getItem = (NewItem)newItem;
+            f = getItem.f;
+            s = getItem.s;
+            q = getItem.q;
+        }
+
         protected override void InitializeInstance()
         {
             f = 0;
