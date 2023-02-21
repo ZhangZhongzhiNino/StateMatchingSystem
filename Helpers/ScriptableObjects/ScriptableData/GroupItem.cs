@@ -22,7 +22,14 @@ namespace Nino.StateMatching.Helper.Data
             inGroup = "";
             tags = new List<string>();
         }
-
+        public void AssignItem(Item newItem, bool changeName =false, bool changeGroup = false, bool changeTags = false)
+        {
+            if (changeName) itemName = newItem.itemName;
+            if (changeGroup) inGroup = newItem.inGroup;
+            if (changeTags) tags = new List<string>(newItem.tags);
+            AssignItem(newItem);
+        }
+        protected abstract void AssignItem(Item newItem);
         public bool InGroup() => string.IsNullOrEmpty(inGroup);
         public bool InGroup(string group) => inGroup == group;
         public bool HaveTag(string tag) => tags.Contains(tag);
