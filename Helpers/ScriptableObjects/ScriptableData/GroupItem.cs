@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-
+using UnityEditor;
 using UnityEngine;
 
 
@@ -201,6 +201,30 @@ namespace Nino.StateMatching.Helper.Data
         public void RemoveAllRedundantTags()
         {
             foreach (Item i in collection.items) i.RemoveRedundantTags();
+        }
+        [FoldoutGroup("Datas/Save"), ReadOnly, LabelWidth(100),SerializeField] string savedPath;
+        [FoldoutGroup("Datas/Save"),Button(Style = ButtonStyle.Box,ButtonHeight = 40),GUIColor(0.4f,1,0.4f)]
+        public void SaveDataToFolder([FolderPath(RequireExistingPath = true)]string path = "Assets")
+        {
+            string rootPath = path;
+            if (!AssetDatabase.Contains(this))
+            {
+                if (AssetUtility.CreateFolder(rootPath, dataType)) rootPath = rootPath + "/" + dataType;
+                else throw new Exception("Please give a valid address");
+            }
+            if(!AssetUtility.SaveAsset(this, rootPath + dataType + "Controller.asset"))
+            {
+                rootPath = AssetDatabase.GetAssetPath(this);
+                rootPath = System.IO.Path.GetDirectoryName(rootPath);
+            }
+            AssetUtility.SaveAsset(collection, rootPath + dataType + "DataCollection.asset");
+            if (AssetUtility.CreateFolder(rootPath, "Datas")) rootPath = rootPath + "/Datas";
+            else throw new Exception("Path Error");
+            foreach(Item i in collection.items)
+            {
+                AssetUtility.SaveAsset(i, rootPath + i.itemName + ".asset");
+            }
+            UnityEditor.EditorGUIUtility.PingObject(this);
         }
         protected override void InitializeScriptableObject()
         {

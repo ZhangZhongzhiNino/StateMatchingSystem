@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
+using System.IO;
 using UnityEditor;
 
 using Nino.StateMatching.Helper.Data;
@@ -219,6 +220,28 @@ namespace Nino.StateMatching.Helper
             if (list.Contains(v)) return false;
             list.Add(v);
             return true;
+        }
+    }
+    public static class AssetUtility
+    {
+        public static bool SaveAsset(UnityEngine.Object obj, string path)
+        {
+            if (!AssetDatabase.Contains(obj))
+            {
+                AssetDatabase.CreateAsset(obj, path);
+                return true;
+            }
+            else
+            {
+                AssetDatabase.SaveAssetIfDirty(obj);
+                return false;
+            }
+        }
+        public static bool CreateFolder(string path, string folder)
+        {
+            if (!Directory.Exists(path)) return false;
+            if(!Directory.Exists(path+"/"+folder)) Directory.CreateDirectory(path + "/" + folder);
+            return Directory.Exists(path + "/" + folder);
         }
     }
 }
