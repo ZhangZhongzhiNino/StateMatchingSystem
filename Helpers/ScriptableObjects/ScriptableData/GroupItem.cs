@@ -150,11 +150,28 @@ namespace Nino.StateMatching.Helper.Data
         [ListDrawerSettings(ShowIndexLabels = true,ListElementLabelName = "itemName")] public List<Item> items;
         [ListDrawerSettings(ShowIndexLabels = true),LabelWidth(50), GUIColor(0.9f, 0.9f, 1f)] public List<string> groups;
         [ListDrawerSettings(ShowIndexLabels = true), LabelWidth(50),GUIColor(0.8f,1,1f)] public List<string> tags;
+        [Button,GUIColor(0.4f,1,0.4f),PropertyOrder(-1)]
+        void InitiateAllNullDatas()
+        {
+            for(int i = 0; i < items.Count; i++)
+            {
+                if (items[i] == null) items[i] = ScriptableObject.CreateInstance<Item>();
+            }
+        }
         protected override void InitializeScriptableObject()
         {
             items = new List<Item>();
             groups = new List<string>();
             tags = new List<string>();
+        }
+        public List<string> GetAllItemNames()
+        {
+            List<string> r = new List<string>();
+            foreach (Item i in items)
+            {
+                if (!r.Contains(i.itemName)) r.Add(i.itemName);
+            }
+            return new List<string>(r);
         }
         public List<string> GetAllTagsInItems()
         {
@@ -196,8 +213,24 @@ namespace Nino.StateMatching.Helper.Data
         }
         public bool Contain(Predicate<Item> match) => DataUtility.ListContainItem(match, items);
         public Item GetItem(Predicate<Item> match) => DataUtility.GetItemInList(match, items);
+        public Item GetItemCopy(Predicate<Item> match) => DataUtility.CopyScriptableObject<Item>(DataUtility.GetItemInList(match, items));
         public List<Item> GetItems(Predicate<Item> match) => DataUtility.GetItemsInList(match, items);
+        public List<Item> GetItemsCopy(Predicate<Item> match)
+        {
+            List<Item> getItems = DataUtility.GetItemsInList(match, items);
+            List<Item> r = new List<Item>();
+            foreach(Item i in getItems)
+            {
+                r.Add(DataUtility.CopyScriptableObject<Item>(i));
+            }
+            return r;
+        }
         public bool AddItem(Item newItem) => DataUtility.AddItemToList(newItem, items);
+        public bool AddItemCopy(Item newItem)
+        {
+            Item addItem = DataUtility.CopyScriptableObject<Item>(newItem);
+            return DataUtility.AddItemToList(addItem, items);
+        }
         public bool AddItem(string newItemName) => DataUtility.AddItemToList(newItemName, items);
         public int RemoveItems(Predicate<Item> match) => DataUtility.RemoveItemsInList(match, items);
     }
@@ -207,13 +240,13 @@ namespace Nino.StateMatching.Helper.Data
         where Item: Data.Item
         where ItemCollection: Data.ItemCollection<Item>
     {
-        [ReadOnly,LabelWidth(80)]public string dataType;
-        [FoldoutGroup("Hint"),ReadOnly,TextArea(minLines:5,maxLines:20),SerializeField] string hint;
-        [FoldoutGroup("Note"), TextArea(minLines: 5, maxLines: 20), SerializeField] string note;
-        [FoldoutGroup("Datas")]public ItemCollection collection;
+        [ReadOnly,LabelWidth(80),PropertyOrder(-100)]public string dataType;
+        [FoldoutGroup("Hint",Order = -99),ReadOnly,TextArea(minLines:5,maxLines:20),SerializeField] string hint;
+        [FoldoutGroup("Note",Order =-98), TextArea(minLines: 5, maxLines: 20), SerializeField] string note;
+        [FoldoutGroup("Datas",Order=-97),PropertyOrder(-100)]public ItemCollection collection;
 
         #region Odin
-        [FoldoutGroup("Datas/Save"), ReadOnly, LabelWidth(100),SerializeField] string savedPath;
+        [FoldoutGroup("Datas/Save"), ReadOnly, LabelWidth(100),SerializeField,PropertyOrder(-99)] string savedPath;
         [FoldoutGroup("Datas/Save"),Button(Style = ButtonStyle.Box,ButtonHeight = 40),GUIColor(0.4f,1,0.4f)]
         public void SaveDataToFolder([FolderPath(RequireExistingPath = true)]string path = "Assets")
         {
@@ -240,7 +273,7 @@ namespace Nino.StateMatching.Helper.Data
         }
 
 
-        [FoldoutGroup("Datas/Group"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
+        [FoldoutGroup("Datas/Group"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f),PropertyOrder(-98)]
         void RemoveRedundantGroup()
         {
             collection.groups = DataUtility.RemoveAllRedundantStringInList(collection.groups);
@@ -271,7 +304,7 @@ namespace Nino.StateMatching.Helper.Data
             }
         }
         
-        [FoldoutGroup("Datas/Tag"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
+        [FoldoutGroup("Datas/Tag"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f),PropertyOrder(-97)]
         void RemoveAllRedundantTags()
         {
             foreach (Item i in collection.items) i.RemoveRedundantTags();
@@ -304,7 +337,33 @@ namespace Nino.StateMatching.Helper.Data
             }
         }
 
-
+        public enum FindItemMethod
+        {
+            group,
+            tag
+        }
+        [FoldoutGroup("Datas/Item"), SerializeField,ListDrawerSettings(HideAddButton = true,ListElementLabelName = "itemName"),PropertyOrder(-96)] List<Item> temp_editItemList;
+        [FoldoutGroup("Datas/Item/Find"), EnumToggleButtons, SerializeField] FindItemMethod findItemMethod;
+        [FoldoutGroup("Datas/Item/Find"), ShowIf("@findItemMethod.ToString() == \"group\""), ValueDropdown("@collection.groups"),SerializeField] string temp_selectGroup;
+        [FoldoutGroup("Datas/Item/Find"), ShowIf("@findItemMethod.ToString() == \"tag\""), ValueDropdown("@collection.tags"), SerializeField] string temp_selectTag;
+        [FoldoutGroup("Datas/Item/Find"), Button(Style = ButtonStyle.Box,ButtonHeight =40),GUIColor(0.4f,1,0.4f)]
+        void FindItems()
+        {
+            temp_editItemList = new List<Item>();
+            if (findItemMethod == FindItemMethod.group) temp_editItemList = collection.GetItems(x => x.inGroup == temp_selectGroup);
+            else if(findItemMethod == FindItemMethod.tag) temp_editItemList = collection.GetItems(x => x.HaveTag(temp_selectTag));
+        }
+        [FoldoutGroup("Datas/Item/Find"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
+        void FindRepeatItem()
+        {
+            temp_editItemList = new List<Item>();
+            List<string> names = new List<string>();
+            foreach(Item i in collection.items)
+            {
+                if (names.Contains(i.itemName)) temp_editItemList = temp_editItemList.Concat(collection.GetItems(x => x.itemName == i.itemName)).ToList();
+                else names.Add(i.itemName);
+            }
+        }
 
         #endregion
         protected override void InitializeScriptableObject()

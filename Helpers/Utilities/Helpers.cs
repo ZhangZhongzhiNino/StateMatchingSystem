@@ -232,14 +232,23 @@ namespace Nino.StateMatching.Helper
             }
             return newList;
         }
+        public static T CopyScriptableObject<T>(T SO) where T:ScriptableObject
+        {
+            T r = ScriptableObject.CreateInstance<T>();
+            string json = JsonUtility.ToJson(SO);
+            JsonUtility.FromJsonOverwrite(json, r);
+            return r;
+        }
     }
     public static class AssetUtility
     {
         public static bool SaveAsset(UnityEngine.Object obj, string path)
         {
+            string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(path);
+
             if (!AssetDatabase.Contains(obj))
             {
-                AssetDatabase.CreateAsset(obj, path);
+                AssetDatabase.CreateAsset(obj, assetPathAndName);
                 return true;
             }
             else
