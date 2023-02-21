@@ -43,7 +43,7 @@ namespace Nino.StateMatching.Helper.Data
 
         protected override string WriteHint()
         {
-            return "This is a test data controller \n have fun! \n\n Some hint here";
+            return "This is a test data controller \nhave fun! \n\nSome hint here";
         }
     }
 }
