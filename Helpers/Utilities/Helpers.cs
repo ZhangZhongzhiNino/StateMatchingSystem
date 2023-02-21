@@ -194,17 +194,17 @@ namespace Nino.StateMatching.Helper
             if (DataUtility.ListIsNullOrEmpty<T>(r)) return null;
             return r;
         }
-        public static bool AddItemToList<T>(T newItem, List<T> list) where T : ScriptableObject,INamedDataComponent
+        public static bool AddItemToList<T>(T newItem, List<T> list) where T : Data.Item
         {
-            if (ListContainItem<T>(item => item.componentName == newItem.componentName, list)) return false;
+            if (ListContainItem<T>(item => item.itemName == newItem.itemName, list)) return false;
             list.Add(newItem);
             return true;
         }
-        public static T AddItemToList<T>(string newItemName,List<T>list)where T : ScriptableObject, INamedDataComponent
+        public static T AddItemToList<T>(string newItemName,List<T>list)where T : Data.Item
         {
-            if (ListContainItem(item => item.componentName == newItemName,list)) return GetItemInList(item => item.componentName == newItemName,list);
+            if (ListContainItem(item => item.itemName == newItemName,list)) return GetItemInList(item => item.itemName == newItemName,list);
             T newItem = ScriptableObject.CreateInstance<T>();
-            newItem.componentName = newItemName;
+            newItem.itemName = newItemName;
             if (AddItemToList(newItem,list)) return newItem;
             else throw new Exception("Unknow error in create new Item");
         }
@@ -213,6 +213,12 @@ namespace Nino.StateMatching.Helper
             int r = list.FindAll(match).Count;
             list.RemoveAll(match);
             return r;
+        }
+        public static bool AddVarToList<T>(T v ,List<T> list)
+        {
+            if (list.Contains(v)) return false;
+            list.Add(v);
+            return true;
         }
     }
 }
