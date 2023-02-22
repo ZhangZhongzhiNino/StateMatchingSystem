@@ -21,7 +21,7 @@ namespace Nino.StateMatching.Helper.Data
         {
             tags = DataUtility.RemoveAllRedundantStringInList(tags);
         }
-        #region Helpers
+
         protected override void InitializeScriptableObject()
         {
             itemName = "";
@@ -142,7 +142,7 @@ namespace Nino.StateMatching.Helper.Data
         }
         public static bool HaveSameTags(Item[] items) => HaveSameTags(items.ToList());
         public static bool HaveSameTags(Item A, Item B) => HaveSameTags(new List<Item> { A, B });
-        #endregion
+ 
     }
     [InlineEditor]
     public abstract class ItemCollection<Item> : StateMatchingScriptableObject where Item: Data.Item
@@ -240,7 +240,9 @@ namespace Nino.StateMatching.Helper.Data
         where Item: Data.Item
         where ItemCollection: Data.ItemCollection<Item>
     {
-        [ReadOnly,LabelWidth(80),PropertyOrder(-100)]public string dataType;
+        
+        [FoldoutGroup("Data Info"),ReadOnly,LabelWidth(80),PropertyOrder(-101)]public string dataType;
+        [FoldoutGroup("Data Info")]public MonoBehaviour attachedBehaviour;
         [FoldoutGroup("Hint",Order = -99),ReadOnly,TextArea(minLines:5,maxLines:20),SerializeField] string hint;
         [FoldoutGroup("Note",Order =-98), TextArea(minLines: 5, maxLines: 20), SerializeField] string note;
         [FoldoutGroup("Datas",Order=-97),PropertyOrder(-100)]public ItemCollection collection;

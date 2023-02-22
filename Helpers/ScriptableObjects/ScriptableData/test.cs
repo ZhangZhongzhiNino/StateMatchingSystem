@@ -11,7 +11,7 @@ namespace Nino.StateMatching.Helper.Data
         [Button,GUIColor(0.4f,1,0.4f)]
         void CreateData()
         {
-           dataController = ScriptableObject.CreateInstance<NewDataController>();
+            dataController = DataUtility.CreateDataController<NewDataController, NewItem, NewCollection>(this);
             dataController.dataType = "test data type";
         }
     }
