@@ -242,7 +242,7 @@ namespace Nino.StateMatching.Helper.Data
     {
         
         [FoldoutGroup("Data Info"),ReadOnly,LabelWidth(80),PropertyOrder(-101)]public string dataType;
-        [FoldoutGroup("Data Info")]public MonoBehaviour attachedBehaviour;
+        [FoldoutGroup("Data Info")]public IDataExecuter<DataController<Item,ItemCollection>,Item,ItemCollection> attachedBehaviour;
         [FoldoutGroup("Hint",Order = -99),ReadOnly,TextArea(minLines:5,maxLines:20),SerializeField] string hint;
         [FoldoutGroup("Note",Order =-98), TextArea(minLines: 5, maxLines: 20), SerializeField] string note;
         [FoldoutGroup("Datas",Order=-97),PropertyOrder(-100)]public ItemCollection collection;
@@ -393,7 +393,13 @@ namespace Nino.StateMatching.Helper.Data
         protected abstract void InitializeInstance();
     }
 
-
+    public abstract class IDataExecuter<D,I,C>:MonoBehaviour
+        where D:DataController<I,C>
+        where I:Item
+        where C:ItemCollection<I>
+    {
+        public List<D> dataControllers { get; set; }
+    }
     
 }
 

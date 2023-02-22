@@ -239,7 +239,7 @@ namespace Nino.StateMatching.Helper
             JsonUtility.FromJsonOverwrite(json, r);
             return r;
         }
-        public static D CreateDataController<D, I, C>(MonoBehaviour rootScript)
+        public static D CreateDataController<D, I, C>(IDataExecuter rootScript)
             where D : DataController<I, C>
             where I : Item
             where C : ItemCollection<I>

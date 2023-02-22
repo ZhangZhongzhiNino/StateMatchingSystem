@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 
 namespace Nino.StateMatching.Helper.Data
 {
-    public class test : MonoBehaviour
+    public class test : IDataExecuter<NewDataController,NewItem,NewCollection>
     {
         public NewDataController dataController;
         [Button,GUIColor(0.4f,1,0.4f)]
