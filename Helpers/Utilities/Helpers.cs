@@ -5,6 +5,7 @@ using System.Linq;
 using System;
 using System.IO;
 using UnityEditor;
+using Sirenix.OdinInspector;
 
 using Nino.StateMatching.Helper.Data;
 
@@ -168,7 +169,7 @@ namespace Nino.StateMatching.Helper
     }
     public static class DataUtility
     {
-        public static bool ScriptableObjectIsDefaultOrNull<T>(T obj) where T : ScriptableObject 
+        public static bool ScriptableObjectIsDefaultOrNull<T>(T obj) where T : ScriptableObject
         {
             return (obj == null || obj == default(T));
         }
@@ -181,14 +182,14 @@ namespace Nino.StateMatching.Helper
             T getItem = GetItemInList<T>(match, list);
             return getItem != null;
         }
-        public static T GetItemInList<T>(Predicate<T>match,List<T> list) where T: ScriptableObject
+        public static T GetItemInList<T>(Predicate<T> match, List<T> list) where T : ScriptableObject
         {
             if (ListIsNullOrEmpty<T>(list)) return null;
             T getItem = list.Find(match);
             if (ScriptableObjectIsDefaultOrNull<T>(getItem)) return null;
             return getItem;
-        } 
-        public static List<T> GetItemsInList<T>(Predicate<T> match, List<T> list) where T:ScriptableObject
+        }
+        public static List<T> GetItemsInList<T>(Predicate<T> match, List<T> list) where T : ScriptableObject
         {
             if (DataUtility.ListIsNullOrEmpty<T>(list)) return null;
             List<T> r = list.FindAll(match);
@@ -201,12 +202,12 @@ namespace Nino.StateMatching.Helper
             list.Add(newItem);
             return true;
         }
-        public static T AddItemToList<T>(string newItemName,List<T>list)where T : Data.Item
+        public static T AddItemToList<T>(string newItemName, List<T> list) where T : Data.Item
         {
-            if (ListContainItem(item => item.itemName == newItemName,list)) return GetItemInList(item => item.itemName == newItemName,list);
+            if (ListContainItem(item => item.itemName == newItemName, list)) return GetItemInList(item => item.itemName == newItemName, list);
             T newItem = ScriptableObject.CreateInstance<T>();
             newItem.itemName = newItemName;
-            if (AddItemToList(newItem,list)) return newItem;
+            if (AddItemToList(newItem, list)) return newItem;
             else throw new Exception("Unknow error in create new Item");
         }
         public static int RemoveItemsInList<T>(Predicate<T> match, List<T> list) where T : ScriptableObject
@@ -215,7 +216,7 @@ namespace Nino.StateMatching.Helper
             list.RemoveAll(match);
             return r;
         }
-        public static bool AddVarToList<T>(T v ,List<T> list)
+        public static bool AddVarToList<T>(T v, List<T> list)
         {
             if (list.Contains(v)) return false;
             list.Add(v);
@@ -232,21 +233,12 @@ namespace Nino.StateMatching.Helper
             }
             return newList;
         }
-        public static T CopyScriptableObject<T>(T SO) where T:ScriptableObject
+        public static T CopyScriptableObject<T>(T SO) where T : ScriptableObject
         {
             T r = ScriptableObject.CreateInstance<T>();
             string json = JsonUtility.ToJson(SO);
             JsonUtility.FromJsonOverwrite(json, r);
             return r;
-        }
-        public static D CreateDataController<D, I, C>(IDataExecuter rootScript)
-            where D : DataController<I, C>
-            where I : Item
-            where C : ItemCollection<I>
-        {
-            D newObj = ScriptableObject.CreateInstance<D>();
-            newObj.attachedBehaviour = rootScript;
-            return newObj;
         }
     }
     public static class AssetUtility
@@ -272,6 +264,20 @@ namespace Nino.StateMatching.Helper
             if (!Directory.Exists(path)) return false;
             if(!Directory.Exists(path+"/"+folder)) Directory.CreateDirectory(path + "/" + folder);
             return Directory.Exists(path + "/" + folder);
+        }
+    }
+    public static class OdinUtility
+    {
+        public static IEnumerable<ValueDropdownItem<string>> ValueDropDownListSelector(List<string> list, List<string> selectList)
+        {
+            if (list == null) return new List<ValueDropdownItem<string>>();
+            var items = new List<ValueDropdownItem<string>>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (selectList.Contains(list[i])) continue;
+                items.Add(new ValueDropdownItem<string>(list[i], list[i]));
+            }
+            return items;
         }
     }
 }

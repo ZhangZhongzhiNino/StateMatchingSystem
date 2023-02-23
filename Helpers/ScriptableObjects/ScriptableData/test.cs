@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
+
 namespace Nino.StateMatching.Helper.Data
 {
     public class test : IDataExecuter<NewDataController,NewItem,NewCollection>
     {
-        public NewDataController dataController;
+        public NewDataController datasC;
         [Button,GUIColor(0.4f,1,0.4f)]
         void CreateData()
         {
-            dataController = DataUtility.CreateDataController<NewDataController, NewItem, NewCollection>(this);
+            dataController = ScriptableObject.CreateInstance<NewDataController>();
             dataController.dataType = "test data type";
         }
     }
@@ -59,6 +60,10 @@ namespace Nino.StateMatching.Helper.Data
         {
             collection.AddItem(ItemName);
         }
+
+
     }
+    
+    
 }
 

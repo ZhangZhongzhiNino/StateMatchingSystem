@@ -1,4 +1,5 @@
 using Sirenix.OdinInspector;
+using Sirenix.OdinInspector.Editor;
 
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace Nino.StateMatching.Helper.Data
     public abstract class Item : StateMatchingScriptableObject
     {
         [LabelWidth(80), PropertyOrder(-102)] public string itemName;
-        [LabelWidth(80), PropertyOrder(-101)] public string inGroup;
+        [LabelWidth(80), PropertyOrder(-101)] public string group;
         [FoldoutGroup("tags",Order = -100)] public List<string> tags;
         [FoldoutGroup("tags"), Button,GUIColor(0.4f,1,0.4f),PropertyOrder(-1)] public void RemoveRedundantTags()
         {
@@ -25,13 +26,13 @@ namespace Nino.StateMatching.Helper.Data
         protected override void InitializeScriptableObject()
         {
             itemName = "";
-            inGroup = "";
+            group = "";
             tags = new List<string>();
         }
         public void AssignItem(Item newItem, bool changeName =false, bool changeGroup = false, bool changeTags = false)
         {
             if (changeName) itemName = newItem.itemName;
-            if (changeGroup) inGroup = newItem.inGroup;
+            if (changeGroup) group = newItem.group;
             if (changeTags) tags = new List<string>(newItem.tags);
             AssignItem(newItem);
         }
@@ -62,8 +63,8 @@ namespace Nino.StateMatching.Helper.Data
             return i;
         }
         public int RemoveTags(List<string> _tags) => RemoveTags(_tags.ToArray());
-        public bool InGroup() => !string.IsNullOrWhiteSpace(inGroup)&&!string.IsNullOrEmpty(inGroup);
-        public bool InGroup(string group) => inGroup == group;
+        public bool InGroup() => !string.IsNullOrWhiteSpace(group)&&!string.IsNullOrEmpty(group);
+        public bool InGroup(string group) => this.group == group;
         public bool HaveTag()
         {
             return tags != null && tags.Count != 0;
@@ -147,23 +148,188 @@ namespace Nino.StateMatching.Helper.Data
     [InlineEditor]
     public abstract class ItemCollection<Item> : StateMatchingScriptableObject where Item: Data.Item
     {
-        [ListDrawerSettings(ShowIndexLabels = true,ListElementLabelName = "itemName")] public List<Item> items;
-        [ListDrawerSettings(ShowIndexLabels = true),LabelWidth(50), GUIColor(0.9f, 0.9f, 1f)] public List<string> groups;
-        [ListDrawerSettings(ShowIndexLabels = true), LabelWidth(50),GUIColor(0.8f,1,1f)] public List<string> tags;
-        [Button,GUIColor(0.4f,1,0.4f),PropertyOrder(-1)]
-        void InitiateAllNullDatas()
+        [FoldoutGroup("Items",order: -100),ListDrawerSettings(ShowIndexLabels = true,ListElementLabelName = "itemName"),PropertyOrder(1),PropertySpace(SpaceBefore =2,SpaceAfter =10)] public List<Item> items;
+        [FoldoutGroup("Group and Tags"),TabGroup("Group and Tags/veriables", "Groups"), ShowInInspector, ReadOnly, PropertyOrder(-1)] public Dictionary<string, int> groupDictionary;
+        [TabGroup("Group and Tags/veriables", "Tags"), ShowInInspector, ReadOnly,PropertyOrder(-1)] public Dictionary<string, int> tagDictionary;
+
+        public List<string> groups { get => groupDictionary?.Keys?.ToList(); }
+        public List<string> tags { get => tagDictionary?.Keys?.ToList(); }
+
+        protected override void InitializeScriptableObject()
         {
-            for(int i = 0; i < items.Count; i++)
+            items = new List<Item>();
+            groupDictionary = new Dictionary<string, int>();
+            tagDictionary = new Dictionary<string, int>();
+        }
+
+
+        public enum FindItemMethod
+        {
+            group,
+            tag
+        }
+        public enum FindBool
+        {
+            ContainAll,
+            ContainAny
+        }
+        [TabGroup("Group and Tags/veriables", "Items"), SerializeField, ListDrawerSettings(HideAddButton = true, ListElementLabelName = "itemName"), PropertyOrder(-2),PropertySpace(SpaceBefore =5,SpaceAfter =5)] List<Item> temp_editItemList;
+        [FoldoutGroup("Group and Tags/veriables/Items/Search By Tags or Groups"), EnumToggleButtons, SerializeField] FindItemMethod findItemMethod;
+        [FoldoutGroup("Group and Tags/veriables/Items/Search By Tags or Groups"), ShowIf("@findItemMethod.ToString() == \"group\""), ValueDropdown("@groups"), SerializeField] string temp_selectGroup;
+        [FoldoutGroup("Group and Tags/veriables/Items/Search By Tags or Groups"), ShowIf("@findItemMethod.ToString() == \"tag\""), EnumToggleButtons, SerializeField] FindBool searchBool;
+        [FoldoutGroup("Group and Tags/veriables/Items/Search By Tags or Groups"), ShowIf("@findItemMethod.ToString() == \"tag\""), ValueDropdown("@OdinUtility.ValueDropDownListSelector(tags,temp_selectTag)"), SerializeField] List<string> temp_selectTag;
+        [FoldoutGroup("Group and Tags/veriables/Items/Search By Tags or Groups"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
+        void FindItems()
+        {
+            InitiateNullDatas();
+            temp_editItemList = new List<Item>();
+            if (findItemMethod == FindItemMethod.group) temp_editItemList = GetItems(x => x.group == temp_selectGroup);
+            else if (findItemMethod == FindItemMethod.tag && searchBool == FindBool.ContainAll) temp_editItemList = GetItems(x => x.HaveTags(temp_selectTag));
+            else 
+            {
+                foreach (string tag in temp_selectTag) 
+                {
+                    temp_editItemList = temp_editItemList.Concat(GetItems(x => x.HaveTag(tag))).ToList();
+                }
+                temp_editItemList = temp_editItemList.Distinct().ToList();
+            }
+        }
+        [FoldoutGroup("Group and Tags/veriables/Items/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
+        void FindRepeatItem()
+        {
+            InitiateNullDatas();
+            temp_editItemList = new List<Item>();
+            List<string> names = new List<string>();
+            foreach (Item i in items)
+            {
+                if (names.Contains(i.itemName)) temp_editItemList = temp_editItemList.Concat(GetItems(x => x.itemName == i.itemName)).ToList();
+                else names.Add(i.itemName);
+            }
+        }
+        [FoldoutGroup("Group and Tags/veriables/Items/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.7f, 1, 0.7f)]
+        void FindUnNamedItem()
+        {
+            InitiateNullDatas();
+            temp_editItemList = GetItems(x => string.IsNullOrEmpty(x.itemName) || string.IsNullOrWhiteSpace(x.itemName));
+        }
+        [FoldoutGroup("Group and Tags/veriables/Items/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
+        void FindUnGroupedItem()
+        {
+            InitiateNullDatas();
+            temp_editItemList = GetItems(x => !x.InGroup());
+        }
+        [FoldoutGroup("Group and Tags/veriables/Items/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.7f, 1, 0.7f)]
+        void FindUnTagedItem()
+        {
+            InitiateNullDatas();
+            temp_editItemList = GetItems(x =>x.tags == null ||x.tags.Count == 0);
+        }
+
+        [FoldoutGroup("Items"), Button(ButtonSizes.Large), GUIColor(1f, 1f, 0.4f), PropertyOrder(-2)]
+        void RemoveRedundantTagsInAllItems()
+        {
+            foreach (Item i in items) i.RemoveRedundantTags();
+        }
+        [HorizontalGroup("Items/DataEditButton"), Button(ButtonSizes.Large), GUIColor(1f, 0.4f, 0.4f), PropertyOrder(-1)]
+        void RemoveRedundantDatas()
+        {
+            items.RemoveAll(x => x == null || x == default(Item) || string.IsNullOrWhiteSpace(x.itemName));
+            List<string> names = new List<string>();
+            List<Item> toRemove = new List<Item>();
+            foreach (Item i in items)
+            {
+                if (names.Contains(i.itemName)) toRemove.Add(i);
+                else names.Add(i.itemName);
+            }
+            foreach (Item i in toRemove)
+            {
+                items.Remove(i);
+            }
+
+        }
+        [HorizontalGroup("Items/DataEditButton"),Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
+        void InitiateNullDatas()
+        {
+            for (int i = 0; i < items.Count; i++)
             {
                 if (items[i] == null) items[i] = ScriptableObject.CreateInstance<Item>();
             }
         }
-        protected override void InitializeScriptableObject()
+
+
+        [TabGroup("Group and Tags/veriables", "Groups"), Button(ButtonSizes.Large),GUIColor(0.4f,1,0.4f), PropertyOrder(-1)]
+        public void UpdateGroupDictionary()
         {
-            items = new List<Item>();
-            groups = new List<string>();
-            tags = new List<string>();
+            List<string> groups = GetAllGroupsInItems();
+            groupDictionary = new Dictionary<string, int>();
+            foreach (string s in groups) groupDictionary.Add(s, 0);
+            foreach (Item i in items)
+            {
+                if (groupDictionary.ContainsKey(i.group)) groupDictionary[i.group]++;
+            }
         }
+        [TabGroup("Group and Tags/veriables", "Groups"), Button(ButtonHeight = 40,Style = ButtonStyle.Box), GUIColor(1f, 0.4f, 0.4f)]
+        void RemoveGroup([ValueDropdown("@groupDictionary.Keys")] string selectGroup, [LabelWidth(180)] bool removeContainedItem = true)
+        {
+            if (string.IsNullOrWhiteSpace(selectGroup)) return;
+            if (removeContainedItem) RemoveItems(x => x.group == selectGroup);
+            else
+            {
+                foreach (Item i in items)
+                {
+                    if (i.group == selectGroup) i.group = "";
+                }
+            }
+            UpdateGroupDictionary();
+        }
+        [TabGroup("Group and Tags/veriables", "Groups"), Button(ButtonSizes.Large, Style = ButtonStyle.Box), GUIColor(0.4f, 1, 0.4f)]
+        void RenameGroup([ValueDropdown("groups")] string selectGroup,string newName)
+        {
+            List<Item> getItemMatch = GetItems(x => x.InGroup(selectGroup));
+            foreach (Item i in getItemMatch) i.group = newName;
+            UpdateGroupDictionary();
+        }
+
+        [TabGroup("Group and Tags/veriables", "Tags"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f),PropertyOrder(-1)]
+        public void UpdateTagDictionary()
+        {
+            RemoveRedundantTagsInAllItems();
+            List<string> tags = GetAllTagsInItems();
+            tagDictionary = new Dictionary<string, int>();
+            foreach (string s in tags) tagDictionary.Add(s, 0);
+            foreach (Item i in items)
+            {
+                foreach (string tag in i.tags) if (tagDictionary.ContainsKey(tag)) tagDictionary[tag]++;
+            }
+        }
+        [FoldoutGroup("Group and Tags/veriables/Tags/RemoveTag"), ValueDropdown("@OdinUtility.ValueDropDownListSelector(tags,selectTag)"),SerializeField] List<string> selectTag;
+        [FoldoutGroup("Group and Tags/veriables/Tags/RemoveTag"), LabelWidth(180), SerializeField] bool removeAttachedItem = false;
+        [FoldoutGroup("Group and Tags/veriables/Tags/RemoveTag"), Button(ButtonHeight = 40), GUIColor(1f, 0.4f, 0.4f)]
+        void RemoveTag( )
+        {
+            if (removeAttachedItem) RemoveItems(x => x.HaveTags(selectTag));
+            else
+            {
+                foreach (Item i in items)
+                {
+                    i.RemoveTags(selectTag);
+                }
+            }
+            UpdateTagDictionary();
+        }
+        [TabGroup("Group and Tags/veriables", "Tags"), Button(ButtonSizes.Large,Style = ButtonStyle.Box), GUIColor(0.4f, 1, 0.4f)]
+        void RenameTag([ValueDropdown("tags")]string selectTag, string newName)
+        {
+            List<Item> getMatchItems = GetItems(x => x.HaveTag(selectTag));
+            foreach (Item i in getMatchItems)
+            {
+                i.RemoveTag(selectTag);
+                i.AddTag(newName);
+            }
+            UpdateTagDictionary();
+        }
+
+
         public List<string> GetAllItemNames()
         {
             List<string> r = new List<string>();
@@ -185,31 +351,14 @@ namespace Nino.StateMatching.Helper.Data
             }
             return new List<string>(r);
         }
-        public void UpdateTagListInCollection()
-        {
-            foreach(Item i in items)
-            {
-                if (i.HaveTag())
-                {
-                    tags = tags.Concat(i.HaveMoreTagsThan(tags)).ToList();
-                }
-            }
-        }
         public List<string> GetAllGroupsInItems()
         {
             List<string> r = new List<string>();
             foreach (Item i in items)
             {
-                if (i.InGroup() && !r.Contains(i.inGroup)) r.Add(i.inGroup);
+                if (i.InGroup() && !r.Contains(i.group)) r.Add(i.group);
             }
             return new List<string>(r);
-        }
-        public void UpdateGroupListInCollection()
-        {
-            foreach (Item i in items)
-            {
-                if (i.InGroup() && ! groups.Contains(i.inGroup)) groups.Add(i.inGroup);
-            }
         }
         public bool Contain(Predicate<Item> match) => DataUtility.ListContainItem(match, items);
         public Item GetItem(Predicate<Item> match) => DataUtility.GetItemInList(match, items);
@@ -241,18 +390,16 @@ namespace Nino.StateMatching.Helper.Data
         where ItemCollection: Data.ItemCollection<Item>
     {
         
-        [FoldoutGroup("Data Info"),ReadOnly,LabelWidth(80),PropertyOrder(-101)]public string dataType;
-        [FoldoutGroup("Data Info")]public IDataExecuter<DataController<Item,ItemCollection>,Item,ItemCollection> attachedBehaviour;
+        [ReadOnly,LabelWidth(80),PropertyOrder(-101)]public string dataType;
         [FoldoutGroup("Hint",Order = -99),ReadOnly,TextArea(minLines:5,maxLines:20),SerializeField] string hint;
         [FoldoutGroup("Note",Order =-98), TextArea(minLines: 5, maxLines: 20), SerializeField] string note;
-        [FoldoutGroup("Datas",Order=-97),PropertyOrder(-100)]public ItemCollection collection;
+        [FoldoutGroup("Data",Order=-97),PropertyOrder(-100),PropertySpace(SpaceAfter = 20, SpaceBefore = 10)]public ItemCollection collection;
 
-        #region Odin
-        [FoldoutGroup("Datas/Save"), ReadOnly, LabelWidth(100),SerializeField,PropertyOrder(-99)] string savedPath;
-        [FoldoutGroup("Datas/Save"),Button(Style = ButtonStyle.Box,ButtonHeight = 40),GUIColor(0.4f,1,0.4f)]
-        public void SaveDataToFolder([FolderPath(RequireExistingPath = true)]string path = "Assets")
+        [FoldoutGroup("Save",Order = -96), FolderPath(RequireExistingPath = true), LabelWidth(100),SerializeField , PropertySpace(SpaceBefore = 10)] string savedPath = "Assets";
+        [FoldoutGroup("Save"),Button(Style = ButtonStyle.Box,ButtonHeight = 40),GUIColor(0.4f,1,0.4f), PropertySpace(SpaceAfter = 20)]
+        public void SaveDataToFolder()
         {
-            string rootPath = path;
+            string rootPath = savedPath;
             if (!AssetDatabase.Contains(this))
             {
                 if (AssetUtility.CreateFolder(rootPath, dataType)) rootPath = rootPath + "/" + dataType;
@@ -272,102 +419,14 @@ namespace Nino.StateMatching.Helper.Data
             }
             savedPath = AssetDatabase.GetAssetPath(this);
             UnityEditor.EditorGUIUtility.PingObject(this);
+            savedPath = System.IO.Path.GetDirectoryName(rootPath);
+            
         }
 
-
-        [FoldoutGroup("Datas/Group"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f),PropertyOrder(-98)]
-        void RemoveRedundantGroup()
-        {
-            collection.groups = DataUtility.RemoveAllRedundantStringInList(collection.groups);
-        }
-        [FoldoutGroup("Datas/Group"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
-        void UpdateGroupList()
-        {
-            RemoveRedundantGroup();
-            collection.UpdateGroupListInCollection();
-        }
-        [FoldoutGroup("Datas/Group"), Button(ButtonSizes.Large), GUIColor(1f, 0.4f, 0.4f)]
-        void RemoveGroupsDontContainItem()
-        {
-            collection.groups = collection.GetAllGroupsInItems();
-        }
-        [FoldoutGroup("Datas/Group"), Button(Style = ButtonStyle.Box,ButtonHeight = 40), GUIColor(1f, 0.4f, 0.4f)]
-        void RemoveGroup([ValueDropdown("@collection.groups")]string selectGroup,[LabelWidth(180)] bool removeContainedItem = false, [LabelWidth(180)] bool removeGroupInGroupList = true)
-        {
-            if (string.IsNullOrWhiteSpace(selectGroup)) return;
-            if (removeGroupInGroupList) collection.groups.RemoveAll(x => x == selectGroup);
-            if (removeContainedItem) collection.RemoveItems(x => x.inGroup == selectGroup);
-            else
-            {
-                foreach(Item i in collection.items)
-                {
-                    if (i.inGroup == selectGroup) i.inGroup = "";
-                }
-            }
-        }
         
-        [FoldoutGroup("Datas/Tag"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f),PropertyOrder(-97)]
-        void RemoveAllRedundantTags()
-        {
-            foreach (Item i in collection.items) i.RemoveRedundantTags();
-            collection.tags = DataUtility.RemoveAllRedundantStringInList(collection.tags);
-        }
-        [FoldoutGroup("Datas/Tag"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
-        void UpdateTagList()
-        {
-            RemoveAllRedundantTags();
-            collection.UpdateTagListInCollection();
-        }
-        [FoldoutGroup("Datas/Tag"), Button(ButtonSizes.Large), GUIColor(1f, 0.4f, 0.4f)]
-        void RemoveTagsNotAssignedToItem()
-        {
-            RemoveAllRedundantTags();
-            collection.tags = collection.GetAllTagsInItems();
-        }
-        [FoldoutGroup("Datas/Tag"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(1f, 0.4f, 0.4f)]
-        void RemoveTag([ValueDropdown("@collection.tags")]string selectTag ,[LabelWidth(180)] bool removeAttachedItem = false, [LabelWidth(180)] bool removeTagInTagList = true)
-        {
-            if (string.IsNullOrWhiteSpace(selectTag)) return;
-            if (removeTagInTagList) collection.tags.RemoveAll(x=>x==selectTag);
-            if (removeAttachedItem) collection.RemoveItems(x => x.HaveTag(selectTag));
-            else
-            {
-                foreach(Item i in collection.items)
-                {
-                    i.RemoveTag(selectTag);
-                }
-            }
-        }
+        
+        
 
-        public enum FindItemMethod
-        {
-            group,
-            tag
-        }
-        [FoldoutGroup("Datas/Item"), SerializeField,ListDrawerSettings(HideAddButton = true,ListElementLabelName = "itemName"),PropertyOrder(-96)] List<Item> temp_editItemList;
-        [FoldoutGroup("Datas/Item/Find"), EnumToggleButtons, SerializeField] FindItemMethod findItemMethod;
-        [FoldoutGroup("Datas/Item/Find"), ShowIf("@findItemMethod.ToString() == \"group\""), ValueDropdown("@collection.groups"),SerializeField] string temp_selectGroup;
-        [FoldoutGroup("Datas/Item/Find"), ShowIf("@findItemMethod.ToString() == \"tag\""), ValueDropdown("@collection.tags"), SerializeField] string temp_selectTag;
-        [FoldoutGroup("Datas/Item/Find"), Button(Style = ButtonStyle.Box,ButtonHeight =40),GUIColor(0.4f,1,0.4f)]
-        void FindItems()
-        {
-            temp_editItemList = new List<Item>();
-            if (findItemMethod == FindItemMethod.group) temp_editItemList = collection.GetItems(x => x.inGroup == temp_selectGroup);
-            else if(findItemMethod == FindItemMethod.tag) temp_editItemList = collection.GetItems(x => x.HaveTag(temp_selectTag));
-        }
-        [FoldoutGroup("Datas/Item/Find"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
-        void FindRepeatItem()
-        {
-            temp_editItemList = new List<Item>();
-            List<string> names = new List<string>();
-            foreach(Item i in collection.items)
-            {
-                if (names.Contains(i.itemName)) temp_editItemList = temp_editItemList.Concat(collection.GetItems(x => x.itemName == i.itemName)).ToList();
-                else names.Add(i.itemName);
-            }
-        }
-
-        #endregion
         protected override void InitializeScriptableObject()
         {
             hint = WriteHint();
@@ -393,13 +452,17 @@ namespace Nino.StateMatching.Helper.Data
         protected abstract void InitializeInstance();
     }
 
-    public abstract class IDataExecuter<D,I,C>:MonoBehaviour
-        where D:DataController<I,C>
-        where I:Item
-        where C:ItemCollection<I>
+    public abstract class IDataExecuter<DataController,Item,ItemCollection>:MonoBehaviour
+        where DataController:DataController<Item,ItemCollection>
+        where Item: Data.Item
+        where ItemCollection:ItemCollection<Item>
     {
-        public List<D> dataControllers { get; set; }
+        public DataController dataController;
+        public Dictionary<string, Item> itemNames;
+        public Dictionary<string, Item> groups;
+        public Dictionary<string, Item> tags;
+        
     }
-    
+
 }
 
