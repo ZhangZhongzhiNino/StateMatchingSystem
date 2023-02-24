@@ -6,79 +6,52 @@ using Sirenix.OdinInspector;
 
 namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    public class IntItem : Item
+    public abstract class VariableItem<T> : Item
     {
-        public int value;
+        public T value;
         protected override void AssignItem(Item newItem)
         {
-            IntItem _item = newItem as IntItem;
+            VariableItem<T> _item = newItem as VariableItem<T>;
             value = _item.value;
         }
+    }
+    public class IntItem : VariableItem<int>
+    {
         protected override void InitializeInstance()
         {
             value = 0;
         }
     }
-    public class FloatItem : Item
+    public class FloatItem : VariableItem<float>
     {
-        public float value;
-        protected override void AssignItem(Item newItem)
-        {
-            FloatItem _item = newItem as FloatItem;
-            value = _item.value;
-        }
         protected override void InitializeInstance()
         {
             value = 0;
         }
     }
-    public class BoolItem : Item
+    public class BoolItem : VariableItem<bool>
     {
-        public bool value;
-        protected override void AssignItem(Item newItem)
-        {
-            BoolItem _item = newItem as BoolItem;
-            value = _item.value;
-        }
         protected override void InitializeInstance()
         {
             value = false;
         }
     }
-    public class Vector2Item : Item
+    public class Vector2Item : VariableItem<Vector2>
     {
-        public Vector2 value;
-        protected override void AssignItem(Item newItem)
-        {
-            Vector2Item _item = newItem as Vector2Item;
-            value = _item.value;
-        }
         protected override void InitializeInstance()
         {
             value = Vector2.zero;
         }
     }
-    public class Vector3Item : Item
+    public class Vector3Item : VariableItem<Vector3>
     {
-        public Vector3 value;
-        protected override void AssignItem(Item newItem)
-        {
-            Vector3Item _item = newItem as Vector3Item;
-            value = _item.value;
-        }
         protected override void InitializeInstance()
         {
             value = Vector3.zero;
         }
     }
-    public class StringItem : Item
+    public class StringItem : VariableItem<string>
     {
-        public string value;
-        protected override void AssignItem(Item newItem)
-        {
-            StringItem _item = newItem as StringItem;
-            value = _item.value;
-        }
         protected override void InitializeInstance()
         {
             value = "";
@@ -86,170 +59,137 @@ namespace Nino.NewStateMatching.PlayerCharacter.Variable
     }
 
 
+    public class VariableCollection<Item> : Collection<Item> where Item : NewStateMatching.Item
+    {
+        protected override void InitializeInstance()
+        {
 
-    public class IntCollection : Collection<IntItem>
+        }
+    }
+
+    public class IntCollection : VariableCollection<IntItem> { }
+    public class FloatCollection : VariableCollection<FloatItem> { }
+    public class BoolCollection : VariableCollection<BoolItem> { }
+    public class Vector2Collection : VariableCollection<Vector2Item> { }
+    public class Vector3Collection : VariableCollection<Vector3Item> { }
+    public class StringCollection : VariableCollection<StringItem> { }
+
+
+    public abstract class VariableDataController<Item, Collection> : DataController<Item, Collection>
+        where Item : NewStateMatching.Item
+        where Collection : NewStateMatching.Collection<Item>
     {
         protected override void InitializeInstance()
         {
             
         }
-    }
-    public class FloatCollection : Collection<FloatItem>
-    {
-        protected override void InitializeInstance()
+        protected override string WriteHint()
         {
-
+            return "";
         }
     }
-    public class BoolCollection : Collection<BoolItem>
+    public class IntDataController : VariableDataController<IntItem, IntCollection>
     {
-        protected override void InitializeInstance()
+        [Button("Add Variable", Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
+        void AddValue(string newItemName, string group, int value)
         {
-
+            collection.AddItem(newItemName);
+            IntItem getItem = collection.GetItem(x => x.itemName == newItemName);
+            getItem.value = value;
+            getItem.group = group;
         }
-    }
-    public class Vector2Collection : Collection<Vector2Item>
-    {
-        protected override void InitializeInstance()
-        {
-
-        }
-    }
-    public class Vector3Collection : Collection<Vector3Item>
-    {
-        protected override void InitializeInstance()
-        {
-
-        }
-    }
-    public class StringCollection : Collection<StringItem>
-    {
-        protected override void InitializeInstance()
-        {
-
-        }
-    }
-
-
-    public class IntDataController : DataController<IntItem, IntCollection>
-    {
-        protected override void InitializeInstance()
-        {
-        }
-
         protected override string WriteDataType()
         {
             return "Int Variable";
         }
-
-        protected override string WriteHint()
-        {
-            return "";
-        }
     }
-    public class FloatDataController : DataController<FloatItem, FloatCollection>
+    public class FloatDataController : VariableDataController<FloatItem, FloatCollection>
     {
-        protected override void InitializeInstance()
+        [Button("Add Variable", Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
+        void AddValue(string newItemName, string group, float value)
         {
+            collection.AddItem(newItemName);
+            FloatItem getItem = collection.GetItem(x => x.itemName == newItemName);
+            getItem.value = value;
+            getItem.group = group;
         }
-
         protected override string WriteDataType()
         {
             return "Float Variable";
         }
-
-        protected override string WriteHint()
-        {
-            return "";
-        }
     }
-    public class BoolDataController : DataController<BoolItem, BoolCollection>
+    public class BoolDataController : VariableDataController<BoolItem, BoolCollection>
     {
-        protected override void InitializeInstance()
+        [Button("Add Variable", Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
+        void AddValue(string newItemName, string group, bool value)
         {
+            collection.AddItem(newItemName);
+            BoolItem getItem = collection.GetItem(x => x.itemName == newItemName);
+            getItem.value = value;
+            getItem.group = group;
         }
-
         protected override string WriteDataType()
         {
             return "Bool Variable";
         }
-
-        protected override string WriteHint()
-        {
-            return "";
-        }
     }
-    public class Vector2DataController : DataController<Vector2Item, Vector2Collection>
+    public class Vector2DataController : VariableDataController<Vector2Item, Vector2Collection>
     {
-        protected override void InitializeInstance()
+        [Button("Add Variable", Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
+        void AddValue(string newItemName, string group, Vector2 value)
         {
+            collection.AddItem(newItemName);
+            Vector2Item getItem = collection.GetItem(x => x.itemName == newItemName);
+            getItem.value = value;
+            getItem.group = group;
         }
-
         protected override string WriteDataType()
         {
             return "Vector2 Variable";
         }
-
-        protected override string WriteHint()
-        {
-            return "";
-        }
     }
-    public class Vector3DataController : DataController<Vector3Item, Vector3Collection>
+    public class Vector3DataController : VariableDataController<Vector3Item, Vector3Collection>
     {
-        protected override void InitializeInstance()
+        [Button("Add Variable", Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
+        void AddValue(string newItemName, string group, Vector3 value)
         {
+            collection.AddItem(newItemName);
+            Vector3Item getItem = collection.GetItem(x => x.itemName == newItemName);
+            getItem.value = value;
+            getItem.group = group;
         }
-
         protected override string WriteDataType()
         {
             return "Vector3 Variable";
         }
-
-        protected override string WriteHint()
-        {
-            return "";
-        }
     }
-    public class StringDataController : DataController<StringItem, StringCollection>
+    public class StringDataController : VariableDataController<StringItem, StringCollection>
     {
-        protected override void InitializeInstance()
+        [Button("Add Variable", Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
+        void AddValue(string newItemName, string group, string value)
         {
+            collection.AddItem(newItemName);
+            StringItem getItem = collection.GetItem(x => x.itemName == newItemName);
+            getItem.value = value;
+            getItem.group = group;
         }
-
         protected override string WriteDataType()
         {
             return "String Variable";
         }
-
-        protected override string WriteHint()
-        {
-            return "";
-        }
     }
-    
 
-    public class IntExecuter : GroupedDataExecuter, IDataExecuter<IntItem, IntCollection, IntDataController>
+
+    public class VariableExecuter<Item, Collection, DataController>
+        : GroupedDataExecuter, IDataExecuter<Item, Collection, DataController>
+        where Item : NewStateMatching.Item
+        where Collection : NewStateMatching.Collection<Item>
+        where DataController : NewStateMatching.DataController<Item, Collection>
     {
-        [ShowInInspector] public IntDataController dataController { get; set; }
-
+        [ShowInInspector] public DataController dataController { get; set; }
         protected override void InitializeDataController()
         {
-            dataController = ScriptableObject.CreateInstance<IntDataController>();
-        }
-
-        protected override void PreRemoveDataControllers()
-        {
-            
-        }
-    }
-    public class FloatExecuter : GroupedDataExecuter, IDataExecuter<FloatItem, FloatCollection, FloatDataController>
-    {
-        [ShowInInspector] public FloatDataController dataController { get; set; }
-
-        protected override void InitializeDataController()
-        {
-            dataController = ScriptableObject.CreateInstance<FloatDataController>();
+            dataController = ScriptableObject.CreateInstance<DataController>();
         }
 
         protected override void PreRemoveDataControllers()
@@ -257,62 +197,12 @@ namespace Nino.NewStateMatching.PlayerCharacter.Variable
 
         }
     }
-    public class BoolExecuter : GroupedDataExecuter, IDataExecuter<BoolItem, BoolCollection, BoolDataController>
-    {
-        [ShowInInspector] public BoolDataController dataController { get; set; }
-
-        protected override void InitializeDataController()
-        {
-            dataController = ScriptableObject.CreateInstance<BoolDataController>();
-        }
-
-        protected override void PreRemoveDataControllers()
-        {
-
-        }
-    }
-    public class Vector2Executer : GroupedDataExecuter, IDataExecuter<Vector2Item, Vector2Collection, Vector2DataController>
-    {
-        [ShowInInspector] public Vector2DataController dataController { get; set; }
-
-        protected override void InitializeDataController()
-        {
-            dataController = ScriptableObject.CreateInstance<Vector2DataController>();
-        }
-
-        protected override void PreRemoveDataControllers()
-        {
-
-        }
-    }
-    public class Vector3Executer : GroupedDataExecuter, IDataExecuter<Vector3Item, Vector3Collection, Vector3DataController>
-    {
-        [ShowInInspector] public Vector3DataController dataController { get; set; }
-
-        protected override void InitializeDataController()
-        {
-            dataController = ScriptableObject.CreateInstance<Vector3DataController>();
-        }
-
-        protected override void PreRemoveDataControllers()
-        {
-
-        }
-    }
-    public class StringExecuter : GroupedDataExecuter, IDataExecuter<StringItem, StringCollection, StringDataController>
-    {
-        [ShowInInspector] public StringDataController dataController { get; set; }
-
-        protected override void InitializeDataController()
-        {
-            dataController = ScriptableObject.CreateInstance<StringDataController>();
-        }
-
-        protected override void PreRemoveDataControllers()
-        {
-
-        }
-    }
+    public class IntExecuter : VariableExecuter<IntItem, IntCollection, IntDataController> { }
+    public class FloatExecuter : VariableExecuter<FloatItem, FloatCollection, FloatDataController> { }
+    public class BoolExecuter : VariableExecuter<BoolItem, BoolCollection, BoolDataController> { }
+    public class Vector2Executer : VariableExecuter<Vector2Item, Vector2Collection, Vector2DataController> { }
+    public class Vector3Executer : VariableExecuter<Vector3Item, Vector3Collection, Vector3DataController> { }
+    public class StringExecuter : VariableExecuter<StringItem, StringCollection, StringDataController> { }
 
     public class IntExecuterInitializer : GroupedExecuterInitializer<IntExecuter> { }
     public class FloatExecuterInitializer : GroupedExecuterInitializer<FloatExecuter> { }
