@@ -7,15 +7,13 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 
 using Nino.NewStateMatching;
+using Nino.NewStateMatching.PlayerCharacter.Variable;
 
 namespace Nino.NewStateMatching.PlayerCharacter
 {
     public class SMSPlayerCharacterInitializer : StateMatchingInitializer<SMSPlayerCharacterRoot>
     {
-        protected override void ResetHierarchy()
-        {
-            
-        }
+
     }
     public class SMSPlayerCharacterRoot : StateMatchingRoot
     {
@@ -43,19 +41,6 @@ namespace Nino.NewStateMatching.PlayerCharacter
             actionCategory.Remove();
             stateMachineCategory.Remove();
         }
-        protected override void ResetHierarchy()
-        {
-            
-        }
-        public override void Refresh()
-        {
-            inputCategory.Refresh();
-            internalEventCategory.Refresh();
-            variableCategory.Refresh();
-            dataCategory.Refresh();
-            actionCategory.Refresh();
-            stateMachineCategory.Refresh();
-        }
 
 
 
@@ -63,92 +48,124 @@ namespace Nino.NewStateMatching.PlayerCharacter
     }
     public class InputCategory : ExecuterCategory
     {
-        public override void Refresh()
-        {
-        }
         protected override void InitializeExecuterGroupInitializers()
         {
         }
+
+        protected override void InitializeExecuterInitializers()
+        {
+            
+        }
+
         protected override void RemoveExecuterGroups()
         {
         }
-        protected override void ResetHierarchy()
+
+        protected override void RemoveExecuters()
         {
+            
         }
     }
     public class InternalEventCategory : ExecuterCategory
     {
-        public override void Refresh()
-        {
-        }
         protected override void InitializeExecuterGroupInitializers()
         {
         }
+
+        protected override void InitializeExecuterInitializers()
+        {
+            
+        }
+
         protected override void RemoveExecuterGroups()
         {
         }
-        protected override void ResetHierarchy()
+
+        protected override void RemoveExecuters()
         {
+            
         }
     }
     public class VariableCategory : ExecuterCategory
     {
-        public override void Refresh()
-        {
-        }
+        public SingleVariableExecuterGroupInitializer singleVariableExecuterGroup;
         protected override void InitializeExecuterGroupInitializers()
         {
+            singleVariableExecuterGroup = GeneralUtility.InitializeInitializer<SingleVariableExecuterGroupInitializer, SingleVariableExecuterGroup>(this);
         }
+
+        protected override void InitializeExecuterInitializers()
+        {
+            
+        }
+
         protected override void RemoveExecuterGroups()
         {
         }
-        protected override void ResetHierarchy()
+
+        protected override void RemoveExecuters()
         {
+            
         }
     }
     public class DataCategory : ExecuterCategory
     {
-        public override void Refresh()
-        {
-        }
         protected override void InitializeExecuterGroupInitializers()
         {
         }
+
+        protected override void InitializeExecuterInitializers()
+        {
+            
+        }
+
         protected override void RemoveExecuterGroups()
         {
         }
-        protected override void ResetHierarchy()
+
+        protected override void RemoveExecuters()
         {
+            
         }
     }
     public class ActionCategory : ExecuterCategory
     {
-        public override void Refresh()
-        {
-        }
         protected override void InitializeExecuterGroupInitializers()
         {
         }
+
+        protected override void InitializeExecuterInitializers()
+        {
+            
+        }
+
         protected override void RemoveExecuterGroups()
         {
         }
-        protected override void ResetHierarchy()
+
+        protected override void RemoveExecuters()
         {
+            
         }
     }
     public class StateMachineCategory : ExecuterCategory
     {
-        public override void Refresh()
-        {
-        }
         protected override void InitializeExecuterGroupInitializers()
         {
         }
+
+        protected override void InitializeExecuterInitializers()
+        {
+            
+        }
+
         protected override void RemoveExecuterGroups()
         {
         }
-        protected override void ResetHierarchy()
+
+        protected override void RemoveExecuters()
         {
+            
         }
     }
 }
