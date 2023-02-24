@@ -9,11 +9,12 @@ using UnityEditor;
 using UnityEngine;
 
 
-namespace Nino.StateMatching.Helper.Data
+
+namespace Nino.NewStateMatching
 {
 
     [InlineEditor]
-    public abstract class Item : StateMatchingScriptableObject
+    public abstract class Item : BaseScriptableObject
     {
         [LabelWidth(80), PropertyOrder(-102)] public string itemName;
         [LabelWidth(80), PropertyOrder(-101)] public string group;
@@ -22,8 +23,8 @@ namespace Nino.StateMatching.Helper.Data
         {
             tags = DataUtility.RemoveAllRedundantStringInList(tags);
         }
-
-        protected override void InitializeScriptableObject()
+        
+        protected override void InitializeBaseScriptableObject()
         {
             itemName = "";
             group = "";
@@ -146,20 +147,20 @@ namespace Nino.StateMatching.Helper.Data
  
     }
     [InlineEditor]
-    public abstract class ItemCollection<Item> : StateMatchingScriptableObject where Item: Data.Item
+    public abstract class Collection<Item> : BaseScriptableObject where Item: NewStateMatching.Item
     {
         [FoldoutGroup("Items",order: -100),ListDrawerSettings(ShowIndexLabels = true,ListElementLabelName = "itemName"),PropertyOrder(1),PropertySpace(SpaceBefore =2,SpaceAfter =10)] public List<Item> items;
-        [FoldoutGroup("Group and Tags"),TabGroup("Group and Tags/veriables", "Groups"), ShowInInspector, ReadOnly, PropertyOrder(-1)] public Dictionary<string, int> groupDictionary;
-        [TabGroup("Group and Tags/veriables", "Tags"), ShowInInspector, ReadOnly,PropertyOrder(-1)] public Dictionary<string, int> tagDictionary;
+        [FoldoutGroup("Group and Tags"),TabGroup("Group and Tags/veriables", "Groups"),ReadOnly, PropertyOrder(-1)] public Dictionary<string,int> groupQuickLook;
+        [TabGroup("Group and Tags/veriables", "Tags"), ReadOnly,PropertyOrder(-1), SerializeField] public Dictionary<string, int> tagQuickLook;
 
-        public List<string> groups { get => groupDictionary?.Keys?.ToList(); }
-        public List<string> tags { get => tagDictionary?.Keys?.ToList(); }
+        public List<string> groups { get => groupQuickLook?.Keys?.ToList(); }
+        public List<string> tags { get => tagQuickLook?.Keys?.ToList(); }
 
-        protected override void InitializeScriptableObject()
+        protected override void InitializeBaseScriptableObject()
         {
             items = new List<Item>();
-            groupDictionary = new Dictionary<string, int>();
-            tagDictionary = new Dictionary<string, int>();
+            groupQuickLook = new Dictionary<string, int>();
+            tagQuickLook = new Dictionary<string, int>();
         }
 
 
@@ -178,8 +179,7 @@ namespace Nino.StateMatching.Helper.Data
         [FoldoutGroup("Group and Tags/veriables/Items/Search By Tags or Groups"), ShowIf("@findItemMethod.ToString() == \"group\""), ValueDropdown("@groups"), SerializeField] string temp_selectGroup;
         [FoldoutGroup("Group and Tags/veriables/Items/Search By Tags or Groups"), ShowIf("@findItemMethod.ToString() == \"tag\""), EnumToggleButtons, SerializeField] FindBool searchBool;
         [FoldoutGroup("Group and Tags/veriables/Items/Search By Tags or Groups"), ShowIf("@findItemMethod.ToString() == \"tag\""), ValueDropdown("@OdinUtility.ValueDropDownListSelector(tags,temp_selectTag)"), SerializeField] List<string> temp_selectTag;
-        [FoldoutGroup("Group and Tags/veriables/Items/Search By Tags or Groups"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
-        void FindItems()
+        [FoldoutGroup("Group and Tags/veriables/Items/Search By Tags or Groups"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]void FindItems()
         {
             InitiateNullDatas();
             temp_editItemList = new List<Item>();
@@ -194,8 +194,7 @@ namespace Nino.StateMatching.Helper.Data
                 temp_editItemList = temp_editItemList.Distinct().ToList();
             }
         }
-        [FoldoutGroup("Group and Tags/veriables/Items/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
-        void FindRepeatItem()
+        [FoldoutGroup("Group and Tags/veriables/Items/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)] void FindRepeatItem()
         {
             InitiateNullDatas();
             temp_editItemList = new List<Item>();
@@ -206,32 +205,27 @@ namespace Nino.StateMatching.Helper.Data
                 else names.Add(i.itemName);
             }
         }
-        [FoldoutGroup("Group and Tags/veriables/Items/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.7f, 1, 0.7f)]
-        void FindUnNamedItem()
+        [FoldoutGroup("Group and Tags/veriables/Items/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.7f, 1, 0.7f)] void FindUnNamedItem()
         {
             InitiateNullDatas();
             temp_editItemList = GetItems(x => string.IsNullOrEmpty(x.itemName) || string.IsNullOrWhiteSpace(x.itemName));
         }
-        [FoldoutGroup("Group and Tags/veriables/Items/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
-        void FindUnGroupedItem()
+        [FoldoutGroup("Group and Tags/veriables/Items/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)] void FindUnGroupedItem()
         {
             InitiateNullDatas();
             temp_editItemList = GetItems(x => !x.InGroup());
         }
-        [FoldoutGroup("Group and Tags/veriables/Items/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.7f, 1, 0.7f)]
-        void FindUnTagedItem()
+        [FoldoutGroup("Group and Tags/veriables/Items/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.7f, 1, 0.7f)] void FindUnTagedItem()
         {
             InitiateNullDatas();
             temp_editItemList = GetItems(x =>x.tags == null ||x.tags.Count == 0);
         }
 
-        [FoldoutGroup("Items"), Button(ButtonSizes.Large), GUIColor(1f, 1f, 0.4f), PropertyOrder(-2)]
-        void RemoveRedundantTagsInAllItems()
+        [FoldoutGroup("Items"), Button(ButtonSizes.Large), GUIColor(1f, 1f, 0.4f), PropertyOrder(-2)] public void RemoveRedundantTagsInAllItems()
         {
             foreach (Item i in items) i.RemoveRedundantTags();
         }
-        [HorizontalGroup("Items/DataEditButton"), Button(ButtonSizes.Large), GUIColor(1f, 0.4f, 0.4f), PropertyOrder(-1)]
-        void RemoveRedundantDatas()
+        [HorizontalGroup("Items/DataEditButton"), Button(ButtonSizes.Large), GUIColor(1f, 0.4f, 0.4f), PropertyOrder(-1)] void RemoveRedundantDatas()
         {
             items.RemoveAll(x => x == null || x == default(Item) || string.IsNullOrWhiteSpace(x.itemName));
             List<string> names = new List<string>();
@@ -247,8 +241,7 @@ namespace Nino.StateMatching.Helper.Data
             }
 
         }
-        [HorizontalGroup("Items/DataEditButton"),Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
-        void InitiateNullDatas()
+        [HorizontalGroup("Items/DataEditButton"),Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)] void InitiateNullDatas()
         {
             for (int i = 0; i < items.Count; i++)
             {
@@ -257,18 +250,17 @@ namespace Nino.StateMatching.Helper.Data
         }
 
 
-        [TabGroup("Group and Tags/veriables", "Groups"), Button(ButtonSizes.Large),GUIColor(0.4f,1,0.4f), PropertyOrder(-1)]
-        public void UpdateGroupDictionary()
+        [TabGroup("Group and Tags/veriables", "Groups"), Button(ButtonSizes.Large),GUIColor(0.4f,1,0.4f), PropertyOrder(-1)] public void UpdateGroupDictionary()
         {
             List<string> groups = GetAllGroupsInItems();
-            groupDictionary = new Dictionary<string, int>();
-            foreach (string s in groups) groupDictionary.Add(s, 0);
+            groupQuickLook = new Dictionary<string, int>();
+            foreach (string s in groups) groupQuickLook.Add(s, 0);
             foreach (Item i in items)
             {
-                if (groupDictionary.ContainsKey(i.group)) groupDictionary[i.group]++;
+                if (groupQuickLook.ContainsKey(i.group)) groupQuickLook[i.group]++;
             }
         }
-        [TabGroup("Group and Tags/veriables", "Groups"), Button(ButtonHeight = 40,Style = ButtonStyle.Box), GUIColor(1f, 0.4f, 0.4f)]
+        [TabGroup("Group and Tags/veriables", "Groups"), Button(ButtonHeight = 40,Style = ButtonStyle.Box), GUIColor(1f, 0.4f, 0.4f)] 
         void RemoveGroup([ValueDropdown("@groupDictionary.Keys")] string selectGroup, [LabelWidth(180)] bool removeContainedItem = true)
         {
             if (string.IsNullOrWhiteSpace(selectGroup)) return;
@@ -290,22 +282,20 @@ namespace Nino.StateMatching.Helper.Data
             UpdateGroupDictionary();
         }
 
-        [TabGroup("Group and Tags/veriables", "Tags"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f),PropertyOrder(-1)]
-        public void UpdateTagDictionary()
+        [TabGroup("Group and Tags/veriables", "Tags"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f),PropertyOrder(-1)] public void UpdateTagQuickLook()
         {
             RemoveRedundantTagsInAllItems();
             List<string> tags = GetAllTagsInItems();
-            tagDictionary = new Dictionary<string, int>();
-            foreach (string s in tags) tagDictionary.Add(s, 0);
+            tagQuickLook = new Dictionary<string, int>();
+            foreach (string s in tags) tagQuickLook.Add(s, 0);
             foreach (Item i in items)
             {
-                foreach (string tag in i.tags) if (tagDictionary.ContainsKey(tag)) tagDictionary[tag]++;
+                foreach (string tag in i.tags) if (tagQuickLook.ContainsKey(tag)) tagQuickLook[tag]++;
             }
         }
         [FoldoutGroup("Group and Tags/veriables/Tags/RemoveTag"), ValueDropdown("@OdinUtility.ValueDropDownListSelector(tags,selectTag)"),SerializeField] List<string> selectTag;
         [FoldoutGroup("Group and Tags/veriables/Tags/RemoveTag"), LabelWidth(180), SerializeField] bool removeAttachedItem = false;
-        [FoldoutGroup("Group and Tags/veriables/Tags/RemoveTag"), Button(ButtonHeight = 40), GUIColor(1f, 0.4f, 0.4f)]
-        void RemoveTag( )
+        [FoldoutGroup("Group and Tags/veriables/Tags/RemoveTag"), Button(ButtonHeight = 40), GUIColor(1f, 0.4f, 0.4f)] void RemoveTag( )
         {
             if (removeAttachedItem) RemoveItems(x => x.HaveTags(selectTag));
             else
@@ -315,7 +305,7 @@ namespace Nino.StateMatching.Helper.Data
                     i.RemoveTags(selectTag);
                 }
             }
-            UpdateTagDictionary();
+            UpdateTagQuickLook();
         }
         [TabGroup("Group and Tags/veriables", "Tags"), Button(ButtonSizes.Large,Style = ButtonStyle.Box), GUIColor(0.4f, 1, 0.4f)]
         void RenameTag([ValueDropdown("tags")]string selectTag, string newName)
@@ -326,7 +316,7 @@ namespace Nino.StateMatching.Helper.Data
                 i.RemoveTag(selectTag);
                 i.AddTag(newName);
             }
-            UpdateTagDictionary();
+            UpdateTagQuickLook();
         }
 
 
@@ -385,19 +375,41 @@ namespace Nino.StateMatching.Helper.Data
     }
 
     [InlineEditor]
-    public abstract class DataController<Item,ItemCollection> : StateMatchingScriptableObject 
-        where Item: Data.Item
-        where ItemCollection: Data.ItemCollection<Item>
+    public abstract class DataController<Item,ItemCollection> : BaseScriptableObject 
+        where Item: NewStateMatching.Item
+        where ItemCollection: NewStateMatching.Collection<Item>
     {
-        
         [ReadOnly,LabelWidth(80),PropertyOrder(-101)]public string dataType;
-        [FoldoutGroup("Hint",Order = -99),ReadOnly,TextArea(minLines:5,maxLines:20),SerializeField] string hint;
+        [FoldoutGroup("Hint",Order = -99),TextArea(minLines:5,maxLines:20),SerializeField] string hint;
         [FoldoutGroup("Note",Order =-98), TextArea(minLines: 5, maxLines: 20), SerializeField] string note;
         [FoldoutGroup("Data",Order=-97),PropertyOrder(-100),PropertySpace(SpaceAfter = 20, SpaceBefore = 10)]public ItemCollection collection;
 
-        [FoldoutGroup("Save",Order = -96), FolderPath(RequireExistingPath = true), LabelWidth(100),SerializeField , PropertySpace(SpaceBefore = 10)] string savedPath = "Assets";
-        [FoldoutGroup("Save"),Button(Style = ButtonStyle.Box,ButtonHeight = 40),GUIColor(0.4f,1,0.4f), PropertySpace(SpaceAfter = 20)]
-        public void SaveDataToFolder()
+
+        [FoldoutGroup("Data Output Reference",Order = -96)] public Dictionary<string, Item> dic_items;
+        [FoldoutGroup("Data Output Reference")] public Dictionary<string, List<Item>> dic_groups;
+        [FoldoutGroup("Data Output Reference")] public Dictionary<string, List<Item>> dic_tags;
+        [FoldoutGroup("Data Output Reference"),Button(ButtonSizes.Large),GUIColor(0.4f,1,0.4f)] void UpdateReferences()
+        {
+            collection.RemoveRedundantTagsInAllItems();
+            dic_items = new Dictionary<string, Item>();
+            dic_groups = new Dictionary<string, List<Item>>();
+            dic_tags = new Dictionary<string, List<Item>>();
+            foreach(Item item in collection.items)
+            {
+                if (!dic_items.Keys.Contains(item.itemName)) dic_items.Add(item.itemName, item);
+                if (!dic_groups.Keys.Contains(item.group)) dic_groups.Add(item.group, new List<Item>());
+                dic_groups[item.group].Add(item);
+                foreach(string tag in item.tags)
+                {
+                    if (!dic_tags.Keys.Contains(tag)) dic_tags.Add(tag, new List<Item>());
+                    dic_tags[tag].Add(item);
+                }
+            }
+        }
+
+
+        [FoldoutGroup("Save",Order = -95), FolderPath(RequireExistingPath = true), LabelWidth(100),SerializeField , PropertySpace(SpaceBefore = 10)] string savedPath = "Assets";
+        [FoldoutGroup("Save"),Button(Style = ButtonStyle.Box,ButtonHeight = 40),GUIColor(0.4f,1,0.4f), PropertySpace(SpaceAfter = 20)] public void SaveDataToFolder()
         {
             string rootPath = savedPath;
             if (!AssetDatabase.Contains(this))
@@ -423,46 +435,60 @@ namespace Nino.StateMatching.Helper.Data
             
         }
 
-        
-        
-        
 
-        protected override void InitializeScriptableObject()
+        protected override void InitializeBaseScriptableObject()
         {
-            hint = WriteHint();
+            dataType = WriteDataType();
+            string BasicHint = "\n\n______________________\n" +
+                "\nDataController Explain:" +
+                "\nThis scriptable object hold " + dataType + " type of data." +
+                "\nYou can |create|edit|remove| data in this section." +
+                "\n\nDataController Sections:" +
+                "\nNote: This section will not compail, It's only for you to take note." +
+                "\n\nData: Section to edit data." +
+                "\nData_Items: Section to edit all data" +
+                "\n\nData_Group and Tags_Items: Different find methods will put different items in temp list, you can edit items in temp list. " +
+                "\nData_Group and Tags_Groups || Tags: The place to remove or rename groups or tags. You can get basic information about groups or tags in QuickLook." +
+                "\n\nData Output Reference: Dictionaries hold references to data and are sorted by item name, item group, and item tags. This is a helper section for accessing the data. You could also edit data at this section. It is important to update references at this section after change." +
+                "\n\nSave: The place to save data to the folder. If data is already saved to the folder this will save instance changes to the scriptable object in the folder.";
+            hint = WriteHint() + BasicHint;
             note = "";
             collection = ScriptableObject.CreateInstance<ItemCollection>();
+            dic_items = new Dictionary<string, Item>();
+            dic_groups = new Dictionary<string, List<Item>>();
+            dic_tags = new Dictionary<string, List<Item>>();
         }
         protected abstract string WriteHint();
+        protected abstract string WriteDataType();
+
         
     }
 
     [Serializable]
-    public abstract class StateMatchingScriptableObject: ScriptableObject
+    public abstract class StateMatchingScriptableObject : SerializedScriptableObject
     {
         bool initialized = false;
         private void OnEnable()
         {
             if (initialized) return;
             initialized = true;
-            InitializeScriptableObject();
+            Initialize();
+        }
+        protected abstract void Initialize();
+
+    }
+
+
+    public abstract class BaseScriptableObject : StateMatchingScriptableObject
+    {
+        protected override void Initialize()
+        {
+            InitializeBaseScriptableObject();
             InitializeInstance();
         }
-        protected abstract void InitializeScriptableObject();
+        protected abstract void InitializeBaseScriptableObject();
         protected abstract void InitializeInstance();
-    }
 
-    public abstract class IDataExecuter<DataController,Item,ItemCollection>:MonoBehaviour
-        where DataController:DataController<Item,ItemCollection>
-        where Item: Data.Item
-        where ItemCollection:ItemCollection<Item>
-    {
-        public DataController dataController;
-        public Dictionary<string, Item> itemNames;
-        public Dictionary<string, Item> groups;
-        public Dictionary<string, Item> tags;
-        
     }
-
 }
 

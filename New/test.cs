@@ -1,19 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
 
-namespace Nino.StateMatching.Helper.Data
+namespace Nino.NewStateMatching
 {
-    public class test : IDataExecuter<NewDataController,NewItem,NewCollection>
+    public class test : DataExecuter, IDataExecuter<NewDataController,NewItem,NewCollection>
     {
-        public NewDataController datasC;
-        [Button,GUIColor(0.4f,1,0.4f)]
-        void CreateData()
+
+        [ShowInInspector] public NewDataController dataController { get; set; }
+
+        protected override void PreRemoveDataControllers()
+        {
+            
+        }
+
+        protected override void InitializeDataControllers()
         {
             dataController = ScriptableObject.CreateInstance<NewDataController>();
-            dataController.dataType = "test data type";
+        }
+
+        protected override void ResetHierarchy()
+        {
+
+        }
+
+        public override void Refresh()
+        {
+            throw new NotImplementedException();
         }
     }
     public class NewItem : Item
@@ -37,7 +53,7 @@ namespace Nino.StateMatching.Helper.Data
             q = Quaternion.identity;
         }
     }
-    public class NewCollection : ItemCollection<NewItem>
+    public class NewCollection : Collection<NewItem>
     {
         protected override void InitializeInstance()
         {
@@ -48,17 +64,17 @@ namespace Nino.StateMatching.Helper.Data
     {
         protected override void InitializeInstance()
         {
-            
+
+        }
+
+        protected override string WriteDataType()
+        {
+            return "NewData";
         }
 
         protected override string WriteHint()
         {
             return "This is a test data controller \nhave fun! \n\nSome hint here";
-        }
-        [Button,GUIColor(0.3f,0.4f,0.5f)]
-        void AddItem(string ItemName)
-        {
-            collection.AddItem(ItemName);
         }
 
 
