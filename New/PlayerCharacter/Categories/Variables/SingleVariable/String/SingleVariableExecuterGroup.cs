@@ -22,6 +22,11 @@
         {
 
         }
+
+        protected override string WriteLocalAddress()
+        {
+            return "Single Variable";
+        }
     }
 }
 

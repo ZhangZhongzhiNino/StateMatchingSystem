@@ -1,16 +1,16 @@
 ﻿using UnityEditor;
 using UnityEngine;
-
+using Sirenix.OdinInspector;
 namespace Nino.NewStateMatching.PlayerCharacter
 {
     public class SMSPlayerCharacterRoot : StateMatchingRoot
     {
-        public InputCategory inputCategory;
-        public InternalEventCategory internalEventCategory;
-        public VariableCategory variableCategory;
-        public DataCategory dataCategory;
-        public ActionCategory actionCategory;
-        public StateMachineCategory stateMachineCategory;
+        [FoldoutGroup("Categories")] public InputCategory inputCategory;
+        [FoldoutGroup("Categories")] public InternalEventCategory internalEventCategory;
+        [FoldoutGroup("Categories")] public VariableCategory variableCategory;
+        [FoldoutGroup("Categories")] public DataCategory dataCategory;
+        [FoldoutGroup("Categories")] public ActionCategory actionCategory;
+        [FoldoutGroup("Categories")] public StateMachineCategory stateMachineCategory;
         protected override void InitializeExecuterCategorys()
         {
             inputCategory = CreateCategory<InputCategory>("Input____");

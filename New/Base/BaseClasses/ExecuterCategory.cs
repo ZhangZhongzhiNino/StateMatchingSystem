@@ -8,8 +8,8 @@ namespace Nino.NewStateMatching
 {
     public abstract class ExecuterCategory : StateMatchingMonoBehaviour
     {
-        public StateMatchingRoot stateMatchingRoot;
-        public AddressData address;
+        [FoldoutGroup("Reference")] public StateMatchingRoot stateMatchingRoot;
+        [FoldoutGroup("Reference")] public AddressData address;
         [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 1), PropertyOrder(-9999999999)] public void ResetHierarchy()
         {
             EditorUtility.OpenHierarchy(stateMatchingRoot?.objRoot, true);

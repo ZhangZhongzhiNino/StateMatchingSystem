@@ -46,12 +46,12 @@ namespace Nino.NewStateMatching
         
         public void RemoveNullChildsInSystem()
         {
-            if (parent != null) RemoveNullChildsInSystem();
+            if (parent != null) parent.RemoveNullChildsInSystem();
             else RemoveNullChildInChild();
         }
         public void RemoveNullChildInChild()
         {
-            childs.RemoveAll(x => x == null);
+            childs.RemoveAll(x => x.script == null);
             foreach(AddressData child in childs)
             {
                 child.RemoveNullChildInChild();

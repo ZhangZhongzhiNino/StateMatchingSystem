@@ -7,8 +7,8 @@ namespace Nino.NewStateMatching
 {
     public abstract class StateMatchingRootInitializer<T> : MonoBehaviour where T:StateMatchingRoot
     {
-        public StateMatchingGlobalReference globalReferences;
-        public T SMSRoot;
+        [FoldoutGroup("Reference")] public StateMatchingGlobalReference globalReferences;
+        [FoldoutGroup("Reference")] public T SMSRoot;
         [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 1),PropertyOrder(-9999999999)] protected void ResetHierarchy()
         {
             EditorUtility.OpenHierarchy(this.gameObject, true);

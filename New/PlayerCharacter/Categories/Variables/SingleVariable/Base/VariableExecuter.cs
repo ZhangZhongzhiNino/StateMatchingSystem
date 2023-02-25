@@ -2,7 +2,7 @@
 
 namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    public class VariableExecuter<Item, Collection, DataController>
+    public abstract class VariableExecuter<Item, Collection, DataController>
         : SMSExecuter, IDataExecuter<Item, Collection, DataController>
         where Item : NewStateMatching.Item
         where Collection : NewStateMatching.Collection<Item>

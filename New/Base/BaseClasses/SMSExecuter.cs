@@ -1,11 +1,12 @@
 ﻿
 using Sirenix.OdinInspector;
-
+using UnityEngine;
 namespace Nino.NewStateMatching
 {
     public abstract class SMSExecuter: StateMatchingMonoBehaviour
     {
-        public ExecuterGroup executerGroup;
+        [FoldoutGroup("Reference")] public ExecuterGroup executerGroup;
+        [FoldoutGroup("Reference")] public AddressData address;
         [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 1), PropertyOrder(-9999999999)] public void ResetHierarchy() 
         {
             EditorUtility.OpenHierarchy(executerGroup?.executerCategory?.stateMatchingRoot?.objRoot, true);
@@ -15,8 +16,12 @@ namespace Nino.NewStateMatching
         }
         public override void Initialize()
         {
+            if (address == null) address = ScriptableObject.CreateInstance<AddressData>();
+            address.localAddress = WriteLocalAddress();
+            address.script = this;
             InitializeDataController();
         }
+        protected abstract string WriteLocalAddress();
         protected abstract void InitializeDataController();
         public override void Remove()
         {

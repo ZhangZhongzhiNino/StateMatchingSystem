@@ -12,17 +12,15 @@ namespace Nino.NewStateMatching
         [HideLabel] public T content;
         [HideInInspector] public string contentObjName;
         public string addButtonName { get => "Create " + typeof(T).Name; }
-        [PropertyOrder(-1), Button(Name = "@addButtonName",ButtonHeight = 40),GUIColor(0.4f,1,0.4f),ShowIf("@content == null")] public void Create()
+        [PropertyOrder(-1), Button(Name = "@addButtonName",ButtonHeight = 40),GUIColor(0.4f,1,0.4f),ShowIf("@content == null")] public virtual void Create()
         {
             creater.TryGetComponent<T>(out content);
             if (content != null) return;
             GameObject executerGroupObj = GeneralUtility.CreateGameObject(contentObjName, creater.transform);
             content = GeneralUtility.AddStateMatchingBehaviourToGameObject<T>(executerGroupObj);
-            AddCreaterReferenceResetHierarchy();
         }
-        protected abstract void AddCreaterReferenceResetHierarchy();
         public string removeButtonName { get => "Remove " + typeof(T).Name; }
-        [PropertyOrder(-1), Button(Name = "@removeButtonName", ButtonHeight = 40), GUIColor(1, 0.4f, 0.4f), ShowIf("@content != null")] void RemoveExecuterGroup()
+        [PropertyOrder(-1), Button(Name = "@removeButtonName", ButtonHeight = 40), GUIColor(1, 0.4f, 0.4f), ShowIf("@content != null")]public virtual void Remove()
         {
             content.Remove();
         }
