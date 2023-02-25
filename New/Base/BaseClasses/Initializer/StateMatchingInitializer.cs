@@ -15,7 +15,7 @@ namespace Nino.NewStateMatching
             if(SMSRoot)EditorUtility.OpenHierarchy(SMSRoot?.gameObject, true);
         }
         [Button(size:ButtonSizes.Large,Style = ButtonStyle.Box),GUIColor(0.4f,1,0.4f),PropertyOrder(-100)]
-        void InitializeStateMatching(string newStateMatchingRootAddress)
+        void InitializeStateMatching(string rootAddressName)
         {
             GetGlobalReference();
             SMSRoot = GetComponentInChildren<T>();
@@ -27,13 +27,13 @@ namespace Nino.NewStateMatching
                 SMSRoot.globalReferences = globalReferences;
                 globalReferences.references.Add(SMSRoot);
                 globalReferences.references.RemoveAll(x => x == null);
-                SMSRoot.address.localAddress = newStateMatchingRootAddress;
+                SMSRoot.address.localAddress = rootAddressName;
                 SMSRoot.address.UpdateGlobalAddressOfSystem();
             }
             else
             {
                 SMSRoot.Initialize();
-                SMSRoot.address.localAddress = newStateMatchingRootAddress;
+                SMSRoot.address.localAddress = rootAddressName;
                 SMSRoot.address.UpdateGlobalAddressOfSystem();
             }
             ResetHierarchy();

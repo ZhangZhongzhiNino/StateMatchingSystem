@@ -19,6 +19,7 @@ namespace Nino.NewStateMatching
         [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f), PropertyOrder(-100)] public override void Initialize()
         {
             if (address == null) address = ScriptableObject.CreateInstance<AddressData>();
+            address.script = this;
             InitializeExecuterCategorys();
             ResetHierarchy();
         }
@@ -48,7 +49,7 @@ namespace Nino.NewStateMatching
                 newInstance = GeneralUtility.CreateGameObjectWithStateMatchingMonoBehaviour<T>(objName, this.transform);
                 newInstance.stateMatchingRoot = this;
             }
-            
+            address.AddChild(newInstance.address);
             return newInstance;
         }
     }
