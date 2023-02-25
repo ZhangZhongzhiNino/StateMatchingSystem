@@ -1,4 +1,5 @@
 ﻿using Nino.NewStateMatching.PlayerCharacter.Variable;
+using Sirenix.OdinInspector;
 
 namespace Nino.NewStateMatching.PlayerCharacter
 {

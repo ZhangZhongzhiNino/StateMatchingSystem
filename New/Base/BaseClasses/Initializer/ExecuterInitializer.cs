@@ -11,12 +11,12 @@
 
         protected override string WriteAfterName()
         {
-            return "(";
+            return ">";
         }
 
         protected override string WriteBeforeName()
         {
-            return ")";
+            return "<";
         }
     }
 }

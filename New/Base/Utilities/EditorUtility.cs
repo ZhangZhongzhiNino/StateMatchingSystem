@@ -9,7 +9,7 @@ namespace Nino.NewStateMatching
         public static void OpenHierarchy(GameObject obj, bool open)
         {
             if (obj == null) return;
-            EditorApplication.ExecuteMenuItem("Window/Panels/7 Hierarchy");
+            EditorApplication.ExecuteMenuItem("Window/Panels/6 Hierarchy");
             var hierarchyWindow = EditorWindow.focusedWindow;
             var expandMethodInfo = hierarchyWindow.GetType().GetMethod("SetExpandedRecursive");
             expandMethodInfo.Invoke(hierarchyWindow, new object[] { obj.GetInstanceID(), open });
