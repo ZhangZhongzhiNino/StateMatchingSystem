@@ -11,7 +11,7 @@ using Nino.NewStateMatching.PlayerCharacter.Variable;
 
 namespace Nino.NewStateMatching.PlayerCharacter
 {
-    public class SMSPlayerCharacterInitializer : StateMatchingInitializer<SMSPlayerCharacterRoot>
+    public class SMSPlayerCharacterInitializer : StateMatchingRootInitializer<SMSPlayerCharacterRoot>
     {
 
     }
@@ -52,11 +52,6 @@ namespace Nino.NewStateMatching.PlayerCharacter
         {
         }
 
-        protected override void InitializeExecuterInitializers()
-        {
-            
-        }
-
         protected override void RemoveExecuterGroups()
         {
         }
@@ -64,6 +59,11 @@ namespace Nino.NewStateMatching.PlayerCharacter
         protected override void RemoveExecuters()
         {
             
+        }
+
+        protected override string WriteAddress()
+        {
+            return "Input";
         }
     }
     public class InternalEventCategory : ExecuterCategory
@@ -72,11 +72,6 @@ namespace Nino.NewStateMatching.PlayerCharacter
         {
         }
 
-        protected override void InitializeExecuterInitializers()
-        {
-            
-        }
-
         protected override void RemoveExecuterGroups()
         {
         }
@@ -84,6 +79,11 @@ namespace Nino.NewStateMatching.PlayerCharacter
         protected override void RemoveExecuters()
         {
             
+        }
+
+        protected override string WriteAddress()
+        {
+            return "Internal Event";
         }
     }
     public class VariableCategory : ExecuterCategory
@@ -94,11 +94,6 @@ namespace Nino.NewStateMatching.PlayerCharacter
             singleVariableExecuterGroup = GeneralUtility.InitializeInitializer<SingleVariableExecuterGroupInitializer, SingleVariableExecuterGroup>(this);
         }
 
-        protected override void InitializeExecuterInitializers()
-        {
-            
-        }
-
         protected override void RemoveExecuterGroups()
         {
         }
@@ -106,6 +101,11 @@ namespace Nino.NewStateMatching.PlayerCharacter
         protected override void RemoveExecuters()
         {
             
+        }
+
+        protected override string WriteAddress()
+        {
+            return "Variable";
         }
     }
     public class DataCategory : ExecuterCategory
@@ -114,11 +114,6 @@ namespace Nino.NewStateMatching.PlayerCharacter
         {
         }
 
-        protected override void InitializeExecuterInitializers()
-        {
-            
-        }
-
         protected override void RemoveExecuterGroups()
         {
         }
@@ -126,6 +121,11 @@ namespace Nino.NewStateMatching.PlayerCharacter
         protected override void RemoveExecuters()
         {
             
+        }
+
+        protected override string WriteAddress()
+        {
+            return "Data";
         }
     }
     public class ActionCategory : ExecuterCategory
@@ -134,11 +134,6 @@ namespace Nino.NewStateMatching.PlayerCharacter
         {
         }
 
-        protected override void InitializeExecuterInitializers()
-        {
-            
-        }
-
         protected override void RemoveExecuterGroups()
         {
         }
@@ -146,6 +141,11 @@ namespace Nino.NewStateMatching.PlayerCharacter
         protected override void RemoveExecuters()
         {
             
+        }
+
+        protected override string WriteAddress()
+        {
+            return "Action";
         }
     }
     public class StateMachineCategory : ExecuterCategory
@@ -154,11 +154,6 @@ namespace Nino.NewStateMatching.PlayerCharacter
         {
         }
 
-        protected override void InitializeExecuterInitializers()
-        {
-            
-        }
-
         protected override void RemoveExecuterGroups()
         {
         }
@@ -166,6 +161,11 @@ namespace Nino.NewStateMatching.PlayerCharacter
         protected override void RemoveExecuters()
         {
             
+        }
+
+        protected override string WriteAddress()
+        {
+            return "State Machine";
         }
     }
 }

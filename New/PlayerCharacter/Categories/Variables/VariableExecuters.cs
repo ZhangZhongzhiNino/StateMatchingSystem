@@ -181,12 +181,13 @@ namespace Nino.NewStateMatching.PlayerCharacter.Variable
 
 
     public class VariableExecuter<Item, Collection, DataController>
-        : GroupedDataExecuter, IDataExecuter<Item, Collection, DataController>
+        : SMSExecuter, IDataExecuter<Item, Collection, DataController>
         where Item : NewStateMatching.Item
         where Collection : NewStateMatching.Collection<Item>
         where DataController : NewStateMatching.DataController<Item, Collection>
     {
-        [ShowInInspector] public DataController dataController { get; set; }
+        public DataController _datacontroller;
+        public DataController dataController { get => _datacontroller; set => _datacontroller = value; }
         protected override void InitializeDataController()
         {
             dataController = ScriptableObject.CreateInstance<DataController>();
@@ -204,15 +205,36 @@ namespace Nino.NewStateMatching.PlayerCharacter.Variable
     public class Vector3Executer : VariableExecuter<Vector3Item, Vector3Collection, Vector3DataController> { }
     public class StringExecuter : VariableExecuter<StringItem, StringCollection, StringDataController> { }
 
-    public class IntExecuterInitializer : GroupedExecuterInitializer<IntExecuter> { }
-    public class FloatExecuterInitializer : GroupedExecuterInitializer<FloatExecuter> { }
-    public class BoolExecuterInitializer : GroupedExecuterInitializer<BoolExecuter> { }
-    public class Vector2ExecuterInitializer : GroupedExecuterInitializer<Vector2Executer> { }
-    public class Vector3ExecuterInitializer : GroupedExecuterInitializer<Vector3Executer> { }
-    public class StringExecuterInitializer : GroupedExecuterInitializer<StringExecuter> { }
+    public class IntExecuterInitializer : ExecuterInitializer<IntExecuter>
+    {
+        protected override string WriteName() => "Int";
+    }
+    public class FloatExecuterInitializer : ExecuterInitializer<FloatExecuter>
+    {
+        protected override string WriteName() => "Float";
+    }
+    public class BoolExecuterInitializer : ExecuterInitializer<BoolExecuter>
+    {
+        protected override string WriteName() => "Bool";
+    }
+    public class Vector2ExecuterInitializer : ExecuterInitializer<Vector2Executer>
+    {
+        protected override string WriteName() => "Vector2";
+    }
+    public class Vector3ExecuterInitializer : ExecuterInitializer<Vector3Executer>
+    {
+        protected override string WriteName() => "Vector3";
+    }
+    public class StringExecuterInitializer : ExecuterInitializer<StringExecuter>
+    {
+        protected override string WriteName() => "String";
+    }
 
 
-    public class SingleVariableExecuterGroupInitializer : ExecuterGroupInitializer<SingleVariableExecuterGroup> { }
+    public class SingleVariableExecuterGroupInitializer : ExecuterGroupInitializer<SingleVariableExecuterGroup>
+    {
+        protected override string WriteName() => "Single Variable";
+    }
     public class SingleVariableExecuterGroup : ExecuterGroup
     {
         public IntExecuterInitializer intExecuter;

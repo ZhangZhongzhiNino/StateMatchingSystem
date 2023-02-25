@@ -1,13 +1,22 @@
-using System.Collections;
-using System;
-
-namespace Nino.NewStateMatching
+﻿namespace Nino.NewStateMatching
 {
-    public class ExecuterInitializer<T> : StateMatchingMonoBehaviourInitializer<T> where T : DataExecuter
+    public abstract class ExecuterInitializer<T> : StateMatchingMonoBehaviourInitializer<T> where T : SMSExecuter
     {
-        protected override void AddCreaterReference()
+        protected override void AddCreaterReferenceResetHierarchy()
         {
-            content.executerCategory = creater as ExecuterCategory;
+            ExecuterGroup _creater = creater as ExecuterGroup;
+            content.executerGroup = _creater;
+            _creater.ResetHierarchy();
+        }
+
+        protected override string WriteAfterName()
+        {
+            return "(";
+        }
+
+        protected override string WriteBeforeName()
+        {
+            return ")";
         }
     }
 }

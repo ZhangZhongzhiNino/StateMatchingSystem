@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 
 namespace Nino.NewStateMatching
 {
-    public abstract class StateMatchingInitializer<T> : MonoBehaviour where T:StateMatchingRoot
+    public abstract class StateMatchingRootInitializer<T> : MonoBehaviour where T:StateMatchingRoot
     {
         public StateMatchingGlobalReference globalReferences;
         public T SMSRoot;
@@ -15,7 +15,7 @@ namespace Nino.NewStateMatching
             if(SMSRoot)EditorUtility.OpenHierarchy(SMSRoot?.gameObject, true);
         }
         [Button(size:ButtonSizes.Large,Style = ButtonStyle.Box),GUIColor(0.4f,1,0.4f),PropertyOrder(-100)]
-        void InitializeStateMatching()
+        void InitializeStateMatching(string newStateMatchingRootAddress)
         {
             GetGlobalReference();
             SMSRoot = GetComponentInChildren<T>();
@@ -26,10 +26,15 @@ namespace Nino.NewStateMatching
                 SMSRoot.objRoot = this.gameObject;
                 SMSRoot.globalReferences = globalReferences;
                 globalReferences.references.Add(SMSRoot);
+                globalReferences.references.RemoveAll(x => x == null);
+                SMSRoot.address.localAddress = newStateMatchingRootAddress;
+                SMSRoot.address.UpdateGlobalAddressOfSystem();
             }
             else
             {
                 SMSRoot.Initialize();
+                SMSRoot.address.localAddress = newStateMatchingRootAddress;
+                SMSRoot.address.UpdateGlobalAddressOfSystem();
             }
             ResetHierarchy();
         }

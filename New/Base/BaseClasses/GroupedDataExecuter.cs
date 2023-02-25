@@ -3,10 +3,10 @@ using Sirenix.OdinInspector;
 
 namespace Nino.NewStateMatching
 {
-    public abstract class GroupedDataExecuter: StateMatchingMonoBehaviour
+    public abstract class SMSExecuter: StateMatchingMonoBehaviour
     {
         public ExecuterGroup executerGroup;
-        [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 1), PropertyOrder(-9999999999)] protected void ResetHierarchy() 
+        [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 1), PropertyOrder(-9999999999)] public void ResetHierarchy() 
         {
             EditorUtility.OpenHierarchy(executerGroup?.executerCategory?.stateMatchingRoot?.objRoot, true);
             EditorUtility.OpenHierarchy(executerGroup?.executerCategory?.stateMatchingRoot?.gameObject, true);

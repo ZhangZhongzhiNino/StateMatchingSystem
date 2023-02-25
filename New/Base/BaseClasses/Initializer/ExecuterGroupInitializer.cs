@@ -1,10 +1,22 @@
 ﻿namespace Nino.NewStateMatching
 {
-    public class ExecuterGroupInitializer<T> : StateMatchingMonoBehaviourInitializer<T> where T : ExecuterGroup
+    public abstract class ExecuterGroupInitializer<T> : StateMatchingMonoBehaviourInitializer<T> where T : ExecuterGroup
     {
-        protected override void AddCreaterReference()
+        protected override void AddCreaterReferenceResetHierarchy()
         {
-            content.executerCategory = creater as ExecuterCategory;
+            ExecuterCategory _creater = creater as ExecuterCategory;
+            content.executerCategory = _creater;
+            _creater.ResetHierarchy();
+        }
+
+        protected override string WriteAfterName()
+        {
+            return "";
+        }
+
+        protected override string WriteBeforeName()
+        {
+            return "____";
         }
     }
 }
