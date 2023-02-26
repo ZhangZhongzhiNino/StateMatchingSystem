@@ -2,7 +2,7 @@
 {
     public class FloatItem : VariableItem<float>
     {
-        protected override void InitializeInstance()
+        public FloatItem():base()
         {
             value = 0;
         }

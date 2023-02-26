@@ -7,7 +7,7 @@ namespace Nino.NewStateMatching
 {
     public static class DataUtility
     {
-        public static bool ScriptableObjectIsDefaultOrNull<T>(T obj) where T : ScriptableObject
+        public static bool ScriptableObjectIsDefaultOrNull<T>(T obj) where T : class
         {
             return (obj == null || obj == default(T));
         }
@@ -15,19 +15,19 @@ namespace Nino.NewStateMatching
         {
             return (list == null || list.Count == 0);
         }
-        public static bool ListContainItem<T>(Predicate<T> match, List<T> list) where T : ScriptableObject
+        public static bool ListContainItem<T>(Predicate<T> match, List<T> list) where T : class
         {
             T getItem = GetItemInList<T>(match, list);
             return getItem != null;
         }
-        public static T GetItemInList<T>(Predicate<T> match, List<T> list) where T : ScriptableObject
+        public static T GetItemInList<T>(Predicate<T> match, List<T> list) where T : class
         {
             if (ListIsNullOrEmpty<T>(list)) return null;
             T getItem = list.Find(match);
             if (ScriptableObjectIsDefaultOrNull<T>(getItem)) return null;
             return getItem;
         }
-        public static List<T> GetItemsInList<T>(Predicate<T> match, List<T> list) where T : ScriptableObject
+        public static List<T> GetItemsInList<T>(Predicate<T> match, List<T> list) where T : class
         {
             if (DataUtility.ListIsNullOrEmpty<T>(list)) return null;
             List<T> r = list.FindAll(match);
@@ -43,12 +43,13 @@ namespace Nino.NewStateMatching
         public static T AddItemToList<T>(string newItemName, List<T> list) where T : Item
         {
             if (ListContainItem(item => item.itemName == newItemName, list)) return GetItemInList(item => item.itemName == newItemName, list);
-            T newItem = ScriptableObject.CreateInstance<T>();
+            T newItem = (T)Activator.CreateInstance<T>();
+            newItem.Initialize();
             newItem.itemName = newItemName;
             if (AddItemToList(newItem, list)) return newItem;
             else throw new Exception("Unknow error in create new Item");
         }
-        public static int RemoveItemsInList<T>(Predicate<T> match, List<T> list) where T : ScriptableObject
+        public static int RemoveItemsInList<T>(Predicate<T> match, List<T> list) where T : class
         {
             int r = list.FindAll(match).Count;
             list.RemoveAll(match);

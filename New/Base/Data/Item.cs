@@ -4,12 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-
+using UnityEngine;
 
 namespace Nino.NewStateMatching
 {
-    [InlineEditor]
-    public abstract class Item : DataScriptableObject
+    public abstract class Item  
     {
         [LabelWidth(80), PropertyOrder(-102)] public string itemName;
         [LabelWidth(80), PropertyOrder(-101)] public string group;
@@ -18,8 +17,13 @@ namespace Nino.NewStateMatching
         {
             tags = DataUtility.RemoveAllRedundantStringInList(tags);
         }
-        
-        protected override void InitializeBaseScriptableObject()
+        public Item()
+        {
+            itemName = "";
+            group = "";
+            tags = new List<string>();
+        }
+        public virtual void Initialize()
         {
             itemName = "";
             group = "";

@@ -1,13 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    public class IntItem : VariableItem<int>
+    public class IntItem : Item
     {
-        protected override void InitializeInstance()
+        public int value;
+        protected override void AssignItem(Item newItem)
         {
-            value = 0;
+            IntItem _item = newItem as IntItem;
+            value = _item.value;
+        }
+        public IntItem() : base()
+        {
+            
         }
     }
 }

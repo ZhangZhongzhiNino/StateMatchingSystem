@@ -2,7 +2,7 @@
 {
     public class BoolItem : VariableItem<bool>
     {
-        protected override void InitializeInstance()
+        public BoolItem() : base()
         {
             value = false;
         }

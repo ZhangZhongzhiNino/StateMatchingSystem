@@ -1,8 +1,7 @@
 ﻿namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    public abstract class VariableDataController<Item, Collection> : DataController<Item, Collection>
-        where Item : NewStateMatching.Item
-        where Collection : NewStateMatching.Collection<Item>
+    public abstract class VariableDataController<Item> : DataController
+        where Item : NewStateMatching.Item, new()
     {
         protected override void InitializeInstance()
         {

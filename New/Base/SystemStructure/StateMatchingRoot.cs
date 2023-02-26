@@ -19,7 +19,12 @@ namespace Nino.NewStateMatching
         }
         [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f), PropertyOrder(-100)] public override void Initialize()
         {
-            if (address == null) address = ScriptableObject.CreateInstance<AddressData>();
+            address = gameObject.GetComponent<AddressData>();
+            if (address == null)
+            {
+                address = gameObject.AddComponent<AddressData>();
+                address.Initialize();
+            }
             address.script = this;
             InitializeExecuterCategorys();
             ResetHierarchy();

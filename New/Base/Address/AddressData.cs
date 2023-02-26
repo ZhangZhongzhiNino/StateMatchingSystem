@@ -4,21 +4,25 @@ using UnityEditor;
 using UnityEngine;
 namespace Nino.NewStateMatching
 {
-    [InlineEditor]
-    public class AddressData:StateMatchingScriptableObject
+    
+    public class AddressData :StateMatchingMonoBehaviour
     {
         [ReadOnly]public StateMatchingMonoBehaviour script;
         [OnValueChanged("UpdateGlobalAddressInChild")]public string localAddress;
         [ReadOnly] public string globalAddress;
         [HideInInlineEditors] public AddressData parent;
-        [ListDrawerSettings(HideAddButton = false,HideRemoveButton = true,DraggableItems = false,ListElementLabelName = "localAddress")] public List<AddressData> childs;
-
-        protected override void Initialize()
+        [InlineEditor,ListDrawerSettings(HideAddButton = false,HideRemoveButton = true,DraggableItems = false,ListElementLabelName = "localAddress")] public List<AddressData> childs;
+        public override void Initialize()
         {
             localAddress = "";
             globalAddress = "";
             parent = null;
             childs = new List<AddressData>();
+        }
+
+        public override void Remove()
+        {
+            GeneralUtility.RemoveComponent(this);
         }
         public void AddChild(AddressData child)
         {
@@ -63,6 +67,8 @@ namespace Nino.NewStateMatching
             RemoveNullChildsInSystem();
             UpdateGlobalAddressOfSystem();
         }
+
+        
     }
 }
 

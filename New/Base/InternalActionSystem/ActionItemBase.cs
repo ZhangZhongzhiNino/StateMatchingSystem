@@ -30,10 +30,6 @@ namespace Nino.NewStateMatching
         }
         protected abstract string WriteDescription();
     }
-    public interface IActionWithVariableInput<V> where V: ActionInputVariable
-    {
-        V value { get; set; }
-    } 
     [InlineEditor]
     public class ActionContainer<S> : StateMatchingScriptableObject
         where S: SMSExecuter

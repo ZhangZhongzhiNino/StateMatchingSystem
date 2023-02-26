@@ -18,7 +18,13 @@ namespace Nino.NewStateMatching
         }
         public override void Initialize()
         {
-            if (address == null) address = ScriptableObject.CreateInstance<AddressData>();
+            address = gameObject.GetComponent<AddressData>();
+            if (address == null)
+            {
+                address = gameObject.AddComponent<AddressData>();
+                address.Initialize();
+            }
+            
             address.script = this;
             if(string.IsNullOrWhiteSpace(address.localAddress))address.localAddress = WriteAddress();
             InitializeExecuterGroupInitializers();

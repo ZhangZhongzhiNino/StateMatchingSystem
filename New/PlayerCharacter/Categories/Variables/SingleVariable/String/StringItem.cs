@@ -2,7 +2,7 @@
 {
     public class StringItem : VariableItem<string>
     {
-        protected override void InitializeInstance()
+        public StringItem() : base()
         {
             value = "";
         }

@@ -1,6 +1,6 @@
 ﻿namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    public class FloatExecuter : VariableExecuter<FloatItem, FloatCollection, FloatDataController>
+    public class FloatExecuter : OldVariableExecuter<FloatItem, FloatDataController>
     {
         protected override string WriteLocalAddress()
         {

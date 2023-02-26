@@ -4,7 +4,7 @@ namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
     public class Vector3Item : VariableItem<Vector3>
     {
-        protected override void InitializeInstance()
+        public Vector3Item()
         {
             value = Vector3.zero;
         }
