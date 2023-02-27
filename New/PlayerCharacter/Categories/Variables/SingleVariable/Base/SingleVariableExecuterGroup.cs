@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using Sirenix.OdinInspector;
-using UnityEditor;
-using UnityEngine;
-namespace Nino.NewStateMatching.PlayerCharacter.Variable
+﻿namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
     public class SingleVariableExecuterGroup : ExecuterGroup
     {
@@ -30,18 +26,6 @@ namespace Nino.NewStateMatching.PlayerCharacter.Variable
         protected override string WriteLocalAddress()
         {
             return "Single Variable";
-        }
-    }
-    [InlineEditor,System.Serializable]
-    public abstract class BaseVariableData : DataScriptableObject
-    {
-        public List<string> names;
-
-
-        protected override void InitializeBaseScriptableObject()
-        {
-            names = new List<string>();
-            Debug.Log("NewString");
         }
     }
 }

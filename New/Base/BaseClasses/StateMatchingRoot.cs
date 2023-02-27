@@ -11,7 +11,7 @@ namespace Nino.NewStateMatching
         
         [FoldoutGroup("Reference")] public GameObject objRoot;
         [FoldoutGroup("Reference")] public StateMatchingGlobalReference globalReferences;
-        [FoldoutGroup("Reference")] public AddressData address;
+        [FoldoutGroup("Reference"), InlineEditor] public AddressData address;
         [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 1),PropertyOrder(-9999999999)] public void ResetHierarchy()
         {
             EditorUtility.OpenHierarchy(objRoot, true);
@@ -19,12 +19,7 @@ namespace Nino.NewStateMatching
         }
         [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f), PropertyOrder(-100)] public override void Initialize()
         {
-            address = gameObject.GetComponent<AddressData>();
-            if (address == null)
-            {
-                address = gameObject.AddComponent<AddressData>();
-                address.Initialize();
-            }
+            if (address == null) address = ScriptableObject.CreateInstance<AddressData>();
             address.script = this;
             InitializeExecuterCategorys();
             ResetHierarchy();

@@ -35,6 +35,10 @@ namespace Nino.NewStateMatching
         {
             content = creater.GetComponentInChildren<T>();
         }
+        protected override void RunOnEveryEnable()
+        {
+            TryFindContent();
+        }
     }
 }
 

@@ -9,7 +9,7 @@ namespace Nino.NewStateMatching
     public abstract class ExecuterCategory : StateMatchingMonoBehaviour
     {
         [FoldoutGroup("Reference")] public StateMatchingRoot stateMatchingRoot;
-        [FoldoutGroup("Reference")] public AddressData address;
+        [FoldoutGroup("Reference"), InlineEditor] public AddressData address;
         [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 1), PropertyOrder(-9999999999)] public void ResetHierarchy()
         {
             EditorUtility.OpenHierarchy(stateMatchingRoot?.objRoot, true);
@@ -18,13 +18,7 @@ namespace Nino.NewStateMatching
         }
         public override void Initialize()
         {
-            address = gameObject.GetComponent<AddressData>();
-            if (address == null)
-            {
-                address = gameObject.AddComponent<AddressData>();
-                address.Initialize();
-            }
-            
+            if (address == null) address = ScriptableObject.CreateInstance<AddressData>();
             address.script = this;
             if(string.IsNullOrWhiteSpace(address.localAddress))address.localAddress = WriteAddress();
             InitializeExecuterGroupInitializers();

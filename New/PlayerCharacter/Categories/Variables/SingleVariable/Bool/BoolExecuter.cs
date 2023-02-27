@@ -1,6 +1,6 @@
 ﻿namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    public class BoolExecuter : OldVariableExecuter<BoolItem, BoolDataController>
+    public class BoolExecuter : VariableExecuter<BoolItem,BoolDataController>
     {
         protected override string WriteLocalAddress()
         {

@@ -4,11 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using UnityEngine;
+
 
 namespace Nino.NewStateMatching
 {
-    public abstract class Item  
+    [InlineEditor]
+    public abstract class Item 
     {
         [LabelWidth(80), PropertyOrder(-102)] public string itemName;
         [LabelWidth(80), PropertyOrder(-101)] public string group;
@@ -17,13 +18,12 @@ namespace Nino.NewStateMatching
         {
             tags = DataUtility.RemoveAllRedundantStringInList(tags);
         }
-        public Item()
+        public bool ResetWenEnabled;
+        public virtual void ResetData()
         {
-            itemName = "";
-            group = "";
-            tags = new List<string>();
+
         }
-        public virtual void Initialize()
+        public Item()
         {
             itemName = "";
             group = "";

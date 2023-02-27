@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+﻿/*using Sirenix.OdinInspector;
 
 using System;
 using System.Collections.Generic;
@@ -9,8 +9,8 @@ using UnityEngine;
 
 namespace Nino.NewStateMatching
 {
-    [InlineEditor,Serializable]
-    public class Collection<Item>  where Item: NewStateMatching.Item,new()
+    [InlineEditor]
+    public abstract class Collection<Item> : DataScriptableObject where Item: NewStateMatching.Item,new()
     {
         [FoldoutGroup("Items",order: -100),ListDrawerSettings(ShowIndexLabels = true,ListElementLabelName = "itemName"),PropertyOrder(1),PropertySpace(SpaceBefore =2,SpaceAfter =10)] public List<Item> items;
         [FoldoutGroup("Group and Tags"),TabGroup("Group and Tags/veriables", "Groups"),ReadOnly, PropertyOrder(-1)] public Dictionary<string,int> groupQuickLook;
@@ -19,7 +19,7 @@ namespace Nino.NewStateMatching
         public List<string> groups { get => groupQuickLook?.Keys?.ToList(); }
         public List<string> tags { get => tagQuickLook?.Keys?.ToList(); }
 
-        public Collection():base()
+        protected override void InitializeBaseScriptableObject()
         {
             items = new List<Item>();
             groupQuickLook = new Dictionary<string, int>();
@@ -108,7 +108,7 @@ namespace Nino.NewStateMatching
         {
             for (int i = 0; i < items.Count; i++)
             {
-                if (items[i] == null) items[i] = (Item)Activator.CreateInstance(typeof(Item));
+                if (items[i] == null) items[i] = new Item();
             }
         }
 
@@ -214,12 +214,25 @@ namespace Nino.NewStateMatching
             return new List<string>(r);
         }
         public bool Contain(Predicate<Item> match) => DataUtility.ListContainItem(match, items);
-        public Item GetItem(Predicate<Item> match) => DataUtility.GetItemInList(match, items);
         public List<Item> GetItems(Predicate<Item> match) => DataUtility.GetItemsInList(match, items);
+        public List<Item> GetItemsCopy(Predicate<Item> match)
+        {
+            List<Item> getItems = DataUtility.GetItemsInList(match, items);
+            List<Item> r = new List<Item>();
+            foreach(Item i in getItems)
+            {
+                r.Add(DataUtility.CopyScriptableObject<Item>(i));
+            }
+            return r;
+        }
         public bool AddItem(Item newItem) => DataUtility.AddItemToList(newItem, items);
-        public Item AddItem(string newItemName) => DataUtility.AddItemToList(newItemName, items);
-        public int RemoveItems(Predicate<Item> match) => DataUtility.RemoveItemsInList(match, items);
-
+        public bool AddItemCopy(Item newItem)
+        {
+            Item addItem = DataUtility.CopyScriptableObject<Item>(newItem);
+            return DataUtility.AddItemToList(addItem, items);
+        }
+        public bool AddItem(string newItemName) => DataUtility.AddItemToList(newItemName, items);
     }
 }
 
+*/

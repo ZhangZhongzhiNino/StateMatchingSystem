@@ -2,7 +2,7 @@
 {
     public class FloatItem : VariableItem<float>
     {
-        public FloatItem():base()
+        public FloatItem() : base()
         {
             value = 0;
         }
