@@ -7,6 +7,7 @@ namespace Nino.NewStateMatching
     {
         [FoldoutGroup("Reference")] public ExecuterGroup executerGroup;
         [FoldoutGroup("Reference"), InlineEditor] public AddressData address;
+        [FoldoutGroup("Reference")] public System.Type actionContainerType;
         [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 1), PropertyOrder(-9999999999)] public void ResetHierarchy() 
         {
             EditorUtility.OpenHierarchy(executerGroup?.executerCategory?.stateMatchingRoot?.objRoot, true);
@@ -19,16 +20,16 @@ namespace Nino.NewStateMatching
             if (address == null) address = ScriptableObject.CreateInstance<AddressData>();
             address.localAddress = WriteLocalAddress();
             address.script = this;
-            InitializeDataController();
+            InitializeInstance();
         }
         protected abstract string WriteLocalAddress();
-        protected abstract void InitializeDataController();
+        protected abstract void InitializeInstance();
         public override void Remove()
         {
-            PreRemoveDataControllers();
+            PreRemoveInstance();
             GeneralUtility.RemoveGameObject(this.gameObject);
         }
-        protected abstract void PreRemoveDataControllers();
+        protected abstract void PreRemoveInstance();
     }
 }
 

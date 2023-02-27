@@ -4,65 +4,58 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 namespace Nino.NewStateMatching
 {
+    public class newActionInput : ActionInput
+    {
+        public int i;
+    }
     [InlineEditor]
-    public abstract class ActionItemBase<S> : DataScriptableObject 
+    public abstract class ActionInput
+    {
+        public bool b;
+    }
+    [InlineEditor]
+    public abstract class ActionItemBase<S> 
         where S: SMSExecuter
     {
-        public S script;
-        public string actionName;
-        public ActionInputVariable inputs;
-        protected override void InitializeBaseScriptableObject()
+        [ReadOnly] public S script;
+        [ReadOnly] public string actionName;
+        public ActionInput input;
+        [Button]
+        void setinput()
         {
-            
+            input = new newActionInput();
+        }
+        public ActionItemBase(S script)
+        {
+            actionName = "";
+            this.script = script;
         }
 
         [Button(ButtonSizes.Large), GUIColor(1f, 1, 0.4f)]
         public abstract void PerformAction();
+        public abstract void AssignVariable(ActionItemBase<S> instance);
     }
-    [InlineEditor]
-    public abstract class ActionInputVariable : DataScriptableObject
-    {
-        [ReadOnly, SerializeField, TextArea, FoldoutGroup("Action Description")]
-        string actionDescription;
-        protected override void InitializeBaseScriptableObject()
-        {
-            actionDescription = WriteDescription();
-        }
-        protected abstract string WriteDescription();
-    }
-    public interface IActionWithVariableInput<V> where V: ActionInputVariable
-    {
-        V value { get; set; }
-    } 
-    [InlineEditor]
-    public class ActionContainer<S> : StateMatchingScriptableObject
+    
+    public abstract class ActionContainer<S>
         where S: SMSExecuter
     {
+        [ReadOnly]public S script;
         public List<ActionItemBase<S>> actions;
-        public Dictionary<string, ActionItemBase<S>> dic_actions;
-        public Dictionary<string, ActionInputVariable> dic_Values;
-        protected override void Initialize()
+
+        public ActionContainer(S script)
         {
+            this.script = script;
             actions = new List<ActionItemBase<S>>();
-            dic_actions = new Dictionary<string, ActionItemBase<S>>();
         }
-        public void UpdateDictionary()
+        public List<string> GetAllActionNames()
         {
-            if(dic_actions == null)dic_actions = new Dictionary<string, ActionItemBase<S>>();
-            foreach(ActionItemBase<S> action in actions)
+            if (actions == null || actions.Count == 0) return null;
+            List<string> r = new List<string>();
+            foreach (ActionItemBase<S> action in actions)
             {
-                dic_actions.TryAdd(action.actionName, action);
+                r.Add(action.actionName);
             }
-            if (dic_Values == null) dic_Values = new Dictionary<string, ActionInputVariable>();
-            foreach(ActionItemBase<S> action in actions)
-            {
-                dic_Values.TryAdd(action.actionName,action.inputs);
-            }
-        }
-
-        protected override void RunOnEveryEnable()
-        {
-
+            return r;
         }
     }
 

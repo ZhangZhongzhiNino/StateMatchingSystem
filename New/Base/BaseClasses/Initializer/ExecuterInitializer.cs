@@ -16,7 +16,6 @@
             ExecuterGroup _creater = creater as ExecuterGroup;
             _creater.address.RemoveNullChildInChild();
         }
-
         protected override string WriteAfterName()
         {
             return ">";
