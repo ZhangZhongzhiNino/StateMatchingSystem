@@ -1,10 +1,10 @@
 ﻿namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    public class StringItem : VariableItem<string>
+    public class StringItem : VariableItem<string, StringValue>
     {
-        public StringItem() : base()
+        protected override ItemValue CreateNewValue()
         {
-            value = "";
+            return new StringValue();
         }
     }
 }

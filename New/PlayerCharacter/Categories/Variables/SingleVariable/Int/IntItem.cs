@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    
-    public class IntItem : VariableItem<int>
+
+    public class IntItem : VariableItem<int, IntValue>
     {
-        public IntItem() : base()
+        protected override ItemValue CreateNewValue()
         {
-            value = 0;
+            return new IntValue();
         }
     }
 }

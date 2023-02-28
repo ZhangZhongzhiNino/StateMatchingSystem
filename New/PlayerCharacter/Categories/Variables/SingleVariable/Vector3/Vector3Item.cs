@@ -2,11 +2,11 @@
 
 namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    public class Vector3Item : VariableItem<Vector3>
+    public class Vector3Item : VariableItem<Vector3, Vector3Value>
     {
-        public Vector3Item(): base()
+        protected override ItemValue CreateNewValue()
         {
-            value = Vector3.zero;
+            return new Vector3Value();
         }
     }
 }

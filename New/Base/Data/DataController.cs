@@ -12,13 +12,13 @@ using UnityEngine;
 namespace Nino.NewStateMatching
 {
     [InlineEditor]
-    public abstract class DataController<Item> : DataScriptableObject 
-        where Item: NewStateMatching.Item,new()
+    public abstract class DataController : DataScriptableObject 
+
     {
         [ReadOnly,LabelWidth(80),PropertyOrder(-101)]public string dataType;
         [FoldoutGroup("Hint",Order = -99),TextArea(minLines:5,maxLines:20),SerializeField] string hint;
         [FoldoutGroup("Note",Order =-98), TextArea(minLines: 5, maxLines: 20), SerializeField] string note;
-        [FoldoutGroup("Data",Order=-97),PropertyOrder(1),PropertySpace(SpaceAfter = 20, SpaceBefore = 10)]public List<Item> items; // public ItemCollection collection;
+        [FoldoutGroup("Data",Order=-97),PropertyOrder(1),PropertySpace(SpaceAfter = 20, SpaceBefore = 10)]public List<Item> items;
 
 
         [FoldoutGroup("Data Output Reference",Order = -96)] public Dictionary<string, Item> dic_items;
@@ -105,7 +105,7 @@ namespace Nino.NewStateMatching
                 if (i.ResetWenEnabled) i.ResetData();
             }
         }
-
+        protected abstract Item CreateNewItem();
 
         public enum FindItemMethod
         {
@@ -139,8 +139,7 @@ namespace Nino.NewStateMatching
                 temp_editItemList = temp_editItemList.Distinct().ToList();
             }
         }
-        [FoldoutGroup("Advance Edit/ Edit By Feature/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
-        void FindRepeatItem()
+        [FoldoutGroup("Advance Edit/ Edit By Feature/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)] void FindRepeatItem()
         {
             InitiateNullDatas();
             temp_editItemList = new List<Item>();
@@ -151,27 +150,23 @@ namespace Nino.NewStateMatching
                 else names.Add(i.itemName);
             }
         }
-        [FoldoutGroup("Advance Edit/ Edit By Feature/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.7f, 1, 0.7f)]
-        void FindUnNamedItem()
+        [FoldoutGroup("Advance Edit/ Edit By Feature/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.7f, 1, 0.7f)] void FindUnNamedItem()
         {
             InitiateNullDatas();
             temp_editItemList = items.FindAll(x => string.IsNullOrEmpty(x.itemName) || string.IsNullOrWhiteSpace(x.itemName));
         }
-        [FoldoutGroup("Advance Edit/ Edit By Feature/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
-        void FindUnGroupedItem()
+        [FoldoutGroup("Advance Edit/ Edit By Feature/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)] void FindUnGroupedItem()
         {
             InitiateNullDatas();
             temp_editItemList = items.FindAll(x => !x.InGroup());
         }
-        [FoldoutGroup("Advance Edit/ Edit By Feature/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.7f, 1, 0.7f)]
-        void FindUnTagedItem()
+        [FoldoutGroup("Advance Edit/ Edit By Feature/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.7f, 1, 0.7f)] void FindUnTagedItem()
         {
             InitiateNullDatas();
             temp_editItemList = items.FindAll(x => x.tags == null || x.tags.Count == 0);
         }
 
-        [FoldoutGroup("Data"), Button(ButtonSizes.Large), GUIColor(1f, 1f, 0.4f), PropertyOrder(-2)]
-        void _RemoveRedundantTagsInAllItems()
+        [FoldoutGroup("Data"), Button(ButtonSizes.Large), GUIColor(1f, 1f, 0.4f), PropertyOrder(-2)] void _RemoveRedundantTagsInAllItems()
         {
             RemoveRedundantTagsInAllItems();
             UpdateDictionrary();
@@ -180,8 +175,7 @@ namespace Nino.NewStateMatching
         {
             foreach (Item i in items) i.RemoveRedundantTags();
         }
-        [HorizontalGroup("Data/DataEditButton"), Button(ButtonSizes.Large), GUIColor(1f, 0.4f, 0.4f), PropertyOrder(-1)]
-        void _RemoveRedundantDatas()
+        [HorizontalGroup("Data/DataEditButton"), Button(ButtonSizes.Large), GUIColor(1f, 0.4f, 0.4f), PropertyOrder(-1)] void _RemoveRedundantDatas()
         {
             RemoveRedundantDatas();
             UpdateDictionrary();
@@ -201,12 +195,11 @@ namespace Nino.NewStateMatching
                 items.Remove(i);
             }
         }
-        [HorizontalGroup("Data/DataEditButton"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
-        void InitiateNullDatas()
+        [HorizontalGroup("Data/DataEditButton"), Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)] void InitiateNullDatas()
         {
             for (int i = 0; i < items.Count; i++)
             {
-                if (items[i] == null) items[i] = new Item ();
+                if (items[i] == null) items[i] = CreateNewItem();
             }
         }
 
@@ -292,7 +285,14 @@ namespace Nino.NewStateMatching
         }
         public bool Contain(Predicate<Item> match) => DataUtility.ListContainItem(match, items);
         public bool AddItem(Item newItem) => DataUtility.AddItemToList(newItem, items);
-        public Item AddItem(string newItemName) => DataUtility.AddItemToList(newItemName, items);
+        public Item AddItem(string newItemName)
+        {
+            if (items.Find(x => x.itemName == newItemName) != null) return items.Find(x => x.itemName == newItemName);
+            Item newItem = CreateNewItem();
+            newItem.itemName = newItemName;
+            AddItem(newItem);
+            return newItem;
+        }
 
     }
 }

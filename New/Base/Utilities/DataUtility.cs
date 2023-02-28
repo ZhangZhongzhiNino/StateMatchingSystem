@@ -20,16 +20,16 @@ namespace Nino.NewStateMatching
             T getItem = list.Find(match);
             return getItem != null;
         }
-        public static bool AddItemToList<T>(T newItem, List<T> list) where T : Item, new()
+        public static bool AddItemToList(Item newItem, List<Item> list)
         {
             if (list.Contains(newItem)) return false;
             list.Add(newItem);
             return true;
         }
-        public static T AddItemToList<T>(string newItemName, List<T> list) where T : Item,new()
+        public static Item AddItemToList<T>(string newItemName, List<Item> list) where T:Item,new()
         {
             if (ListContainItem(item => item.itemName == newItemName, list)) return list.Find(item => item.itemName == newItemName);
-            T newItem = new T();
+            Item newItem = new T();
             newItem.itemName = newItemName;
             if (AddItemToList(newItem, list)) return newItem;
             else throw new Exception("Unknow error in create new Item");

@@ -1,10 +1,10 @@
 ﻿namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    public class BoolItem : VariableItem<bool>
+    public class BoolItem : VariableItem<bool, BoolValue>
     {
-        public BoolItem() : base()
+        protected override ItemValue CreateNewValue()
         {
-            value = false;
+            return new BoolValue();
         }
     }
 }

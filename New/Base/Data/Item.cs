@@ -9,34 +9,31 @@ using System.Linq;
 namespace Nino.NewStateMatching
 {
     [InlineEditor]
-    public abstract class Item 
+    public abstract class Item
     {
-        [LabelWidth(80), PropertyOrder(-102)] public string itemName;
-        [LabelWidth(80), PropertyOrder(-101)] public string group;
-        [FoldoutGroup("tags",Order = -100)] public List<string> tags;
-        [FoldoutGroup("tags"), Button,GUIColor(0.4f,1,0.4f),PropertyOrder(-1)] public void RemoveRedundantTags()
+        [LabelWidth(80), PropertyOrder(-102),FoldoutGroup("Item Info")] public string itemName;
+        [LabelWidth(80), PropertyOrder(-101), FoldoutGroup("Item Info")] public string group;
+        [FoldoutGroup("Item Info/tags", Order = -100)] public List<string> tags;
+        [FoldoutGroup("Item Info/tags"), Button,GUIColor(0.4f,1,0.4f),PropertyOrder(-1)] public void RemoveRedundantTags()
         {
             tags = DataUtility.RemoveAllRedundantStringInList(tags);
         }
         public bool ResetWenEnabled;
+        public ItemValue value;
         public virtual void ResetData()
         {
-
+            if (ResetWenEnabled) value = CreateNewValue();
         }
         public Item()
         {
             itemName = "";
             group = "";
             tags = new List<string>();
+            value = CreateNewValue();
         }
-        public void AssignItem(Item newItem, bool changeName =false, bool changeGroup = false, bool changeTags = false)
-        {
-            if (changeName) itemName = newItem.itemName;
-            if (changeGroup) group = newItem.group;
-            if (changeTags) tags = new List<string>(newItem.tags);
-            AssignItem(newItem);
-        }
-        protected abstract void AssignItem(Item newItem);
+
+        protected abstract ItemValue CreateNewValue();
+
         public bool AddTag(string tag)
         {
             if (tags.Contains(tag)) return false;
@@ -144,6 +141,11 @@ namespace Nino.NewStateMatching
         public static bool HaveSameTags(Item[] items) => HaveSameTags(items.ToList());
         public static bool HaveSameTags(Item A, Item B) => HaveSameTags(new List<Item> { A, B });
  
+    }
+
+    public abstract class ItemValue
+    {
+        protected abstract void AssignItem(ItemValue newValue);
     }
 }
 

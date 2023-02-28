@@ -1,16 +1,12 @@
 ﻿using UnityEngine;
 namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    public abstract class VariableExecuter<Item, DataController>
-        : SMSExecuter, IDataExecuter<Item, DataController>
-        where Item : NewStateMatching.Item, new()
-        where DataController : NewStateMatching.DataController<Item>
+    public abstract class VariableExecuter<T,V, DataController>
+        : SMSExecuter
+        where V: VariableValue<T>,new()
+        where DataController : VariableDataController<T,V>
         
     {
-        
-        public DataController _datacontroller;
-        public DataController dataController { get => _datacontroller; set => _datacontroller = value; }
-
         protected override void InitializeInstance()
         {
             dataController = ScriptableObject.CreateInstance<DataController>();

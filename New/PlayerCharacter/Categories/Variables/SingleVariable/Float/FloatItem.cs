@@ -1,10 +1,10 @@
 ﻿namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    public class FloatItem : VariableItem<float>
+    public class FloatItem : VariableItem<float, FloatValue>
     {
-        public FloatItem() : base()
+        protected override ItemValue CreateNewValue()
         {
-            value = 0;
+            return new FloatValue();
         }
     }
 }

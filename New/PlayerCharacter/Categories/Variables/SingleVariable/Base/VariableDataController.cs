@@ -1,8 +1,8 @@
 ﻿using Sirenix.OdinInspector;
 namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    public abstract class VariableDataController<Item,T> : DataController<Item>
-        where Item : NewStateMatching.Item,new()
+    public abstract class VariableDataController<T,V> : DataController
+        where V: VariableValue<T>,new()
     {
         protected override void InitializeInstance()
         {
@@ -13,10 +13,10 @@ namespace Nino.NewStateMatching.PlayerCharacter.Variable
             return "";
         }
         [Button("Add Variable", Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)]
-        void AddValue(string newItemName, string group, T value)
+        void AddValue(string newItemName, string group, V value)
         {
             AddItem(newItemName);
-            VariableItem<T> getItem = items.Find(x => x.itemName == newItemName) as VariableItem<T>;
+            VariableItem<T,V> getItem = items.Find(x => x.itemName == newItemName) as VariableItem<T,V>;
             getItem.value = value;
             getItem.group = group;
         }
