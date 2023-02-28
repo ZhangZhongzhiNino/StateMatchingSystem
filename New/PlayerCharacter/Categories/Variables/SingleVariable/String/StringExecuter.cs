@@ -8,6 +8,7 @@ namespace Nino.NewStateMatching.PlayerCharacter.Variable
         {
             if(dataController == null) dataController = ScriptableObject.CreateInstance<StringDataController>();
             if(actionController == null) actionController = new StringActionController(this);
+            if (compareController == null) compareController = new StringCompareController(this);
         }
 
         protected override void PreRemoveInstance()

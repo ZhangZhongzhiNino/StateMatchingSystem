@@ -7,11 +7,11 @@ namespace Nino.NewStateMatching
 {
     public class CompareController
     {
-        public List<TF_CompareMethod> TFmethods;
+        public List<TF_CompareMethod> TF_methods;
         public List<CompareMethod> methods;
-        public CompareController()
+        public CompareController(SMSExecuter executer)
         {
-            TFmethods = new List<TF_CompareMethod>();
+            TF_methods = new List<TF_CompareMethod>();
             methods = new List<CompareMethod>();
         }
     }
@@ -23,9 +23,17 @@ namespace Nino.NewStateMatching
         {
             this.executer = executer;
             this.methodName = methodName;
+            demoInput = CreateCompareInput();
         }
         public abstract bool Compare(CompareInput input);
         public abstract CompareInput CreateCompareInput();
+
+        public CompareInput demoInput;
+        [Button(ButtonSizes.Large),GUIColor(1,1,0.4f)]
+        bool DemoCompare()
+        {
+            return Compare(demoInput);
+        }
     }
     public abstract class CompareMethod
     {
@@ -36,16 +44,39 @@ namespace Nino.NewStateMatching
         {
             this.executer = executer;
             this.methodName = methodName;
+            demoInput = CreateCompareInput();
         }
         public abstract float Compare(CompareInput input);
         public abstract CompareInput CreateCompareInput();
+
+        public CompareInput demoInput;
+        [Button(ButtonSizes.Large), GUIColor(1, 1, 0.4f)]
+        float DemoCompare()
+        {
+            return Compare(demoInput);
+        }
+    }
+    public abstract class ItemSelectCompareInput : CompareInput
+    {
+        [HideInInspector] public SMSExecuter executer;
+        public List<string> items
+        {
+            get
+            {
+                return executer.dataController.GetAllItemNames();
+            }
+        }
+        [ValueDropdown("items")] public string selectItem;
+        public ItemSelectCompareInput(SMSExecuter executer): base()
+        {
+            this.executer = executer;
+        }
     }
     public abstract class CompareInput
     {
-        public string methodAddress;
-        public CompareInput(string methodAddress)
+        public CompareInput()
         {
-            this.methodAddress = methodAddress;
+
         }
     }
     public class TF_CompareTarget

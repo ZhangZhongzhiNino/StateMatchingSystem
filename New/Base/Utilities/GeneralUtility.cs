@@ -89,6 +89,7 @@ namespace Nino.NewStateMatching
             Initializer newInitializer = ScriptableObject.CreateInstance<Initializer>();
             newInitializer.creater = Creater;
             newInitializer.TryFindContent();
+            if (newInitializer.content != null) newInitializer.content.Initialize();
             return newInitializer;
         }
 

@@ -7,10 +7,10 @@ namespace Nino.NewStateMatching
     {
         [FoldoutGroup("Reference")] public ExecuterGroup executerGroup;
         [FoldoutGroup("Reference"), InlineEditor] public AddressData address;
-        [FoldoutGroup("Data"), ShowIf("@dataController != null")] public DataController dataController;
-        [FoldoutGroup("Data"), ShowIf("@compareController != null")] public CompareController compareController;
-        [FoldoutGroup("Data"), ShowIf("@actionController != null")] public ActionController actionController;
-        [FoldoutGroup("Data"), ShowIf("@eventController != null")] public EventController eventController;
+        [FoldoutGroup("Controller"), TitleGroup("Controller/Data"), ShowIf("@dataController != null")] public DataController dataController;
+        [TitleGroup("Controller/Compare"), ShowIf("@compareController != null")] public CompareController compareController;
+        [TitleGroup("Controller/Action"), ShowIf("@actionController != null")] public ActionController actionController;
+        [TitleGroup("Controller/Event"), ShowIf("@eventController != null")] public EventController eventController;
         [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 1), PropertyOrder(-9999999999)] public void ResetHierarchy() 
         {
             EditorUtility.OpenHierarchy(executerGroup?.executerCategory?.stateMatchingRoot?.objRoot, true);

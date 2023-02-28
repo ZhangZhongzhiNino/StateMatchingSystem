@@ -16,6 +16,7 @@
             stringExecuter = GeneralUtility.InitializeInitializer<StringExecuterInitializer, StringExecuter>(this);
             vector2Executer = GeneralUtility.InitializeInitializer<Vector2ExecuterInitializer, Vector2Executer>(this);
             vector3Executer = GeneralUtility.InitializeInitializer<Vector3ExecuterInitializer, Vector3Executer>(this);
+
         }
 
         protected override void RemoveExecuters()

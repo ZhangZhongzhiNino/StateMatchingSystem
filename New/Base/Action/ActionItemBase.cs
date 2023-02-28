@@ -6,6 +6,7 @@ namespace Nino.NewStateMatching
 {
     public class ItemSelectActionInput : ActionInput
     {
+        [HideInInspector] public SMSExecuter executer;
         public List<string> items
         {
             get
@@ -14,16 +15,17 @@ namespace Nino.NewStateMatching
             }
         }
         [ValueDropdown("items")] public string selectItem;
-        public ItemSelectActionInput(SMSExecuter executer) : base(executer)
+        public ItemSelectActionInput(SMSExecuter executer) : base()
         {
+            this.executer = executer;
         }
     }
     public abstract class ActionInput
     {
-        [HideInInspector]public SMSExecuter executer;
-        public ActionInput(SMSExecuter executer)
+        
+        public ActionInput()
         {
-            this.executer = executer;
+            
         }
     }
     [InlineEditor]
