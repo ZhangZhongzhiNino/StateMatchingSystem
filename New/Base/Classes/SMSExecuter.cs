@@ -9,7 +9,7 @@ namespace Nino.NewStateMatching
         [FoldoutGroup("Reference"), InlineEditor] public AddressData address;
         [FoldoutGroup("Data"), ShowIf("@dataController != null")] public DataController dataController;
         [FoldoutGroup("Data"), ShowIf("@compareController != null")] public CompareController compareController;
-        [FoldoutGroup("Data"), ShowIf("@actionContainer != null")] public ActionController actionContainer;
+        [FoldoutGroup("Data"), ShowIf("@actionController != null")] public ActionController actionController;
         [FoldoutGroup("Data"), ShowIf("@eventController != null")] public EventController eventController;
         [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 1), PropertyOrder(-9999999999)] public void ResetHierarchy() 
         {

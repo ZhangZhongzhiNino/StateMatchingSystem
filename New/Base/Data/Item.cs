@@ -32,8 +32,11 @@ namespace Nino.NewStateMatching
             value = CreateNewValue();
         }
 
-        protected abstract ItemValue CreateNewValue();
-
+        public abstract ItemValue CreateNewValue();
+        public void InitiateValue() 
+        {
+            if(value == null) value = CreateNewValue();
+        }
         public bool AddTag(string tag)
         {
             if (tags.Contains(tag)) return false;
@@ -145,7 +148,7 @@ namespace Nino.NewStateMatching
 
     public abstract class ItemValue
     {
-        protected abstract void AssignItem(ItemValue newValue);
+        public abstract void AssignValue(ItemValue newValue);
     }
 }
 

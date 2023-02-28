@@ -4,9 +4,27 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 namespace Nino.NewStateMatching
 {
+    public class ItemSelectActionInput : ActionInput
+    {
+        public List<string> items
+        {
+            get
+            {
+                return executer.dataController.GetAllItemNames();
+            }
+        }
+        [ValueDropdown("items")] public string selectItem;
+        public ItemSelectActionInput(SMSExecuter executer) : base(executer)
+        {
+        }
+    }
     public abstract class ActionInput
     {
-
+        [HideInInspector]public SMSExecuter executer;
+        public ActionInput(SMSExecuter executer)
+        {
+            this.executer = executer;
+        }
     }
     [InlineEditor]
     public abstract class ActionMethod
@@ -17,18 +35,27 @@ namespace Nino.NewStateMatching
         {
             this.actionName = actionName;
             this.executer = script;
+            demoInput = CreateActionInput();
         }
 
-        [Button(ButtonSizes.Large), GUIColor(1f, 1, 0.4f)]
+        
         public abstract void PerformAction(ActionInput input);
         public abstract ActionInput CreateActionInput();
+
+
+        [SerializeField]ActionInput demoInput;
+        [Button(ButtonSizes.Large), GUIColor(1f, 1, 0.4f)]
+        void DemoAction()
+        {
+            PerformAction(demoInput);
+        }
     }
     
     public abstract class ActionController
     {
         public List<ActionMethod> actions;
 
-        public ActionController()
+        public ActionController(SMSExecuter executer)
         {
             actions = new List<ActionMethod>();
         }

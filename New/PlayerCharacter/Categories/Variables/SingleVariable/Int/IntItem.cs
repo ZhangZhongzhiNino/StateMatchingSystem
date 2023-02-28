@@ -6,7 +6,7 @@ namespace Nino.NewStateMatching.PlayerCharacter.Variable
 
     public class IntItem : VariableItem<int, IntValue>
     {
-        protected override ItemValue CreateNewValue()
+        public override ItemValue CreateNewValue()
         {
             return new IntValue();
         }

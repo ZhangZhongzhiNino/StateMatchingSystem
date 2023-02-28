@@ -4,7 +4,7 @@
     {
         public T value;
 
-        protected override void AssignItem(ItemValue newValue)
+        public override void AssignValue(ItemValue newValue)
         {
             VariableValue<T> _newValue = newValue as VariableValue<T>;
             value = _newValue.value;

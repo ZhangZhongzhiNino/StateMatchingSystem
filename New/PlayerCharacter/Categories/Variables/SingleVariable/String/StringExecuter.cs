@@ -1,10 +1,16 @@
 ﻿using Sirenix.OdinInspector;
+using UnityEngine;
 namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    public class StringExecuter : VariableExecuter<string,StringValue, StringDataController>
+    public class StringExecuter : SMSExecuter
     {
+        protected override void InitializeInstance()
+        {
+            if(dataController == null) dataController = ScriptableObject.CreateInstance<StringDataController>();
+            if(actionController == null) actionController = new StringActionController(this);
+        }
 
-        protected override void InitilizeActionContainer()
+        protected override void PreRemoveInstance()
         {
 
         }

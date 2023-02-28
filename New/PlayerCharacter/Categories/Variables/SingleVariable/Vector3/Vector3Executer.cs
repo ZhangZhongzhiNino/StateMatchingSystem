@@ -2,9 +2,15 @@
 using UnityEngine;
 namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    public class Vector3Executer : VariableExecuter<Vector3,Vector3Value,Vector3DataController>
+    public class Vector3Executer : SMSExecuter
     {
-        protected override void InitilizeActionContainer()
+        protected override void InitializeInstance()
+        {
+            if(dataController == null) dataController = ScriptableObject.CreateInstance<Vector3DataController>();
+            if(actionController == null) actionController = new Vector3ActionController(this);
+        }
+
+        protected override void PreRemoveInstance()
         {
 
         }

@@ -2,7 +2,7 @@
 {
     public class BoolItem : VariableItem<bool, BoolValue>
     {
-        protected override ItemValue CreateNewValue()
+        public override ItemValue CreateNewValue()
         {
             return new BoolValue();
         }

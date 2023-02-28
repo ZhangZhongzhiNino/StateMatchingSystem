@@ -2,7 +2,7 @@
 {
     public class StringItem : VariableItem<string, StringValue>
     {
-        protected override ItemValue CreateNewValue()
+        public override ItemValue CreateNewValue()
         {
             return new StringValue();
         }

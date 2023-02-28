@@ -18,7 +18,7 @@ namespace Nino.NewStateMatching
         [ReadOnly,LabelWidth(80),PropertyOrder(-101)]public string dataType;
         [FoldoutGroup("Hint",Order = -99),TextArea(minLines:5,maxLines:20),SerializeField] string hint;
         [FoldoutGroup("Note",Order =-98), TextArea(minLines: 5, maxLines: 20), SerializeField] string note;
-        [FoldoutGroup("Data",Order=-97),PropertyOrder(1),PropertySpace(SpaceAfter = 20, SpaceBefore = 10)]public List<Item> items;
+        [FoldoutGroup("Data",Order=-97),PropertyOrder(1),PropertySpace(SpaceAfter = 20, SpaceBefore = 10),ListDrawerSettings(ListElementLabelName ="itemName")]public List<Item> items;
 
 
         [FoldoutGroup("Data Output Reference",Order = -96)] public Dictionary<string, Item> dic_items;
@@ -200,6 +200,7 @@ namespace Nino.NewStateMatching
             for (int i = 0; i < items.Count; i++)
             {
                 if (items[i] == null) items[i] = CreateNewItem();
+                if (items[i].value == null) items[i].value = items[i].CreateNewValue();
             }
         }
 

@@ -17,7 +17,8 @@ namespace Nino.NewStateMatching.PlayerCharacter.Variable
         {
             AddItem(newItemName);
             VariableItem<T,V> getItem = items.Find(x => x.itemName == newItemName) as VariableItem<T,V>;
-            getItem.value = value;
+            getItem.InitiateValue();
+            getItem.value.AssignValue(value);
             getItem.group = group;
         }
     }
