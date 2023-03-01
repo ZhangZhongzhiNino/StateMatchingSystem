@@ -5,10 +5,13 @@ using UnityEngine.Events;
 using Sirenix.OdinInspector;
 using UnityEngine.EventSystems;
 using System;
-using Nino.StateMatching.Helper;
-public class SlideGestureInput : MonoBehaviour,IEventContainer
+using Nino.NewStateMatching.PlayerCharacter.Trigger.PlayerInput;
+public class SlideGestureInput : MonoBehaviour
 {
-    [BoxGroup("Reference")][Required][field: SerializeField] InputControl inputControl;
+    public InputExecuter_TouchGesture executer;
+
+
+    [BoxGroup("Reference")][Required][field: SerializeField] InputReader inputReader;
 
     [TabGroup("Tap")] public UnityEvent singleTap;
 
@@ -71,12 +74,14 @@ public class SlideGestureInput : MonoBehaviour,IEventContainer
     }
     private void OnEnable()
     {
+        if (executer == null) executer = GetComponent<InputExecuter_TouchGesture>();
+        if (inputReader == null) inputReader = gameObject.GetComponent<InputReader>();
         for(int i = 0; i < 2; i++)
         {
-            inputControl.TapEvent[i].AddListener(OnTap);
-            inputControl.OnFinger[i].AddListener(OnfingerAction[i]);
-            inputControl.FingerMove[i].AddListener(FingerMoveActions[i]);
-            inputControl.PreFingerLeave[i].AddListener(PreFingerLeaveActions[i]);
+            inputReader.TapEvent[i].AddListener(OnTap);
+            inputReader.OnFinger[i].AddListener(OnfingerAction[i]);
+            inputReader.FingerMove[i].AddListener(FingerMoveActions[i]);
+            inputReader.PreFingerLeave[i].AddListener(PreFingerLeaveActions[i]);
         }
 
         
@@ -85,10 +90,10 @@ public class SlideGestureInput : MonoBehaviour,IEventContainer
     {
         for (int i = 0; i < 2; i++)
         {
-            inputControl.TapEvent[i].RemoveListener(OnTap);
-            inputControl.OnFinger[i].RemoveListener(OnfingerAction[i]);
-            inputControl.FingerMove[i].RemoveListener(FingerMoveActions[i]);
-            inputControl.PreFingerLeave[i].RemoveListener(PreFingerLeaveActions[i]);
+            inputReader.TapEvent[i].RemoveListener(OnTap);
+            inputReader.OnFinger[i].RemoveListener(OnfingerAction[i]);
+            inputReader.FingerMove[i].RemoveListener(FingerMoveActions[i]);
+            inputReader.PreFingerLeave[i].RemoveListener(PreFingerLeaveActions[i]);
         }
 
 
@@ -118,23 +123,23 @@ public class SlideGestureInput : MonoBehaviour,IEventContainer
 
     void onGestureStart(int fingerIndex)
     {
-        if (inputControl.fingerRule[fingerIndex] != 1) return;
-        upMostPosition = inputControl.fingerStartLocation[fingerIndex];
-        downMostPosition = inputControl.fingerStartLocation[fingerIndex];
-        leftMostPosition = inputControl.fingerStartLocation[fingerIndex]; 
-        rightMostPosition = inputControl.fingerStartLocation[fingerIndex];
+        if (inputReader.fingerRule[fingerIndex] != 1) return;
+        upMostPosition = inputReader.fingerStartLocation[fingerIndex];
+        downMostPosition = inputReader.fingerStartLocation[fingerIndex];
+        leftMostPosition = inputReader.fingerStartLocation[fingerIndex]; 
+        rightMostPosition = inputReader.fingerStartLocation[fingerIndex];
     }
     void onGestureMove(int fingerIndex)
     {
-        if (inputControl.fingerRule[fingerIndex] != 1) return;
-        if (inputControl.fingerLocation[fingerIndex].y > upMostPosition.y) upMostPosition = inputControl.fingerLocation[fingerIndex];
-        if (inputControl.fingerLocation[fingerIndex].y < downMostPosition.y) downMostPosition = inputControl.fingerLocation[fingerIndex];
-        if (inputControl.fingerLocation[fingerIndex].x > rightMostPosition.x) rightMostPosition = inputControl.fingerLocation[fingerIndex];
-        if (inputControl.fingerLocation[fingerIndex].x < leftMostPosition.x) leftMostPosition = inputControl.fingerLocation[fingerIndex];
+        if (inputReader.fingerRule[fingerIndex] != 1) return;
+        if (inputReader.fingerLocation[fingerIndex].y > upMostPosition.y) upMostPosition = inputReader.fingerLocation[fingerIndex];
+        if (inputReader.fingerLocation[fingerIndex].y < downMostPosition.y) downMostPosition = inputReader.fingerLocation[fingerIndex];
+        if (inputReader.fingerLocation[fingerIndex].x > rightMostPosition.x) rightMostPosition = inputReader.fingerLocation[fingerIndex];
+        if (inputReader.fingerLocation[fingerIndex].x < leftMostPosition.x) leftMostPosition = inputReader.fingerLocation[fingerIndex];
     }
     void onGestureFinish(int fingerIndex)
     {
-        if (inputControl.fingerRule[fingerIndex] != 1) return;
+        if (inputReader.fingerRule[fingerIndex] != 1) return;
         
         Vector2 difference = new Vector2(0,0);
         difference.x = rightMostPosition.x - leftMostPosition.x;
@@ -145,34 +150,36 @@ public class SlideGestureInput : MonoBehaviour,IEventContainer
 
     void GestureCalculator(Vector2 difference, int fingerIndex)
     {
-        Vector2 finishLocation = inputControl.fingerLocation[fingerIndex];
-        Vector2 startLocation = inputControl.fingerStartLocation[fingerIndex];
+        Vector2 finishLocation = inputReader.fingerLocation[fingerIndex];
+        Vector2 startLocation = inputReader.fingerStartLocation[fingerIndex];
         if (Mathf.Abs(difference.y) > Mathf.Abs(difference.x))
         {
             if (finishLocation.y > startLocation.y)
             {
                 if ((finishLocation - upMostPosition).magnitude < gestureDenoiseThreshold
-                    && (startLocation - downMostPosition).magnitude < gestureDenoiseThreshold) Slide8?.Invoke();
+                    && (startLocation - downMostPosition).magnitude < gestureDenoiseThreshold)
+                    executer.eventController.InvokeEvent("Slide 8");
                 else
                 {
-                    if (upMostPosition.y > finishLocation.y) Slide82?.Invoke();
-                    else if (downMostPosition.y < startLocation.y) Slide28?.Invoke();
+                    if (upMostPosition.y > finishLocation.y) executer.eventController.InvokeEvent("Slide 82");
+                    else if (downMostPosition.y < startLocation.y) executer.eventController.InvokeEvent("Slide 28");
                 }
             }
             else if(finishLocation.y < startLocation.y)
             {
                 if ((finishLocation - downMostPosition).magnitude < gestureDenoiseThreshold
-                    && (startLocation - upMostPosition).magnitude < gestureDenoiseThreshold) Slide2?.Invoke();
+                    && (startLocation - upMostPosition).magnitude < gestureDenoiseThreshold)
+                    executer.eventController.InvokeEvent("Slide 2");
                 else
                 {
-                    if (upMostPosition.y > startLocation.y) Slide82?.Invoke();
-                    else if (downMostPosition.y < finishLocation.y) Slide28?.Invoke();
+                    if (upMostPosition.y > startLocation.y) executer.eventController.InvokeEvent("Slide 82"); 
+                    else if (downMostPosition.y < finishLocation.y) executer.eventController.InvokeEvent("Slide 28"); 
                 }
             }
             else
             {
-                if (upMostPosition.y > startLocation.y) Slide82?.Invoke();
-                else Slide28?.Invoke();
+                if (upMostPosition.y > startLocation.y) executer.eventController.InvokeEvent("Slide 82"); 
+                else executer.eventController.InvokeEvent("Slide 28");
             }
             
         }
@@ -181,27 +188,29 @@ public class SlideGestureInput : MonoBehaviour,IEventContainer
             if (finishLocation.x > startLocation.x)
             {
                 if ((finishLocation - rightMostPosition).magnitude < gestureDenoiseThreshold
-                    && (startLocation - leftMostPosition).magnitude < gestureDenoiseThreshold) Slide6?.Invoke();
+                    && (startLocation - leftMostPosition).magnitude < gestureDenoiseThreshold)
+                    executer.eventController.InvokeEvent("Slide 6");
                 else
                 {
-                    if (rightMostPosition.x > finishLocation.x) Slide64?.Invoke();
-                    else if (leftMostPosition.x < startLocation.x) Slide46?.Invoke();
+                    if (rightMostPosition.x > finishLocation.x) executer.eventController.InvokeEvent("Slide 64");
+                    else if (leftMostPosition.x < startLocation.x) executer.eventController.InvokeEvent("Slide 46");
                 }
             }
             else if (finishLocation.x < startLocation.x)
             {
                 if ((finishLocation - leftMostPosition).magnitude < gestureDenoiseThreshold
-                    && (startLocation - rightMostPosition).magnitude < gestureDenoiseThreshold) Slide4?.Invoke();
+                    && (startLocation - rightMostPosition).magnitude < gestureDenoiseThreshold)
+                    executer.eventController.InvokeEvent("Slide 4");
                 else
                 {
-                    if (rightMostPosition.x > startLocation.x) Slide64?.Invoke();
-                    else if (leftMostPosition.x < finishLocation.x) Slide46?.Invoke();
+                    if (rightMostPosition.x > startLocation.x) executer.eventController.InvokeEvent("Slide 64");
+                    else if (leftMostPosition.x < finishLocation.x) executer.eventController.InvokeEvent("Slide 46");
                 }
             }
             else
             {
-                if (rightMostPosition.x > startLocation.x) Slide64?.Invoke();
-                else Slide46?.Invoke();
+                if (rightMostPosition.x > startLocation.x) executer.eventController.InvokeEvent("Slide 64");
+                else executer.eventController.InvokeEvent("Slide 46");
             }
         }
     }

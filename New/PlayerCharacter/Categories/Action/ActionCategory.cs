@@ -2,8 +2,9 @@
 {
     public class ActionCategory : ExecuterCategory
     {
-        protected override void InitializeExecuterGroupInitializers()
+        protected override void AddExecuterGroupInitializers()
         {
+            
         }
 
         protected override void RemoveExecuterGroups()

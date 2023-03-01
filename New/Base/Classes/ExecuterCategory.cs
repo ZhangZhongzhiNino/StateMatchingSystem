@@ -10,6 +10,7 @@ namespace Nino.NewStateMatching
     {
         [FoldoutGroup("Reference")] public StateMatchingRoot stateMatchingRoot;
         [FoldoutGroup("Reference"), InlineEditor] public AddressData address;
+        [TitleGroup("Executer Group"),ListDrawerSettings(HideAddButton = true,DraggableItems =false,HideRemoveButton = true,ListElementLabelName = "lableName"),LabelWidth(400)] public List<ExecuterGroupInitializer> initializers;
         [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 1), PropertyOrder(-9999999999)] public void ResetHierarchy()
         {
             EditorUtility.OpenHierarchy(stateMatchingRoot?.objRoot, true);
@@ -21,11 +22,12 @@ namespace Nino.NewStateMatching
             if (address == null) address = ScriptableObject.CreateInstance<AddressData>();
             address.script = this;
             if(string.IsNullOrWhiteSpace(address.localAddress))address.localAddress = WriteAddress();
-            InitializeExecuterGroupInitializers();
+            if (initializers == null) initializers = new List<ExecuterGroupInitializer>();
+            AddExecuterGroupInitializers();
             
         }
         protected abstract string WriteAddress();
-        protected abstract void InitializeExecuterGroupInitializers();
+        protected abstract void AddExecuterGroupInitializers();
         public override void Remove()
         {
             RemoveExecuterGroups();
@@ -34,6 +36,7 @@ namespace Nino.NewStateMatching
         }
         protected abstract void RemoveExecuterGroups();
         protected abstract void RemoveExecuters();
+
 
     }
 }

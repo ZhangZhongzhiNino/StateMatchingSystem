@@ -2,7 +2,7 @@
 {
     public class StateMachineCategory : ExecuterCategory
     {
-        protected override void InitializeExecuterGroupInitializers()
+        protected override void AddExecuterGroupInitializers()
         {
         }
 

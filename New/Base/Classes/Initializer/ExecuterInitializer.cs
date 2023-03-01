@@ -1,30 +1,21 @@
-﻿namespace Nino.NewStateMatching
+﻿using UnityEngine;
+
+namespace Nino.NewStateMatching
 {
-    public abstract class ExecuterInitializer<T> : StateMatchingMonoBehaviourInitializer<T> where T : SMSExecuter
+    public abstract class ExecuterInitializer : StateMatchingMonoBehaviourInitializer
     {
-        public override void Create()
+        protected ExecuterInitializer(StateMatchingMonoBehaviour creater, string name) : base(creater, name)
         {
-            base.Create();
-            ExecuterGroup _creater = creater as ExecuterGroup;
-            content.executerGroup = _creater;
-            _creater.ResetHierarchy();
-            _creater.address.AddChild(content.address);
-        }
-        public override void Remove()
-        {
-            base.Remove();
-            ExecuterGroup _creater = creater as ExecuterGroup;
-            _creater.address.RemoveNullChildInChild();
-        }
-        protected override string WriteAfterName()
-        {
-            return ">";
         }
 
-        protected override string WriteBeforeName()
-        {
-            return "<";
-        }
+        public SMSExecuter executer { get => content as SMSExecuter; }
+        public ExecuterGroup executerGroup { get => creater as ExecuterGroup; }        
+        protected override void AssignContentParent() => executer.executerGroup = executerGroup;
+        protected override void RemoveNullInCreaterAddress() => executerGroup.address.RemoveNullChildInChild();
+        protected override void ResetHierarchy() => executerGroup.ResetHierarchy();
+        protected override void UpdateCreaterAddress() => executerGroup.address.AddChild(executer.address);
+        protected override string WriteAfterName() => ">";
+        protected override string WriteBeforeName() => "<";
     }
 }
 

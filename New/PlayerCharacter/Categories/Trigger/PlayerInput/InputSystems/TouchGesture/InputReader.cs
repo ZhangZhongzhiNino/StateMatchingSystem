@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Sirenix.OdinInspector;
-using Nino.StateMatching.Helper;
-public class InputControl : MonoBehaviour, PlayerInput.ITouchActions ,IEventContainer
+using Nino.NewStateMatching.PlayerCharacter.Trigger.PlayerInput;
+public class InputReader : MonoBehaviour, PlayerInput.ITouchActions 
 {
-    
+
     //private settings
     private PlayerInput Pinput;
     private int fingerCount;

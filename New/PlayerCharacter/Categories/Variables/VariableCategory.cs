@@ -5,10 +5,9 @@ namespace Nino.NewStateMatching.PlayerCharacter
 {
     public class VariableCategory : ExecuterCategory
     {
-        public SingleVariableExecuterGroupInitializer singleVariableExecuterGroup;
-        protected override void InitializeExecuterGroupInitializers()
+        protected override void AddExecuterGroupInitializers()
         {
-            singleVariableExecuterGroup = GeneralUtility.InitializeInitializer<SingleVariableExecuterGroupInitializer, SingleVariableExecuterGroup>(this);
+            GeneralUtility.AddGroupInitializer(ref initializers, new SingleVariableExecuterGroupInitializer(this,"Single Variable"));
         }
 
         protected override void RemoveExecuterGroups()

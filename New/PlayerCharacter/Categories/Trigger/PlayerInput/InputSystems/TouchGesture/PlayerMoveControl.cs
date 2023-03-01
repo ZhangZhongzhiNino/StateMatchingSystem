@@ -3,61 +3,71 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Sirenix.OdinInspector;
-using Nino.StateMatching.Helper;
-public class PlayerMoveControl : MonoBehaviour,IEventContainer
+using Nino.NewStateMatching.PlayerCharacter.Trigger.PlayerInput;
+public class PlayerMoveControl : MonoBehaviour
 {
-    [BoxGroup("Reference")] [field:SerializeField] InputControl inputControl;
-    [BoxGroup("Reference")][field: SerializeField] JoysticController joystic;
+    public InputExecuter_TouchGesture executer;
+
+
+    [BoxGroup("Reference")] [field:SerializeField] InputReader inputControl;
     // public value in
     [TabGroup("Input Value")] [field: SerializeField] public float WalkDis;
+    [TabGroup("Input Value")][field: SerializeField] public float RunDis;
     // Public value out
-    [TabGroup("Output Value")] [field: SerializeField] public Vector2 moveDirection;
+    [TabGroup("Output Value")] public Vector2 _moveDirection;
+    public Vector2 moveDirection
+    {
+        get => _moveDirection;
+        set
+        {
+            if (value == _moveDirection) return;
+            _moveDirection = value;
+            if (executer == null) return;
+            executer.dynamicDataController.AssignValue("Move Direction", value);
+
+        }
+    }
     [TabGroup("Output Value")] [field: SerializeField] public bool isMoving;
     [TabGroup("Output Value")] [field: SerializeField] private int _moveType;
     public int moveType
     {
         get { return _moveType; }
-        set 
-        { 
-            if (value != _moveType)
+        set
+        {
+            if (value != _moveType && executer != null)
             {
-                if (value == -1)
+                if (_moveType == -1)
                 {
-                    isMoving = false;
-                    if (_moveType == 0) stopWalk?.Invoke();
-                    if(_moveType==1) stopRun?.Invoke();
+                    if (value > -1) executer.eventController.InvokeEvent("Start Move");
+                    if (value == 1) executer.eventController.InvokeEvent("Start Run");
                 }
-                else
+                if (_moveType == 0)
                 {
-                    isMoving = true;
-                    if (_moveType == -1) startMoving?.Invoke();
-                    if (value == 0) startWalk?.Invoke();
-                    if (value == 1) startRun?.Invoke();
+                    if (value == 1) executer.eventController.InvokeEvent("Start Run");
+                    else executer.eventController.InvokeEvent("Stop Move");
+                }
+                if (_moveType == 1)
+                {
+                    if (value < 1) executer.eventController.InvokeEvent("Stop Run");
+                    if (value == -1) executer.eventController.InvokeEvent("Stop Move");
                 }
             }
+            
             _moveType = value;
         }
     }
-    [TabGroup("Events")] public UnityEvent stopWalk;
-    [TabGroup("Events")] public UnityEvent stopRun;
-    [TabGroup("Events")] public UnityEvent startWalk;
-    [TabGroup("Events")] public UnityEvent startRun;
-    [TabGroup("Events")] public UnityEvent startMoving;
 
     UnityAction[] FingerMoveAction;
     UnityAction[] PreFingerLeaveAction;
-    UnityAction[] OnFingerAction;
     private void Awake()
     {
         FingerMoveAction = new UnityAction[2];
         PreFingerLeaveAction = new UnityAction[2];
-        OnFingerAction = new UnityAction[2];
         for (int i = 0; i<2; i++)
         {
             int value = i;
             FingerMoveAction[value] += delegate { TrySetMove(value); };
             PreFingerLeaveAction[value] += delegate { TryClearMove(value); };
-            OnFingerAction[value] += delegate { TryCreateJoystic(value); };
         }
     }
     void Start()
@@ -72,9 +82,10 @@ public class PlayerMoveControl : MonoBehaviour,IEventContainer
     }
     private void OnEnable()
     {
+        if (executer == null) executer = GetComponent<InputExecuter_TouchGesture>();
+        if (inputControl == null) inputControl = gameObject.GetComponent<InputReader>();
         for(int i=0; i < 2; i++)
         {
-            inputControl.OnFinger[i].AddListener(OnFingerAction[i]);
             inputControl.PreFingerLeave[i].AddListener(PreFingerLeaveAction[i]);
             inputControl.FingerMove[i].AddListener(FingerMoveAction[i]);
         }
@@ -83,7 +94,6 @@ public class PlayerMoveControl : MonoBehaviour,IEventContainer
     {
         for (int i = 0; i < 2; i++)
         {
-            inputControl.OnFinger[i].RemoveListener(OnFingerAction[i]);
             inputControl.PreFingerLeave[i].RemoveListener(PreFingerLeaveAction[i]);
             inputControl.FingerMove[i].RemoveListener(FingerMoveAction[i]);
         }
@@ -93,8 +103,8 @@ public class PlayerMoveControl : MonoBehaviour,IEventContainer
         if (inputControl.fingerRule[fingerIndex] != 0) return;
         Vector2 Difference = inputControl.fingerLocation[fingerIndex] - inputControl.fingerStartLocation[fingerIndex];
         float FingerMoveDis = Difference.magnitude;
-        if (FingerMoveDis < WalkDis) return;
-        if (joystic.pointerInCircle) moveType = 0;
+        if (FingerMoveDis < WalkDis) moveType = -1;
+        else if (FingerMoveDis < RunDis) moveType = 0;
         else moveType = 1;
         moveDirection = Difference.normalized;
         
@@ -103,14 +113,8 @@ public class PlayerMoveControl : MonoBehaviour,IEventContainer
     public void TryClearMove(int i)
     {
         if (inputControl.fingerRule[i] != 0) return;
-        joystic.destroyIcon();
         moveDirection = Vector2.zero;
         moveType = -1;
-    }
-    public void TryCreateJoystic(int i)
-    {
-        if (inputControl.fingerRule[i] != 0) return;
-        joystic.createIcon(inputControl.fingerStartLocation[i]);
     }
     [Button(ButtonSizes.Medium)]
     [GUIColor(0.6f, 1f, 0.6f)]
@@ -118,5 +122,6 @@ public class PlayerMoveControl : MonoBehaviour,IEventContainer
     void RestoreDefaultValue()
     {
         WalkDis = 15;
+        RunDis = 50;
     }
 }

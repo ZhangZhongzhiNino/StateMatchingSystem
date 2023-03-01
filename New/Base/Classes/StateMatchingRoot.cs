@@ -12,6 +12,7 @@ namespace Nino.NewStateMatching
         [FoldoutGroup("Reference")] public GameObject objRoot;
         [FoldoutGroup("Reference")] public StateMatchingGlobalReference globalReferences;
         [FoldoutGroup("Reference"), InlineEditor] public AddressData address;
+        [FoldoutGroup("Categories")] public List<ExecuterCategory> categories;
         [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 1),PropertyOrder(-9999999999)] public void ResetHierarchy()
         {
             EditorUtility.OpenHierarchy(objRoot, true);

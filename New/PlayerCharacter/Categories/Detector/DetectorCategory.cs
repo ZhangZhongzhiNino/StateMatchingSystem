@@ -1,8 +1,8 @@
 ﻿namespace Nino.NewStateMatching.PlayerCharacter
 {
-    public class InputCategory : ExecuterCategory
+    public class DetectorCategory : ExecuterCategory
     {
-        protected override void InitializeExecuterGroupInitializers()
+        protected override void AddExecuterGroupInitializers()
         {
         }
 
@@ -17,7 +17,7 @@
 
         protected override string WriteAddress()
         {
-            return "Input";
+            return "Detector";
         }
     }
 }

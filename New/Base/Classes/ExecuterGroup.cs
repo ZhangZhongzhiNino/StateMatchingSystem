@@ -1,12 +1,15 @@
 ﻿
 using Sirenix.OdinInspector;
 using UnityEngine;
+using System.Collections.Generic;
+
 namespace Nino.NewStateMatching
 {
     public abstract class ExecuterGroup : StateMatchingMonoBehaviour
     {
         [FoldoutGroup("Reference")] public ExecuterCategory executerCategory;
         [FoldoutGroup("Reference"), InlineEditor] public AddressData address;
+        [TitleGroup("Executer"), ListDrawerSettings(HideAddButton = true, DraggableItems = false, HideRemoveButton = true, ListElementLabelName = "lableName"),LabelWidth(400)] public List<ExecuterInitializer> initializers;
         [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 1), PropertyOrder(-9999999999)] public void ResetHierarchy()
         {
             EditorUtility.OpenHierarchy(executerCategory?.stateMatchingRoot?.objRoot, true);
@@ -19,10 +22,11 @@ namespace Nino.NewStateMatching
             if (address == null) address = ScriptableObject.CreateInstance<AddressData>();
             address.localAddress = WriteLocalAddress();
             address.script = this;
-            InitializeGroupedExecuterInitializers();
+            if (initializers == null) initializers = new List<ExecuterInitializer>();
+            AddExecuterInitializers();
         }
         protected abstract string WriteLocalAddress();
-        protected abstract void InitializeGroupedExecuterInitializers();
+        protected abstract void AddExecuterInitializers();
         public override void Remove()
         {
             RemoveExecuters();

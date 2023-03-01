@@ -1,8 +1,21 @@
-﻿namespace Nino.NewStateMatching.PlayerCharacter.Variable
+﻿using UnityEngine;
+namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    public class Vector3ExecuterInitializer : ExecuterInitializer<Vector3Executer>
+    public class Vector3ExecuterInitializer : ExecuterInitializer
     {
-        protected override string WriteName() => "Vector3";
+        public Vector3ExecuterInitializer(StateMatchingMonoBehaviour creater, string name) : base(creater, name)
+        {
+        }
+
+        protected override StateMatchingMonoBehaviour AddComponentToGameObject(GameObject contentObj)
+        {
+            return contentObj.AddComponent<Vector3Executer>();
+        }
+
+        protected override StateMatchingMonoBehaviour TryFindContent()
+        {
+            return creater.GetComponentInChildren<Vector3Executer>();
+        }
     }
 }
 

@@ -1,8 +1,22 @@
-﻿namespace Nino.NewStateMatching.PlayerCharacter.Variable
+﻿using UnityEngine;
+
+namespace Nino.NewStateMatching.PlayerCharacter.Variable
 {
-    public class BoolExecuterInitializer : ExecuterInitializer<BoolExecuter>
+    public class BoolExecuterInitializer : ExecuterInitializer
     {
-        protected override string WriteName() => "Bool";
+        public BoolExecuterInitializer(StateMatchingMonoBehaviour creater, string name) : base(creater, name)
+        {
+        }
+
+        protected override StateMatchingMonoBehaviour AddComponentToGameObject(GameObject contentObj)
+        {
+            return contentObj.AddComponent<BoolExecuter>();
+        }
+
+        protected override StateMatchingMonoBehaviour TryFindContent()
+        {
+            return creater.GetComponentInChildren<BoolExecuter>();
+        }
     }
 }
 

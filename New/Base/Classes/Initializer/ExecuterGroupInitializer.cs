@@ -1,33 +1,22 @@
-﻿namespace Nino.NewStateMatching
+﻿using UnityEngine;
+
+namespace Nino.NewStateMatching
 {
-    public abstract class ExecuterGroupInitializer<T> : StateMatchingMonoBehaviourInitializer<T> where T : ExecuterGroup
+    public abstract class ExecuterGroupInitializer : StateMatchingMonoBehaviourInitializer
     {
-        public override void Create()
+        protected ExecuterGroupInitializer(StateMatchingMonoBehaviour creater, string name) : base(creater, name)
         {
-            base.Create();
-            ExecuterCategory _creater = creater as ExecuterCategory;
-            content.executerCategory = _creater;
-            _creater.address.AddChild(content.address);
-            _creater.ResetHierarchy();
-
-        }
-        public override void Remove()
-        {
-            base.Remove();
-            ExecuterCategory _creater = creater as ExecuterCategory;
-            _creater.address.RemoveNullChildInChild();
-
         }
 
-        protected override string WriteAfterName()
-        {
-            return "";
-        }
-
-        protected override string WriteBeforeName()
-        {
-            return "____";
-        }
+        public ExecuterGroup executerGroup { get => content as ExecuterGroup; }
+        public ExecuterCategory executerCategory { get => creater as ExecuterCategory; }
+        
+        protected override void AssignContentParent() => executerGroup.executerCategory = executerCategory;
+        protected override void RemoveNullInCreaterAddress() => executerCategory.address.RemoveNullChildInChild();
+        protected override void ResetHierarchy() => executerCategory.ResetHierarchy();
+        protected override void UpdateCreaterAddress() => executerCategory.address.AddChild(executerGroup.address);
+        protected override string WriteAfterName() => "";
+        protected override string WriteBeforeName() => "____";
     }
 }
 

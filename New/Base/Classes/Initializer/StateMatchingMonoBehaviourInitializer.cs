@@ -5,40 +5,58 @@ using Sirenix.OdinInspector;
 
 namespace Nino.NewStateMatching
 {
-    [InlineEditor]
-    public abstract class StateMatchingMonoBehaviourInitializer<T> : StateMatchingScriptableObject where T: StateMatchingMonoBehaviour
+    public abstract class StateMatchingMonoBehaviourInitializer  
     {
+        public StateMatchingMonoBehaviourInitializer(StateMatchingMonoBehaviour creater, string name)
+        {
+            this.creater = creater;
+            this.pureName = name;
+            this.contentObjName = WriteBeforeName() + name + WriteAfterName();
+        }
+
         [HideInInspector] public StateMatchingMonoBehaviour creater;
-        [HideLabel] public T content;
-        [HideInInspector] public string contentObjName;
-        public string addButtonName { get => "Create " + typeof(T).Name; }
+        [HideInInspector] public StateMatchingMonoBehaviour content;
+        [HideInInspector] public string pureName;
+        [HideInInspector, SerializeField] string contentObjName;
+        [HideInInspector] public string lableName 
+        { get
+            {
+
+                if (content == null) return pureName;
+                else return "_____" + pureName;
+            } 
+        }
+        public string addButtonName { get => "Create " + contentObjName; }
         [PropertyOrder(-1), Button(Name = "@addButtonName",ButtonHeight = 40),GUIColor(0.4f,1,0.4f),ShowIf("@content == null")] public virtual void Create()
         {
-            creater.TryGetComponent<T>(out content);
-            if (content != null) return;
-            GameObject executerGroupObj = GeneralUtility.CreateGameObject(contentObjName, creater.transform);
-            content = GeneralUtility.AddStateMatchingBehaviourToGameObject<T>(executerGroupObj);
+            GameObject contentObj = creater.transform.Find(contentObjName)?.gameObject;
+            if(contentObj == null) contentObj = GeneralUtility.CreateGameObject(contentObjName, creater.transform);
+            if (content == null) content = TryFindContent();
+            if (content == null) content = AddComponentToGameObject(contentObj);
+            AssignContentParent();
+            AssignContentParent();
+            content.Initialize();
+            ResetHierarchy();
         }
-        public string removeButtonName { get => "Remove " + typeof(T).Name; }
+        public string removeButtonName { get => "Remove " + contentObjName; }
         [PropertyOrder(-1), Button(Name = "@removeButtonName", ButtonHeight = 40), GUIColor(1, 0.4f, 0.4f), ShowIf("@content != null")]public virtual void Remove()
         {
             content.Remove();
+            RemoveNullInCreaterAddress();
         }
-        protected override void Initialize()
+        public void Initialize()
         {
-            contentObjName = WriteBeforeName() + WriteName() + WriteAfterName();
+            if (content == null) content = TryFindContent();
         }
         protected abstract string WriteBeforeName();
-        protected abstract string WriteName();
         protected abstract string WriteAfterName();
-        public void TryFindContent()
-        {
-            content = creater.GetComponentInChildren<T>();
-        }
-        protected override void RunOnEveryEnable()
-        {
-            TryFindContent();
-        }
+        protected abstract StateMatchingMonoBehaviour TryFindContent();
+        protected abstract StateMatchingMonoBehaviour AddComponentToGameObject(GameObject contentObj);
+        protected abstract void AssignContentParent();
+        protected abstract void UpdateCreaterAddress();
+        protected abstract void ResetHierarchy();
+        protected abstract void RemoveNullInCreaterAddress();
+
     }
 }
 

@@ -81,19 +81,23 @@ namespace Nino.NewStateMatching
             newScript.Initialize();
             return newScript;
         }
-        public static Initializer InitializeInitializer<Initializer,ToCreate>(StateMatchingMonoBehaviour Creater) 
-            where Initializer : StateMatchingMonoBehaviourInitializer<ToCreate>
-            where ToCreate : StateMatchingMonoBehaviour
-        {
 
-            Initializer newInitializer = ScriptableObject.CreateInstance<Initializer>();
-            newInitializer.creater = Creater;
-            newInitializer.TryFindContent();
-            if (newInitializer.content != null) newInitializer.content.Initialize();
-            return newInitializer;
+        public static void AddInitializer(ref List<StateMatchingMonoBehaviourInitializer> list, StateMatchingMonoBehaviourInitializer initializer)
+        {
+            if (list.Find(x => x.pureName == initializer.pureName) == null) list.Add(initializer);
+            else list.Find(x => x.pureName == initializer.pureName).Initialize();
         }
 
-
+        public static void AddGroupInitializer(ref List<ExecuterGroupInitializer> list, ExecuterGroupInitializer initializer)
+        {
+            if (list.Find(x => x.pureName == initializer.pureName) == null) list.Add(initializer);
+            else list.Find(x => x.pureName == initializer.pureName).Initialize();
+        }
+        public static void AddExecuterInitializer(ref List<ExecuterInitializer> list, ExecuterInitializer initializer)
+        {
+            if (list.Find(x => x.pureName == initializer.pureName) == null) list.Add(initializer);
+            else list.Find(x => x.pureName == initializer.pureName).Initialize();
+        }
 
     }
 
