@@ -8,7 +8,6 @@ namespace Nino.NewStateMatching
         [FoldoutGroup("Reference")] public ExecuterGroup executerGroup;
         [FoldoutGroup("Reference"), InlineEditor] public AddressData address;
         [FoldoutGroup("Controller"), TitleGroup("Controller/Data"), ShowIf("@dataController != null")] public DataController dataController;
-        [FoldoutGroup("Controller"), TitleGroup("Controller/Data"), ShowIf("@dataController != null")] public OldDataController OlddataController;
         [TitleGroup("Controller/Dynamic Data"), ShowIf("@dynamicDataController != null")] public DynamicDataController dynamicDataController;
         [TitleGroup("Controller/Compare"), ShowIf("@compareController != null")] public CompareController compareController;
         [TitleGroup("Controller/Action"), ShowIf("@actionController != null")] public ActionController actionController;

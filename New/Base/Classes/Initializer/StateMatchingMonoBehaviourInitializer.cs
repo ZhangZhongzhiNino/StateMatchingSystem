@@ -56,6 +56,7 @@ namespace Nino.NewStateMatching
         protected abstract void ResetHierarchy();
         protected abstract void RemoveNullInCreaterAddress();
         protected abstract void assignAddress();
+        
     }
 }
 

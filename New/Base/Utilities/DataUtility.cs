@@ -20,26 +20,12 @@ namespace Nino.NewStateMatching
             T getItem = list.Find(match);
             return getItem != null;
         }
-        public static bool OldAddItemToList(OldItem newItem, List<OldItem> list)
-        {
-            if (list.Contains(newItem)) return false;
-            list.Add(newItem);
-            return true;
-        }
         public static Item AddItemToList(Item newItem, List<Item> list)
         {
             Item findItem = list.Find(x => x.itemName == newItem.itemName);
             if (findItem !=null) return findItem;
             list.Add(newItem);
             return newItem;
-        }
-        public static OldItem OldAddItemToList<T>(string newItemName, List<OldItem> list) where T:OldItem,new()
-        {
-            if (ListContainItem(item => item.itemName == newItemName, list)) return list.Find(item => item.itemName == newItemName);
-            OldItem newItem = new T();
-            newItem.itemName = newItemName;
-            if (OldAddItemToList(newItem, list)) return newItem;
-            else throw new Exception("Unknow error in create new Item");
         }
         public static List<string> RemoveAllRedundantStringInList(List<string> list)
         {
@@ -52,13 +38,6 @@ namespace Nino.NewStateMatching
             }
             return newList;
         }
-        /*public static T CopyScriptableObject<T>(T SO) where T : ScriptableObject
-        {
-            T r = ScriptableObject.CreateInstance<T>();
-            string json = JsonUtility.ToJson(SO);
-            JsonUtility.FromJsonOverwrite(json, r);
-            return r;
-        }*/
     }
 
 }
