@@ -10,15 +10,6 @@ namespace Nino.NewStateMatching.PlayerCharacter
             GeneralUtility.AddGroupInitializer(ref initializers, new SingleVariableExecuterGroupInitializer(this,"Single Variable"));
         }
 
-        protected override void RemoveExecuterGroups()
-        {
-        }
-
-        protected override void RemoveExecuters()
-        {
-            
-        }
-
         protected override string WriteAddress()
         {
             return "Variable";

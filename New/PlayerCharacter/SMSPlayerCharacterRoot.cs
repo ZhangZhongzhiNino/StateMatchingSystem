@@ -16,11 +16,6 @@ namespace Nino.NewStateMatching.PlayerCharacter
             categories.Add(CreateCategory<DataCategory>("Data____"));
             categories.Add(CreateCategory<StateMachineCategory>("FSM____"));
         }
-        protected override void RemoveExecuterTypes()
-        {
-            foreach (ExecuterCategory c in categories) c.Remove();
-        }
-
 
 
         

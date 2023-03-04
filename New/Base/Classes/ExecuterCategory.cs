@@ -31,12 +31,18 @@ namespace Nino.NewStateMatching
         public override void Remove()
         {
             RemoveExecuterGroups();
-            RemoveExecuters();
             GeneralUtility.RemoveGameObject(this.gameObject);
         }
-        protected abstract void RemoveExecuterGroups();
-        protected abstract void RemoveExecuters();
+        protected void RemoveExecuterGroups()
+        {
+            foreach (ExecuterGroupInitializer initializer in initializers)
+            {
+                initializer.executerGroup.Remove();
+            }
+        }
 
+
+       
 
     }
 }

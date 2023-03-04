@@ -93,12 +93,49 @@ namespace Nino.NewStateMatching
             if (list.Find(x => x.pureName == initializer.pureName) == null) list.Add(initializer);
             else list.Find(x => x.pureName == initializer.pureName).Initialize();
         }
-        public static void AddExecuterInitializer(ref List<ExecuterInitializer> list, ExecuterInitializer initializer)
+        public static ExecuterInitializer AddExecuterInitializer(ref List<ExecuterInitializer> list, ExecuterInitializer initializer)
         {
-            if (list.Find(x => x.pureName == initializer.pureName) == null) list.Add(initializer);
-            else list.Find(x => x.pureName == initializer.pureName).Initialize();
+            if (list.Find(x => x.pureName == initializer.pureName) == null)
+            {
+                list.Add(initializer);
+                return initializer;
+            }
+            ExecuterInitializer find = list.Find(x => x.pureName == initializer.pureName);
+            find.Initialize();
+            return find;
+            
         }
 
+        public static List<string> GetNameInItemList(List<Item> list)
+        {
+            List<string> r = new List<string>();
+            foreach (Item i in list)
+            {
+                if (!r.Contains(i.itemName)) r.Add(i.itemName);
+            }
+            return new List<string>(r);
+        }
+        public static List<string> GetNameInItemList(List<LabledItem> list)
+        {
+            List<string> r = new List<string>();
+            foreach (Item i in list)
+            {
+                if (!r.Contains(i.itemName)) r.Add(i.itemName);
+            }
+            return new List<string>(r);
+        }
+        public static string GetUniqueName(List<string> names,string name)
+        {
+            string currentName = name;
+            int toAdd = 1;
+            while (names.Contains(currentName))
+            {
+                currentName = name + toAdd;
+                toAdd++;
+            }
+            return currentName;
+            
+        }
     }
 
 }

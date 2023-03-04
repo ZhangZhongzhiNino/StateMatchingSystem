@@ -4,17 +4,8 @@
     {
         protected override void AddExecuterGroupInitializers()
         {
+            GeneralUtility.AddGroupInitializer(ref initializers, new FSM_Group_Initializer(this, "FSM Group"));
         }
-
-        protected override void RemoveExecuterGroups()
-        {
-        }
-
-        protected override void RemoveExecuters()
-        {
-            
-        }
-
         protected override string WriteAddress()
         {
             return "State Machine";

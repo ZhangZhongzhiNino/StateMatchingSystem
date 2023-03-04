@@ -37,7 +37,13 @@ namespace Nino.NewStateMatching
             RemoveExecuterTypes();
             GeneralUtility.RemoveGameObject(this.gameObject);
         }
-        protected abstract void RemoveExecuterTypes();
+        protected void RemoveExecuterTypes()
+        {
+            foreach(ExecuterCategory category in categories)
+            {
+                category.Remove();
+            }
+        }
 
         protected virtual T CreateCategory<T>(string objName) where T : ExecuterCategory
         {

@@ -8,6 +8,7 @@ namespace Nino.NewStateMatching
         [FoldoutGroup("Reference")] public ExecuterGroup executerGroup;
         [FoldoutGroup("Reference"), InlineEditor] public AddressData address;
         [FoldoutGroup("Controller"), TitleGroup("Controller/Data"), ShowIf("@dataController != null")] public DataController dataController;
+        [FoldoutGroup("Controller"), TitleGroup("Controller/Data"), ShowIf("@dataController != null")] public OldDataController OlddataController;
         [TitleGroup("Controller/Dynamic Data"), ShowIf("@dynamicDataController != null")] public DynamicDataController dynamicDataController;
         [TitleGroup("Controller/Compare"), ShowIf("@compareController != null")] public CompareController compareController;
         [TitleGroup("Controller/Action"), ShowIf("@actionController != null")] public ActionController actionController;
@@ -20,14 +21,14 @@ namespace Nino.NewStateMatching
             EditorUtility.OpenHierarchy(executerGroup?.executerCategory?.gameObject, true);
             EditorUtility.OpenHierarchy(executerGroup?.gameObject, true);
         }
+        [Button]
         public override void Initialize()
         {
             if (address == null) address = ScriptableObject.CreateInstance<AddressData>();
-            address.localAddress = WriteLocalAddress();
+            if (dataController == null) dataController = ScriptableObject.CreateInstance<DataController>();
             address.script = this;
             InitializeInstance();
         }
-        protected abstract string WriteLocalAddress();
         protected abstract void InitializeInstance();
         public override void Remove()
         {

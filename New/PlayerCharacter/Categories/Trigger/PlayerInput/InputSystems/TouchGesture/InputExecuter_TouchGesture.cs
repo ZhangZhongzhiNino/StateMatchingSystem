@@ -46,11 +46,6 @@ namespace Nino.NewStateMatching.PlayerCharacter.Trigger.PlayerInput
         {
             
         }
-
-        protected override string WriteLocalAddress()
-        {
-            return "Player Input";
-        }
     }
 
 }

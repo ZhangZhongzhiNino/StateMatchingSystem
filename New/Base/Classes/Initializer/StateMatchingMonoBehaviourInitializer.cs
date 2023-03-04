@@ -13,15 +13,14 @@ namespace Nino.NewStateMatching
             this.pureName = name;
             this.contentObjName = WriteBeforeName() + name + WriteAfterName();
         }
-
         [HideInInspector] public StateMatchingMonoBehaviour creater;
-        [HideInInspector] public StateMatchingMonoBehaviour content;
+        public StateMatchingMonoBehaviour content;
         [HideInInspector] public string pureName;
         [HideInInspector, SerializeField] string contentObjName;
         [HideInInspector] public string lableName 
-        { get
+        { 
+            get
             {
-
                 if (content == null) return pureName;
                 else return "_____" + pureName;
             } 
@@ -34,8 +33,8 @@ namespace Nino.NewStateMatching
             if (content == null) content = TryFindContent();
             if (content == null) content = AddComponentToGameObject(contentObj);
             AssignContentParent();
-            AssignContentParent();
             content.Initialize();
+            assignAddress();
             ResetHierarchy();
         }
         public string removeButtonName { get => "Remove " + contentObjName; }
@@ -56,7 +55,7 @@ namespace Nino.NewStateMatching
         protected abstract void UpdateCreaterAddress();
         protected abstract void ResetHierarchy();
         protected abstract void RemoveNullInCreaterAddress();
-
+        protected abstract void assignAddress();
     }
 }
 

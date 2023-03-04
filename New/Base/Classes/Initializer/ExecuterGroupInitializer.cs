@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Nino.NewStateMatching
 {
@@ -17,6 +19,20 @@ namespace Nino.NewStateMatching
         protected override void UpdateCreaterAddress() => executerCategory.address.AddChild(executerGroup.address);
         protected override string WriteAfterName() => "";
         protected override string WriteBeforeName() => "____";
+        protected override StateMatchingMonoBehaviour TryFindContent()
+        {
+            AddressData getAddress = executerCategory.address.childs.FirstOrDefault(x => x.localAddress == pureName);
+            if (getAddress == default(AddressData)) return null;
+            else return getAddress.script;
+        }
+        protected override void assignAddress()
+        {
+            AddressData contentAddress = executerGroup.address;
+            AddressData createrAddress = executerCategory.address;
+            contentAddress.localAddress = pureName;
+            createrAddress.AddChild(contentAddress);
+            createrAddress.UpdateGlobalAddressInChild();
+        }
     }
 }
 

@@ -11,7 +11,7 @@ namespace Nino.NewStateMatching
         {
             get
             {
-                return executer.dataController.GetAllItemNames();
+                return executer.OlddataController.GetAllItemNames();
             }
         }
         [ValueDropdown("items")] public string selectItem;

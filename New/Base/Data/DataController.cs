@@ -12,25 +12,25 @@ using UnityEngine;
 namespace Nino.NewStateMatching
 {
     [InlineEditor]
-    public abstract class DataController : DataScriptableObject 
+    public abstract class OldDataController : DataScriptableObject 
 
     {
         [ReadOnly,LabelWidth(80),PropertyOrder(-101)]public string dataType;
         [FoldoutGroup("Hint",Order = -99),TextArea(minLines:5,maxLines:20),SerializeField] string hint;
         [FoldoutGroup("Note",Order =-98), TextArea(minLines: 5, maxLines: 20), SerializeField] string note;
-        [FoldoutGroup("Data",Order=-97),PropertyOrder(1),PropertySpace(SpaceAfter = 20, SpaceBefore = 10),ListDrawerSettings(ListElementLabelName ="itemName")]public List<Item> items;
+        [FoldoutGroup("Data",Order=-97),PropertyOrder(1),PropertySpace(SpaceAfter = 20, SpaceBefore = 10),ListDrawerSettings(ListElementLabelName ="itemName")]public List<OldItem> items;
 
 
-        [FoldoutGroup("Data Output Reference",Order = -96)] public Dictionary<string, Item> dic_items;
-        [FoldoutGroup("Data Output Reference")] public Dictionary<string, List<Item>> dic_groups;
-        [FoldoutGroup("Data Output Reference")] public Dictionary<string, List<Item>> dic_tags;
+        [FoldoutGroup("Data Output Reference",Order = -96)] public Dictionary<string, OldItem> dic_items;
+        [FoldoutGroup("Data Output Reference")] public Dictionary<string, List<OldItem>> dic_groups;
+        [FoldoutGroup("Data Output Reference")] public Dictionary<string, List<OldItem>> dic_tags;
         [FoldoutGroup("Data Output Reference"),Button(ButtonSizes.Large),GUIColor(0.4f,1,0.4f)] void UpdateDictionrary()
         {
             RemoveRedundantTagsInAllItems();
-            dic_items = new Dictionary<string, Item>();
-            dic_groups = new Dictionary<string, List<Item>>();
-            dic_tags = new Dictionary<string, List<Item>>();
-            foreach(Item item in items)
+            dic_items = new Dictionary<string, OldItem>();
+            dic_groups = new Dictionary<string, List<OldItem>>();
+            dic_tags = new Dictionary<string, List<OldItem>>();
+            foreach(OldItem item in items)
             {
                 dic_items.Clear();
                 dic_groups.Clear();
@@ -38,7 +38,7 @@ namespace Nino.NewStateMatching
                 if (!dic_items.Keys.Contains(item.itemName)) dic_items.Add(item.itemName, item);
                 if (!string.IsNullOrWhiteSpace(item.group))
                 {
-                    if (!dic_groups.Keys.Contains(item.group)) dic_groups.Add(item.group, new List<Item>());
+                    if (!dic_groups.Keys.Contains(item.group)) dic_groups.Add(item.group, new List<OldItem>());
                     dic_groups[item.group].Add(item);
                 }
                 
@@ -46,7 +46,7 @@ namespace Nino.NewStateMatching
                 {
                     if (!string.IsNullOrWhiteSpace(tag))
                     {
-                        if (!dic_tags.Keys.Contains(tag)) dic_tags.Add(tag, new List<Item>());
+                        if (!dic_tags.Keys.Contains(tag)) dic_tags.Add(tag, new List<OldItem>());
                         dic_tags[tag].Add(item);
                     }
                     
@@ -91,21 +91,21 @@ namespace Nino.NewStateMatching
                 "\n\nSave: The place to save data to the folder. If data is already saved to the folder this will save instance changes to the scriptable object in the folder.";
             hint = WriteHint() + BasicHint;
             note = "";
-            items = new List<Item>();
-            dic_items = new Dictionary<string, Item>();
-            dic_groups = new Dictionary<string, List<Item>>();
-            dic_tags = new Dictionary<string, List<Item>>();
+            items = new List<OldItem>();
+            dic_items = new Dictionary<string, OldItem>();
+            dic_groups = new Dictionary<string, List<OldItem>>();
+            dic_tags = new Dictionary<string, List<OldItem>>();
         }
         protected abstract string WriteHint();
         protected abstract string WriteDataType();
         protected override void RunOnEveryEnable()
         {
-            foreach(Item i in items)
+            foreach(OldItem i in items)
             {
                 if (i.ResetWenEnabled) i.ResetData();
             }
         }
-        protected abstract Item CreateNewItem();
+        protected abstract OldItem CreateNewItem();
 
         public enum FindItemMethod
         {
@@ -118,7 +118,7 @@ namespace Nino.NewStateMatching
             ContainAny
         }
         [FoldoutGroup("Advance Edit")]
-        [FoldoutGroup("Advance Edit/ Edit By Feature"), SerializeField, ListDrawerSettings(HideAddButton = true, ListElementLabelName = "itemName"), PropertyOrder(-2), PropertySpace(SpaceBefore = 5, SpaceAfter = 5)] List<Item> temp_editItemList;
+        [FoldoutGroup("Advance Edit/ Edit By Feature"), SerializeField, ListDrawerSettings(HideAddButton = true, ListElementLabelName = "itemName"), PropertyOrder(-2), PropertySpace(SpaceBefore = 5, SpaceAfter = 5)] List<OldItem> temp_editItemList;
         [FoldoutGroup("Advance Edit/ Edit By Feature/Search By Tags or Groups"), EnumToggleButtons, SerializeField] FindItemMethod findItemMethod;
         [FoldoutGroup("Advance Edit/ Edit By Feature/Search By Tags or Groups"), ShowIf("@findItemMethod.ToString() == \"group\""), ValueDropdown("@dic_groups.Keys"), SerializeField] string temp_selectGroup;
         [FoldoutGroup("Advance Edit/ Edit By Feature/Search By Tags or Groups"), ShowIf("@findItemMethod.ToString() == \"tag\""), EnumToggleButtons, SerializeField] FindBool searchBool;
@@ -127,7 +127,7 @@ namespace Nino.NewStateMatching
         void FindItems()
         {
             InitiateNullDatas();
-            temp_editItemList = new List<Item>();
+            temp_editItemList = new List<OldItem>();
             if (findItemMethod == FindItemMethod.group) temp_editItemList = items.FindAll(x => x.group == temp_selectGroup);
             else if (findItemMethod == FindItemMethod.tag && searchBool == FindBool.ContainAll) temp_editItemList = items.FindAll(x => x.HaveTags(temp_selectTag));
             else
@@ -142,9 +142,9 @@ namespace Nino.NewStateMatching
         [FoldoutGroup("Advance Edit/ Edit By Feature/Other Search Method"), Button(Style = ButtonStyle.Box, ButtonHeight = 40), GUIColor(0.4f, 1, 0.4f)] void FindRepeatItem()
         {
             InitiateNullDatas();
-            temp_editItemList = new List<Item>();
+            temp_editItemList = new List<OldItem>();
             List<string> names = new List<string>();
-            foreach (Item i in items)
+            foreach (OldItem i in items)
             {
                 if (names.Contains(i.itemName)) temp_editItemList = temp_editItemList.Concat(items.FindAll(x => x.itemName == i.itemName)).ToList();
                 else names.Add(i.itemName);
@@ -173,7 +173,7 @@ namespace Nino.NewStateMatching
         }
         public void RemoveRedundantTagsInAllItems()
         {
-            foreach (Item i in items) i.RemoveRedundantTags();
+            foreach (OldItem i in items) i.RemoveRedundantTags();
         }
         [HorizontalGroup("Data/DataEditButton"), Button(ButtonSizes.Large), GUIColor(1f, 0.4f, 0.4f), PropertyOrder(-1)] void _RemoveRedundantDatas()
         {
@@ -182,15 +182,15 @@ namespace Nino.NewStateMatching
         }
         void RemoveRedundantDatas()
         {
-            items.RemoveAll(x => x == null || x == default(Item) || string.IsNullOrWhiteSpace(x.itemName));
+            items.RemoveAll(x => x == null || x == default(OldItem) || string.IsNullOrWhiteSpace(x.itemName));
             List<string> names = new List<string>();
-            List<Item> toRemove = new List<Item>();
-            foreach (Item i in items)
+            List<OldItem> toRemove = new List<OldItem>();
+            foreach (OldItem i in items)
             {
                 if (names.Contains(i.itemName)) toRemove.Add(i);
                 else names.Add(i.itemName);
             }
-            foreach (Item i in toRemove)
+            foreach (OldItem i in toRemove)
             {
                 items.Remove(i);
             }
@@ -212,7 +212,7 @@ namespace Nino.NewStateMatching
             if (removeContainedItem) items.RemoveAll(x => x.group == selectGroup);
             else
             {
-                foreach (Item i in items)
+                foreach (OldItem i in items)
                 {
                     if (i.group == selectGroup) i.group = "";
                 }
@@ -222,8 +222,8 @@ namespace Nino.NewStateMatching
         [FoldoutGroup("Advance Edit/Groups"), Button(ButtonSizes.Large, Style = ButtonStyle.Box), GUIColor(0.4f, 1, 0.4f)]
         void RenameGroup([ValueDropdown("@dic_groups.Keys")] string selectGroup, string newName)
         {
-            List<Item> getItemMatch = items.FindAll(x => x.InGroup(selectGroup));
-            foreach (Item i in getItemMatch) i.group = newName;
+            List<OldItem> getItemMatch = items.FindAll(x => x.InGroup(selectGroup));
+            foreach (OldItem i in getItemMatch) i.group = newName;
             UpdateDictionrary();
         }
         [FoldoutGroup("Advance Edit/Tagss"), ValueDropdown("@OdinUtility.ValueDropDownListSelector(dic_tags.Keys,selectTag)"), SerializeField] List<string> selectTag;
@@ -234,7 +234,7 @@ namespace Nino.NewStateMatching
             if (removeAttachedItem) items.RemoveAll(x => x.HaveTags(selectTag));
             else
             {
-                foreach (Item i in items)
+                foreach (OldItem i in items)
                 {
                     i.RemoveTags(selectTag);
                 }
@@ -244,8 +244,8 @@ namespace Nino.NewStateMatching
         [FoldoutGroup("Advance Edit/Tagss"), Button(ButtonSizes.Large, Style = ButtonStyle.Box), GUIColor(0.4f, 1, 0.4f)]
         void RenameTag([ValueDropdown("@dic_tags.Keys")] string selectTag, string newName)
         {
-            List<Item> getMatchItems = items.FindAll(x => x.HaveTag(selectTag));
-            foreach (Item i in getMatchItems)
+            List<OldItem> getMatchItems = items.FindAll(x => x.HaveTag(selectTag));
+            foreach (OldItem i in getMatchItems)
             {
                 i.RemoveTag(selectTag);
                 i.AddTag(newName);
@@ -257,7 +257,7 @@ namespace Nino.NewStateMatching
         public List<string> GetAllItemNames()
         {
             List<string> r = new List<string>();
-            foreach (Item i in items)
+            foreach (OldItem i in items)
             {
                 if (!r.Contains(i.itemName)) r.Add(i.itemName);
             }
@@ -266,7 +266,7 @@ namespace Nino.NewStateMatching
         public List<string> GetAllTagsInItems()
         {
             List<string> r = new List<string>();
-            foreach (Item i in items)
+            foreach (OldItem i in items)
             {
                 if (i.HaveTag())
                 {
@@ -278,18 +278,18 @@ namespace Nino.NewStateMatching
         public List<string> GetAllGroupsInItems()
         {
             List<string> r = new List<string>();
-            foreach (Item i in items)
+            foreach (OldItem i in items)
             {
                 if (i.InGroup() && !r.Contains(i.group)) r.Add(i.group);
             }
             return new List<string>(r);
         }
-        public bool Contain(Predicate<Item> match) => DataUtility.ListContainItem(match, items);
-        public bool AddItem(Item newItem) => DataUtility.AddItemToList(newItem, items);
-        public Item AddItem(string newItemName)
+        public bool Contain(Predicate<OldItem> match) => DataUtility.ListContainItem(match, items);
+        public bool AddItem(OldItem newItem) => DataUtility.OldAddItemToList(newItem, items);
+        public OldItem AddItem(string newItemName)
         {
             if (items.Find(x => x.itemName == newItemName) != null) return items.Find(x => x.itemName == newItemName);
-            Item newItem = CreateNewItem();
+            OldItem newItem = CreateNewItem();
             newItem.itemName = newItemName;
             AddItem(newItem);
             return newItem;

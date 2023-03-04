@@ -20,18 +20,25 @@ namespace Nino.NewStateMatching
             T getItem = list.Find(match);
             return getItem != null;
         }
-        public static bool AddItemToList(Item newItem, List<Item> list)
+        public static bool OldAddItemToList(OldItem newItem, List<OldItem> list)
         {
             if (list.Contains(newItem)) return false;
             list.Add(newItem);
             return true;
         }
-        public static Item AddItemToList<T>(string newItemName, List<Item> list) where T:Item,new()
+        public static Item AddItemToList(Item newItem, List<Item> list)
+        {
+            Item findItem = list.Find(x => x.itemName == newItem.itemName);
+            if (findItem !=null) return findItem;
+            list.Add(newItem);
+            return newItem;
+        }
+        public static OldItem OldAddItemToList<T>(string newItemName, List<OldItem> list) where T:OldItem,new()
         {
             if (ListContainItem(item => item.itemName == newItemName, list)) return list.Find(item => item.itemName == newItemName);
-            Item newItem = new T();
+            OldItem newItem = new T();
             newItem.itemName = newItemName;
-            if (AddItemToList(newItem, list)) return newItem;
+            if (OldAddItemToList(newItem, list)) return newItem;
             else throw new Exception("Unknow error in create new Item");
         }
         public static List<string> RemoveAllRedundantStringInList(List<string> list)

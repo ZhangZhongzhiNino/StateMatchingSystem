@@ -67,6 +67,14 @@ namespace Nino.NewStateMatching
         {
             
         }
+
+
+        public List<string> GetChildLocalAddresses()
+        {
+            List<string> r = new List<string>();
+            childs.ForEach(x => r.Add(x.localAddress));
+            return r;
+        }
     }
 }
 
