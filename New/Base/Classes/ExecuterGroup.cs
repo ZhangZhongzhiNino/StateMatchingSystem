@@ -11,6 +11,7 @@ namespace Nino.NewStateMatching
         [FoldoutGroup("Reference"), InlineEditor] public AddressData address;
         [TitleGroup("Executer"), ListDrawerSettings(HideAddButton = true, DraggableItems = false, HideRemoveButton = true, ListElementLabelName = "lableName"),LabelWidth(400),ShowIf("@initializers !=null && initializers.Count != 0")] public List<ExecuterInitializer> initializers;
         [TitleGroup("Executer"), ListDrawerSettings(HideAddButton = true, DraggableItems = false, HideRemoveButton = true, ListElementLabelName = "@address.localAddress"), LabelWidth(400), ShowIf("@FSMs !=null && FSMs.Count != 0")] public List<SMS_FSM> FSMs;
+        
         [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 1), PropertyOrder(-9999999999)] public void ResetHierarchy()
         {
             EditorUtility.OpenHierarchy(executerCategory?.stateMatchingRoot?.objRoot, true);

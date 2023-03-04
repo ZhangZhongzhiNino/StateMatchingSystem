@@ -6,11 +6,13 @@ namespace Nino.NewStateMatching
 {
     public class AddressData:StateMatchingScriptableObject
     {
-        [ReadOnly]public StateMatchingMonoBehaviour script;
-        [OnValueChanged("UpdateGlobalAddressInChild")]public string localAddress;
-        [ReadOnly] public string globalAddress;
-        public AddressData parent;
-        [InlineEditor, ListDrawerSettings(HideAddButton = false,HideRemoveButton = true,DraggableItems = false,ListElementLabelName = "localAddress")] public List<AddressData> childs;
+        [HideInInspector]public StateMatchingMonoBehaviour script;
+        [OnValueChanged("UpdateGlobalAddressInChild"),TitleGroup("Address")]public string localAddress;
+        [ReadOnly, TitleGroup("Address")] public string globalAddress;
+        [TitleGroup("Pointer")]public AddressData parent;
+        [TitleGroup("Pointer"),InlineEditor, ListDrawerSettings(HideAddButton = false,HideRemoveButton = true,DraggableItems = false,ListElementLabelName = "localAddress")]
+        [PropertySpace(spaceBefore:0,spaceAfter:10)]
+        public List<AddressData> childs;
 
         protected override void Initialize()
         {
@@ -56,7 +58,7 @@ namespace Nino.NewStateMatching
                 child.RemoveNullChildInChild();
             }
         }
-        [Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
+        [TitleGroup("Address"),Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f)]
         public void UpdateAddressSystem()
         {
             RemoveNullChildsInSystem();

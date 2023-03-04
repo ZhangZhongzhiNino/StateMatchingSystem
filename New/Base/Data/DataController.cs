@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using UnityEngine.Events;
+
 namespace Nino.NewStateMatching
 {
     [InlineEditor]
@@ -150,9 +152,7 @@ namespace Nino.NewStateMatching
                 return GeneralUtility.GetNameInItemList(dic_tags[tag]);
             return new List<string>();
         }
-
         public Item GetItem(string itemName) => items.FirstOrDefault(x => x.itemName == itemName);
-
         public bool Contain(Predicate<Item> match) => DataUtility.ListContainItem(match, items);
 
         public Item AddItem(string itemName, Type valueType, bool labled, string group)
@@ -173,6 +173,22 @@ namespace Nino.NewStateMatching
         public LabledItem AddLabledItem(string newItemName, Type valueType) => AddItem(new LabledItem(valueType: valueType, newItemName)) as LabledItem;
 
         
+    }
+
+
+    public class SMSAction
+    {
+        public string actionName;
+        public UnityEvent actionEvent;
+        public SMSAction(string actionName ,UnityAction action)
+        {
+            this.actionName = actionName;
+            actionEvent.AddListener(action);
+        }
+    }
+    public class newActionController
+    {
+
     }
 
 }

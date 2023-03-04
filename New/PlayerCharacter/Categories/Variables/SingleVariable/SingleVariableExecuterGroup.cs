@@ -29,5 +29,4 @@ namespace Nino.NewStateMatching.PlayerCharacter.Variable
         [FoldoutGroup("Add New Data Collection"), Button]
         void RemoveNullInitializer() => initializers.RemoveAll(x => x.content == null);
     }
-
 }
