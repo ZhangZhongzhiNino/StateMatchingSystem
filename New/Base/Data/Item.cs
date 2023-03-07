@@ -9,14 +9,15 @@ namespace Nino.NewStateMatching
 {
     public class Item
     {
-        [TitleGroup("Basic Info",order:-1),LabelWidth(140),PropertyOrder(0)] public string itemName;
+        [TitleGroup("Basic Info",order:-1),LabelWidth(140),PropertyOrder(0),EnableIf("editableInInspector")] public string itemName;
         [TitleGroup("Basic Info"), LabelWidth(125), PropertyOrder(2),ReadOnly] public System.Type valueType;
-        [TitleGroup("Basic Info"), LabelWidth(140), PropertyOrder(3)] public bool actionInput;
-        [TitleGroup("Basic Info"), LabelWidth(140), PropertyOrder(4)] public bool resetWhenEnabled;
-        [TitleGroup("Basic Info"), ShowIf("resetWhenEnabled"), LabelWidth(140), PropertyOrder(5)] public object defaultValue;
+        [TitleGroup("Basic Info"), LabelWidth(140), PropertyOrder(3), EnableIf("editableInInspector")] public bool actionInput;
+        [TitleGroup("Basic Info"), LabelWidth(140), PropertyOrder(4), EnableIf("editableInInspector")] public bool resetWhenEnabled;
+        [TitleGroup("Basic Info"), ShowIf("resetWhenEnabled"), LabelWidth(140), PropertyOrder(5), EnableIf("editableInInspector")] public object defaultValue;
 
-        [TitleGroup("Value")] public object value;
+        [TitleGroup("Value"), EnableIf("editableInInspector")] public object value;
 
+        public bool editableInInspector;
         
         public Item(System.Type valueType,string itemName)
         {
@@ -25,6 +26,7 @@ namespace Nino.NewStateMatching
             value = Activator.CreateInstance(valueType);
             defaultValue = Activator.CreateInstance(valueType);
             resetWhenEnabled = false;
+            editableInInspector = false;
         }
         public Item(object value, string itemName)
         {
@@ -32,6 +34,7 @@ namespace Nino.NewStateMatching
             this.valueType = value.GetType();
             this.value = value;
             defaultValue = Activator.CreateInstance(valueType);
+            editableInInspector = false;
         }
         public bool HaveSameTypeAs(object instance) => valueType.IsAssignableFrom(value.GetType());
         public bool IsType(System.Type type) => type == valueType;
@@ -111,10 +114,13 @@ namespace Nino.NewStateMatching
                 value = GetDefaultValueCopy(valueType);
             }
         }
+        [Button,ShowIf("editableInInspector")]
         public void CreateValueIfNull()
         {
             if (value == null) value = Activator.CreateInstance(valueType);
             if (defaultValue == null) value = Activator.CreateInstance(valueType);
+            if (value is NeedInitialize _value) _value.Initialize();
+            if (defaultValue is NeedInitialize _defaultValue) _defaultValue.Initialize();
         }
     }
 

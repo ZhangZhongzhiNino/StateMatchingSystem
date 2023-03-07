@@ -23,8 +23,7 @@ namespace Nino.NewStateMatching
         }
         public abstract void ActionMethod();
     }
-
-    public class StateMachineActionReference
+    public class ActionReference
     {
         public SMSAction actionReference;
         public bool itemReferenceInput;
@@ -42,10 +41,10 @@ namespace Nino.NewStateMatching
         public ItemSelector executionDelayItemSelector;
         public ItemSelector triggerItemSelector;
         public ItemSelector inputItemSelector;
-
         
         
-        public StateMachineActionReference(SMSAction actionReference, SMSUpdater smsUpdater)
+        
+        public ActionReference(SMSAction actionReference, SMSUpdater smsUpdater)
         {
             
             this.actionReference = actionReference;
@@ -56,7 +55,7 @@ namespace Nino.NewStateMatching
             continuousAfterStateFinish = false;
             
             inputType = actionReference.inputType;
-            ResetInput();
+            InitializeInput();
 
             this.smsUpdater = smsUpdater;
             executionDelay = 0;
@@ -76,7 +75,7 @@ namespace Nino.NewStateMatching
                 actionReference.PerformAction(inputItemSelector.item.GetValue(actionReference.inputType));
             else actionReference.PerformAction(staticInput);
         }
-        public void StateStart()
+        public void StateEnter()
         {
             if (itemReferenceForDelay == false) 
             {
@@ -114,7 +113,7 @@ namespace Nino.NewStateMatching
             triggerItemSelector.item.GetValue<UnityEvent>().RemoveListener(EventTriggered);
             PerformAction();
         }
-        public void StateFinished()
+        public void StateExit()
         {
             if (continuousAfterStateFinish) return;
             else
@@ -124,12 +123,12 @@ namespace Nino.NewStateMatching
             }
         }
         
-        public void ResetInput()
+        public void InitializeInput()
         {
             staticInput = Activator.CreateInstance(inputType);
-            if(staticInput is ActionInputNeedInitialize instance)
+            if(staticInput is NeedInitialize staticInputNeedInitialize)
             {
-                instance.Initialize();
+                staticInputNeedInitialize.Initialize();
             }
         }
     }
@@ -224,10 +223,172 @@ namespace Nino.NewStateMatching
             
         }
     }
-
-    public abstract class ActionInputNeedInitialize
+    public interface NeedInitialize
     {
-        public abstract void Initialize();
+        public void Initialize();
+    }
+    public abstract class CompairMethod
+    {
+        public System.Type inputType;
+        public System.Type targetType;
+        public abstract float Compair(object input, object target);
+    }
+    public abstract class TFCompairMethod
+    {
+        public System.Type inputType;
+        public System.Type targetType;
+        public abstract bool Compair(object input, object target);
+    }
+    public class CompairReference
+    {
+        public CompairMethod compairMethod;
+        public float weight;
+        public System.Type inputType;
+        public System.Type targetType;
+        public bool itemReferenceTarget;
+        public object target;
+        public ItemSelector inputSelector;
+        public ItemSelector targetSelector;
+
+        public CompairReference(CompairMethod compairMethod,AddressData rootAddress)
+        {
+            this.compairMethod = compairMethod;
+            weight = 1;
+            inputType = compairMethod.inputType;
+            targetType = compairMethod.targetType;
+            itemReferenceTarget = false;
+            InitializeTarget();
+            inputSelector = new ItemSelector(rootAddress, inputType);
+            targetSelector = new ItemSelector(rootAddress, targetType);
+        }
+        public float GetDifference()
+        {
+            if (itemReferenceTarget) return weight * compairMethod.Compair(inputSelector.item.GetValue(inputType), targetSelector.item.GetValue(targetType));
+            else return weight * compairMethod.Compair(inputSelector.item.GetValue(inputType), target);
+        }
+        public void InitializeTarget()
+        {
+            target = Activator.CreateInstance(targetType);
+            if(target is NeedInitialize targetNeedInitialize)
+            {
+                targetNeedInitialize.Initialize();
+            }
+        }
+        
+    }
+    public class TFCompairReference
+    {
+        public TFCompairMethod compairMethod;
+        public System.Type inputType;
+        public System.Type targetType;
+        public bool itemReferenceTarget;
+        public object target;
+        public ItemSelector inputSelector;
+        public ItemSelector targetSelector;
+
+        public TFCompairReference(TFCompairMethod compairMethod, AddressData rootAddress)
+        {
+            this.compairMethod = compairMethod;
+            inputType = compairMethod.inputType;
+            targetType = compairMethod.targetType;
+            itemReferenceTarget = false;
+            InitializeTarget();
+            inputSelector = new ItemSelector(rootAddress, inputType);
+            targetSelector = new ItemSelector(rootAddress, targetType);
+        }
+        public bool GetBool()
+        {
+            if (itemReferenceTarget) return  compairMethod.Compair(inputSelector.item.GetValue(inputType), targetSelector.item.GetValue(targetType));
+            else return compairMethod.Compair(inputSelector.item.GetValue(inputType), target);
+        }
+        public void InitializeTarget()
+        {
+            target = Activator.CreateInstance(targetType);
+            if (target is NeedInitialize targetNeedInitialize)
+            {
+                targetNeedInitialize.Initialize();
+            }
+        }
+    }
+    public class SMSState: NeedInitialize
+    {
+        public string stateName;
+        public AddressData rootAddress;
+        public SMSUpdater smsUpdater;
+        public List<TFCompairReference> tfCompairs;
+        public List<CompairReference> compairs;
+        public List<ActionReference> actions;
+        public ItemSelector tfCompairSelector;
+        public ItemSelector compairSelector;
+        public ItemSelector actionSelector;
+        public void Initialize()
+        {
+            if (tfCompairs == null) tfCompairs = new List<TFCompairReference>();
+            if (compairs == null) compairs = new List<CompairReference>();
+            if (actions == null) actions = new List<ActionReference>();
+            if (tfCompairSelector == null) tfCompairSelector = new ItemSelector(rootAddress, typeof(TFCompairMethod));
+            if (compairSelector == null) compairSelector = new ItemSelector(rootAddress, typeof(CompairMethod));
+            if (actionSelector == null) actionSelector = new ItemSelector(rootAddress, typeof(SMSAction));
+        }
+        public SMSState(string stateName, SMSUpdater smsUpdater, AddressData rootAddress)
+        {
+            this.rootAddress = rootAddress;
+            this.stateName = stateName;
+            this.smsUpdater = smsUpdater;
+            Initialize();
+        }
+        public bool AbleToTransisst()
+        {
+            foreach(TFCompairReference tfCompair in tfCompairs)
+            {
+                if (!tfCompair.GetBool()) return false;
+            }
+            return true;
+        }
+        public float GetPreference()
+        {
+            float sumWeight = 0;
+            float sumDifference = 0;
+            compairs.ForEach(x => {
+                sumWeight += x.weight;
+                sumDifference += x.GetDifference();
+            });
+            return sumDifference / sumWeight;
+        }
+
+        public void EnterState()
+        {
+            actions.ForEach(x => x.StateEnter());
+        }
+        public void ExistState()
+        {
+            actions.ForEach(x => x.StateExit());
+        }
+
+        [Button]
+        public void AddTFCompair()
+        {
+            tfCompairs.Add(
+                new TFCompairReference(
+                    tfCompairSelector.item.GetValue(typeof(TFCompairMethod)) as TFCompairMethod,
+                    rootAddress));
+        }
+        [Button]
+        public void AddCompair()
+        {
+            compairs.Add(
+                new CompairReference(
+                    compairSelector.item.GetValue(typeof(CompairMethod)) as CompairMethod,
+                    rootAddress));
+        }
+        [Button]
+        public void AddAction()
+        {
+            actions.Add(
+                new ActionReference(
+                    actionSelector.item.GetValue(typeof(SMSAction)) as SMSAction,
+                    smsUpdater));
+        }
     }
 }
 
