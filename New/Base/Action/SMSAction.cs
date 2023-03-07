@@ -7,21 +7,34 @@ using UnityEngine;
 using UnityEngine.Events;
 namespace Nino.NewStateMatching
 {
-    public abstract class SMSAction 
+    public delegate void ActionMethod(object input = null);
+    public class SMSAction 
     {
         public string actionName;
         public SMSExecuter executer;
         [ReadOnly] public bool haveInput;
         [ReadOnly] public bool needItemReference;
         [ReadOnly] public bool continuous;
-        [HideInInspector]public object input;
         [ReadOnly] public System.Type inputType;
-        public void PerformAction(object input = null)
+        public ActionMethod PerformAction;
+        public SMSAction(string actionName, Action<object> action)
         {
-            this.input = input;
-            ActionMethod();
+            this.actionName = actionName;
+            this.PerformAction = new ActionMethod(action);
         }
-        public abstract void ActionMethod();
+    }
+    public class MyClass : MonoBehaviour
+    {
+        SMSAction newAction;
+        public void exeampleFunction(object input)
+        {
+            Debug.Log(transform.position);
+        }
+        private void Start()
+        {
+            newAction = new SMSAction("newName", exeampleFunction);
+            newAction.PerformAction?.Invoke();
+        }
     }
     public class ActionReference
     {
