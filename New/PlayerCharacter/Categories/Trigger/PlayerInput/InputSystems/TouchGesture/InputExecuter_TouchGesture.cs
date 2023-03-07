@@ -11,7 +11,7 @@ namespace Nino.NewStateMatching.PlayerCharacter.Trigger.PlayerInput
         public SlideGestureInput slideGestureInput;
         protected override void InitializeInstance()
         {
-            if (eventController == null) 
+            /*if (eventController == null) 
             {
                 eventController = new EventController();
                 eventController.eventInfos.Add(new EventInfo("Start Move"));
@@ -39,7 +39,7 @@ namespace Nino.NewStateMatching.PlayerCharacter.Trigger.PlayerInput
             if (playerMoveControl == null) playerMoveControl = gameObject.AddComponent<PlayerMoveControl>();
             if (slideGestureInput == null) slideGestureInput = gameObject.AddComponent<SlideGestureInput>();
             playerMoveControl.executer = this;
-            slideGestureInput.executer = this;
+            slideGestureInput.executer = this;*/
         }
 
         protected override void PreRemoveInstance()

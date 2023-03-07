@@ -15,7 +15,7 @@ public class PlayerMoveControl : MonoBehaviour
     [TabGroup("Input Value")][field: SerializeField] public float RunDis;
     // Public value out
     [TabGroup("Output Value")] public Vector2 _moveDirection;
-    public Vector2 moveDirection
+   /* public Vector2 moveDirection
     {
         get => _moveDirection;
         set
@@ -55,7 +55,7 @@ public class PlayerMoveControl : MonoBehaviour
             
             _moveType = value;
         }
-    }
+    }*/
 
     UnityAction[] FingerMoveAction;
     UnityAction[] PreFingerLeaveAction;
@@ -76,9 +76,9 @@ public class PlayerMoveControl : MonoBehaviour
     }
     void SetUpValue()
     {
-        moveDirection = Vector2.zero;
+       /* moveDirection = Vector2.zero;
         isMoving = false;
-        moveType = -1;
+        moveType = -1;*/
     }
     private void OnEnable()
     {
@@ -100,21 +100,21 @@ public class PlayerMoveControl : MonoBehaviour
     }
     public void TrySetMove(int fingerIndex)
     { 
-        if (inputControl.fingerRule[fingerIndex] != 0) return;
+        /*if (inputControl.fingerRule[fingerIndex] != 0) return;
         Vector2 Difference = inputControl.fingerLocation[fingerIndex] - inputControl.fingerStartLocation[fingerIndex];
         float FingerMoveDis = Difference.magnitude;
         if (FingerMoveDis < WalkDis) moveType = -1;
         else if (FingerMoveDis < RunDis) moveType = 0;
         else moveType = 1;
-        moveDirection = Difference.normalized;
+        moveDirection = Difference.normalized;*/
         
         
     }
     public void TryClearMove(int i)
     {
-        if (inputControl.fingerRule[i] != 0) return;
+        /*if (inputControl.fingerRule[i] != 0) return;
         moveDirection = Vector2.zero;
-        moveType = -1;
+        moveType = -1;*/
     }
     [Button(ButtonSizes.Medium)]
     [GUIColor(0.6f, 1f, 0.6f)]

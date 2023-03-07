@@ -8,10 +8,7 @@ namespace Nino.NewStateMatching
         [FoldoutGroup("Reference")] public ExecuterGroup executerGroup;
         [FoldoutGroup("Reference"), InlineEditor] public AddressData address;
         [FoldoutGroup("Controller"), TitleGroup("Controller/Data"), ShowIf("@dataController != null")] public DataController dataController;
-        [TitleGroup("Controller/Dynamic Data"), ShowIf("@dynamicDataController != null")] public DynamicDataController dynamicDataController;
         [TitleGroup("Controller/Compare"), ShowIf("@compareController != null")] public CompareController compareController;
-        [TitleGroup("Controller/Action"), ShowIf("@actionController != null")] public ActionController actionController;
-        [TitleGroup("Controller/Event"), ShowIf("@eventController != null")] public EventController eventController;
 
         [Button(size: ButtonSizes.Large), GUIColor(0.4f, 1, 1), PropertyOrder(-9999999999)] public void ResetHierarchy() 
         {

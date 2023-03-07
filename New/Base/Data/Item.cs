@@ -35,10 +35,61 @@ namespace Nino.NewStateMatching
         }
         public bool HaveSameTypeAs(object instance) => valueType.IsAssignableFrom(value.GetType());
         public bool IsType(System.Type type) => type == valueType;
-        public T getValue<T>()
+        public T GetValue<T>()
+        {
+            if (typeof(T) == valueType) return (T)value;
+            return default(T);
+        }
+        public object GetValue(System.Type valueType)
+        {
+            if (this.valueType == valueType) return value;
+            return Activator.CreateInstance(this.valueType);
+        }
+        public T GetValueCopy<T>()
         {
             T r = default(T);
-            if (typeof(T) == valueType) r = (T)value;
+            if (typeof(T) == valueType)
+            {
+                r = (T)Activator.CreateInstance(valueType);
+                value.GetType().GetProperties().ToList().ForEach(x => x.SetValue(r, x.GetValue(value)));
+            }
+            return r;
+        }
+        public object GetValueCopy(System.Type valueType)
+        {
+            object r = Activator.CreateInstance(this.valueType);
+            if (this.valueType == valueType)
+            {
+                value.GetType().GetProperties().ToList().ForEach(x => x.SetValue(r, x.GetValue(value)));
+            }
+            return r;
+        }
+        public T GetDefaultValue<T>() 
+        {
+            if (typeof(T) == valueType && defaultValue != null) return (T)defaultValue;
+            return default(T);
+        }
+        public object GetDefaultValue(System.Type valueType)
+        {
+            if (this.valueType == valueType && defaultValue != null) return defaultValue;
+            return Activator.CreateInstance(valueType);
+        }
+        public T GetDefaultValueCopy<T>()
+        {
+            T r = default(T);
+            if (typeof(T) == valueType && defaultValue != null)
+            {
+                defaultValue.GetType().GetProperties().ToList().ForEach(x => x.SetValue(r, x.GetValue(defaultValue)));
+            }
+            return r;
+        }
+        public object GetDefaultValueCopy(System.Type valueType)
+        {
+            object r = Activator.CreateInstance(valueType);
+            if (this.valueType == valueType && defaultValue != null)
+            {
+                defaultValue.GetType().GetProperties().ToList().ForEach(x => x.SetValue(r, x.GetValue(defaultValue)));
+            }
             return r;
         }
         public bool setValue<T>(T newValue)
@@ -57,8 +108,7 @@ namespace Nino.NewStateMatching
         {
             if (resetWhenEnabled)
             {
-                value = Activator.CreateInstance(valueType);
-                defaultValue.GetType().GetProperties().ToList().ForEach(x => x.SetValue(value, x.GetValue(defaultValue)));
+                value = GetDefaultValueCopy(valueType);
             }
         }
         public void CreateValueIfNull()

@@ -42,7 +42,7 @@ public class SlideGestureInput : MonoBehaviour
     UnityAction[] FingerMoveActions;
     UnityAction[] PreFingerLeaveActions;
 
-    void Start()
+    /*void Start()
     {
         inFinishInterval = false;
         upMostPosition = Vector2.zero;
@@ -63,14 +63,14 @@ public class SlideGestureInput : MonoBehaviour
             PreFingerLeaveActions[value] += delegate { onGestureFinish(value); };
         }
         //Gesture Debug
-        /*Slide2.AddListener(delegate { EventDebug("2"); });
+        *//*Slide2.AddListener(delegate { EventDebug("2"); });
         Slide4.AddListener(delegate { EventDebug("4"); });
         Slide6.AddListener(delegate { EventDebug("6"); });
         Slide8.AddListener(delegate { EventDebug("8"); });
         Slide28.AddListener(delegate { EventDebug("28"); });
         Slide82.AddListener(delegate { EventDebug("82"); });
         Slide46.AddListener(delegate { EventDebug("46"); });
-        Slide64.AddListener(delegate { EventDebug("64"); }); */
+        Slide64.AddListener(delegate { EventDebug("64"); }); *//*
     }
     private void OnEnable()
     {
@@ -222,5 +222,5 @@ public class SlideGestureInput : MonoBehaviour
         tapFinishInterval = 0.2f;
         minimumGestureDistance = 10;
         gestureDenoiseThreshold = 15;
-    }
+    }*/
 }

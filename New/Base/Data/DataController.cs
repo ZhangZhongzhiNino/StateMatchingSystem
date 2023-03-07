@@ -176,20 +176,5 @@ namespace Nino.NewStateMatching
     }
 
 
-    public class SMSAction
-    {
-        public string actionName;
-        public UnityEvent actionEvent;
-        public SMSAction(string actionName ,UnityAction action)
-        {
-            this.actionName = actionName;
-            actionEvent.AddListener(action);
-        }
-    }
-    public class newActionController
-    {
-
-    }
-
 }
 

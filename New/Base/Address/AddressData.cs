@@ -14,6 +14,12 @@ namespace Nino.NewStateMatching
         [PropertySpace(spaceBefore:0,spaceAfter:10)]
         public List<AddressData> childs;
 
+        public List<string> GetAllChildLocalAddress()
+        {
+            List<string> r = new List<string>();
+            childs.ForEach(x => r.Add(x.localAddress));
+            return r;
+        }
         protected override void Initialize()
         {
             localAddress = "";
@@ -44,7 +50,6 @@ namespace Nino.NewStateMatching
                 child.UpdateGlobalAddressInChild();
             }
         }
-        
         public void RemoveNullChildsInSystem()
         {
             if (parent != null) parent.RemoveNullChildsInSystem();
@@ -64,18 +69,20 @@ namespace Nino.NewStateMatching
             RemoveNullChildsInSystem();
             UpdateGlobalAddressOfSystem();
         }
-
         protected override void RunOnEveryEnable()
         {
             
         }
-
-
         public List<string> GetChildLocalAddresses()
         {
             List<string> r = new List<string>();
             childs.ForEach(x => r.Add(x.localAddress));
             return r;
+        }
+        public AddressData GetRootAddress()
+        {
+            while (parent != null) return parent.GetRootAddress();
+            return this;
         }
     }
 }
