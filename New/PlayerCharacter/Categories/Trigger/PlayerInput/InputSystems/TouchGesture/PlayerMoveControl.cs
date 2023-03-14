@@ -9,13 +9,13 @@ public class PlayerMoveControl : MonoBehaviour
     public InputExecuter_TouchGesture executer;
 
 
-    [BoxGroup("Reference")] [field:SerializeField] InputReader inputControl;
+    [BoxGroup("Reference")] [field:SerializeField] InputReader inputReader;
     // public value in
     [TabGroup("Input Value")] [field: SerializeField] public float WalkDis;
     [TabGroup("Input Value")][field: SerializeField] public float RunDis;
     // Public value out
     [TabGroup("Output Value")] public Vector2 _moveDirection;
-   /* public Vector2 moveDirection
+    public Vector2 moveDirection
     {
         get => _moveDirection;
         set
@@ -23,12 +23,11 @@ public class PlayerMoveControl : MonoBehaviour
             if (value == _moveDirection) return;
             _moveDirection = value;
             if (executer == null) return;
-            executer.dynamicDataController.AssignValue("Move Direction", value);
+            executer.dataController.GetItem("Move Direction").setValue(value);
 
         }
     }
-    [TabGroup("Output Value")] [field: SerializeField] public bool isMoving;
-    [TabGroup("Output Value")] [field: SerializeField] private int _moveType;
+    [TabGroup("Output Value")][field: SerializeField] private int _moveType;
     public int moveType
     {
         get { return _moveType; }
@@ -38,24 +37,51 @@ public class PlayerMoveControl : MonoBehaviour
             {
                 if (_moveType == -1)
                 {
-                    if (value > -1) executer.eventController.InvokeEvent("Start Move");
-                    if (value == 1) executer.eventController.InvokeEvent("Start Run");
+                    
+
+                    if (value > -1)
+                    {
+                        UnityEvent getEvent = executer.dataController.GetItem("Start Move").value as UnityEvent;
+                        getEvent.Invoke();
+                    }
+                    if (value == 1)
+                    {
+                        UnityEvent getEvent = executer.dataController.GetItem("Start Run").value as UnityEvent;
+                        getEvent.Invoke();
+                    }
                 }
                 if (_moveType == 0)
                 {
-                    if (value == 1) executer.eventController.InvokeEvent("Start Run");
-                    else executer.eventController.InvokeEvent("Stop Move");
+                    if (value == 1)
+                    {
+                        UnityEvent getEvent = executer.dataController.GetItem("Start Run").value as UnityEvent;
+                        getEvent.Invoke();
+                    }
+                    else if (value == -1)
+                    {
+                        UnityEvent getEvent = executer.dataController.GetItem("Stop Move").value as UnityEvent;
+                        getEvent.Invoke();
+                    }
+
                 }
                 if (_moveType == 1)
                 {
-                    if (value < 1) executer.eventController.InvokeEvent("Stop Run");
-                    if (value == -1) executer.eventController.InvokeEvent("Stop Move");
+                    if (value < 1)
+                    {
+                        UnityEvent getEvent = executer.dataController.GetItem("Stop Run").value as UnityEvent;
+                        getEvent.Invoke();
+                    }
+                    if (value == -1)
+                    {
+                        UnityEvent getEvent = executer.dataController.GetItem("Stop Move").value as UnityEvent;
+                        getEvent.Invoke();
+                    }
                 }
             }
-            
+
             _moveType = value;
         }
-    }*/
+    }
 
     UnityAction[] FingerMoveAction;
     UnityAction[] PreFingerLeaveAction;
@@ -76,45 +102,44 @@ public class PlayerMoveControl : MonoBehaviour
     }
     void SetUpValue()
     {
-       /* moveDirection = Vector2.zero;
-        isMoving = false;
-        moveType = -1;*/
+        moveDirection = Vector2.zero;
+        moveType = -1;
     }
     private void OnEnable()
-    {
+    { 
         if (executer == null) executer = GetComponent<InputExecuter_TouchGesture>();
-        if (inputControl == null) inputControl = gameObject.GetComponent<InputReader>();
+        if (inputReader == null) inputReader = gameObject.GetComponent<InputReader>();
         for(int i=0; i < 2; i++)
         {
-            inputControl.PreFingerLeave[i].AddListener(PreFingerLeaveAction[i]);
-            inputControl.FingerMove[i].AddListener(FingerMoveAction[i]);
+            inputReader.PreFingerLeave[i].AddListener(PreFingerLeaveAction[i]);
+            inputReader.FingerMove[i].AddListener(FingerMoveAction[i]);
         }
     }
     private void OnDisable()
     {
         for (int i = 0; i < 2; i++)
         {
-            inputControl.PreFingerLeave[i].RemoveListener(PreFingerLeaveAction[i]);
-            inputControl.FingerMove[i].RemoveListener(FingerMoveAction[i]);
+            inputReader.PreFingerLeave[i].RemoveListener(PreFingerLeaveAction[i]);
+            inputReader.FingerMove[i].RemoveListener(FingerMoveAction[i]);
         }
     }
     public void TrySetMove(int fingerIndex)
-    { 
-        /*if (inputControl.fingerRule[fingerIndex] != 0) return;
-        Vector2 Difference = inputControl.fingerLocation[fingerIndex] - inputControl.fingerStartLocation[fingerIndex];
+    {
+        if (inputReader.fingerRule[fingerIndex] != 0) return;
+        Vector2 Difference = inputReader.fingerLocation[fingerIndex] - inputReader.fingerStartLocation[fingerIndex];
         float FingerMoveDis = Difference.magnitude;
         if (FingerMoveDis < WalkDis) moveType = -1;
         else if (FingerMoveDis < RunDis) moveType = 0;
         else moveType = 1;
-        moveDirection = Difference.normalized;*/
-        
-        
+        moveDirection = Difference.normalized;
+
+
     }
     public void TryClearMove(int i)
     {
-        /*if (inputControl.fingerRule[i] != 0) return;
+        if (inputReader.fingerRule[i] != 0) return;
         moveDirection = Vector2.zero;
-        moveType = -1;*/
+        moveType = -1;
     }
     [Button(ButtonSizes.Medium)]
     [GUIColor(0.6f, 1f, 0.6f)]

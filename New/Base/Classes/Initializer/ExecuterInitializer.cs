@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System;
+
 namespace Nino.NewStateMatching
 {
-    public abstract class ExecuterInitializer : StateMatchingMonoBehaviourInitializer
+    public class ExecuterInitializer : SMSMonoBehaviourInitializer
     {
-        protected ExecuterInitializer(StateMatchingMonoBehaviour creater, string name) : base(creater, name)
+        public ExecuterInitializer(StateMatchingMonoBehaviour creater, string name, Type contentType) : base(creater, name, contentType)
         {
         }
+
         public SMSExecuter executer { get => content as SMSExecuter; }
         public ExecuterGroup executerGroup { get => creater as ExecuterGroup; }        
         protected override void AssignContentParent() => executer.executerGroup = executerGroup;
@@ -29,6 +32,7 @@ namespace Nino.NewStateMatching
             contentAddress.localAddress = pureName;
             createrAddress.AddChild(contentAddress);
             createrAddress.UpdateGlobalAddressInChild();
+            executer.InitializeAfterCreateAddress();
         }
     }
     

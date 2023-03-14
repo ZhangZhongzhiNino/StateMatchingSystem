@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
+using System;
 
 namespace Nino.NewStateMatching
 {
-    public abstract class ExecuterGroupInitializer : StateMatchingMonoBehaviourInitializer
+    public class ExecuterGroupInitializer : SMSMonoBehaviourInitializer
     {
-        protected ExecuterGroupInitializer(StateMatchingMonoBehaviour creater, string name) : base(creater, name)
+        public ExecuterGroupInitializer(StateMatchingMonoBehaviour creater, string name, Type contentType) : base(creater, name, contentType)
         {
         }
 

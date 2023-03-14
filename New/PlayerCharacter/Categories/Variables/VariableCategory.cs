@@ -7,7 +7,7 @@ namespace Nino.NewStateMatching.PlayerCharacter
     {
         protected override void AddExecuterGroupInitializers()
         {
-            GeneralUtility.AddGroupInitializer(ref initializers, new SingleVariableExecuterGroupInitializer(this,"Single Variable"));
+            GeneralUtility.AddGroupInitializer(ref initializers, new ExecuterGroupInitializer(this,"Single Variable",typeof(SingleVariableExecuterGroup)));
         }
 
         protected override string WriteAddress()

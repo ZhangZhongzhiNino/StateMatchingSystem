@@ -42,7 +42,7 @@ namespace Nino.NewStateMatching
             HideRemoveButton = true,
             DraggableItems = false,
             ShowIndexLabels = true)]
-        public List<Item> labledItems;
+        public List<LabledItem> labledItems;
         [FoldoutGroup("Quick Edit",order:10),PropertyOrder(-1),ShowIf("editableInInspector")] public Dictionary<string, Item> dic_unlabledItems; 
         [FoldoutGroup("Quick Edit"), ShowIf("editableInInspector")] public Dictionary<Type, List<Item>> dic_types;
         [FoldoutGroup("Quick Edit"), ShowIf("editableInInspector")] public Dictionary<string, List<LabledItem>> dic_groups;
@@ -89,8 +89,8 @@ namespace Nino.NewStateMatching
             {
                 dic_types.TryAdd(item.valueType, new List<Item>());
                 dic_types[item.valueType].Add(item);
-                dic_groups.TryAdd(item.itemName, new List<LabledItem>());
-                dic_groups[item.itemName].Add(item);
+                dic_groups.TryAdd(item.group, new List<LabledItem>());
+                dic_groups[item.group].Add(item);
                 foreach(string tag in item.tags)
                 {
                     dic_tags.TryAdd(tag,new List<LabledItem>());
@@ -115,7 +115,9 @@ namespace Nino.NewStateMatching
             items = new List<Item>();
             inputItems = new List<Item>();
             unlabledItems = new List<Item>();
-            labledItems = new List<Item>();
+            labledItems = new List<LabledItem>();
+            UpdateDictionrary();
+            UpdateReferenceList();
         }
 
         public void UpdateReferenceList()
@@ -128,7 +130,17 @@ namespace Nino.NewStateMatching
         }
         public void UpdateInputItems() => inputItems = items.FindAll(x => x.actionInput == true);
         public void UpdateUnlabledItems() => unlabledItems = items.FindAll(x => x.GetType() == typeof(Item));
-        public void UpdateLabledItems() => labledItems = items.FindAll(x => x.GetType() == typeof(LabledItem));
+        public void UpdateLabledItems()
+        {
+            labledItems = new List<LabledItem>();
+            foreach(Item item in items)
+            {
+                if(item is LabledItem labledItem)
+                {
+                    labledItems.Add(labledItem);
+                }
+            }
+        }
 
         public List<string> GetAllItemNames() => GeneralUtility.GetNameInItemList(items);
         public List<string> GetAllInputItemNames() => GeneralUtility.GetNameInItemList(inputItems);
@@ -164,6 +176,7 @@ namespace Nino.NewStateMatching
         public Item AddItem(Item newItem)
         {
             Item r = DataUtility.AddItemToList(newItem, items);
+            UpdateDictionrary();
             UpdateReferenceList();
             return r;
         }
@@ -174,7 +187,5 @@ namespace Nino.NewStateMatching
 
         
     }
-
-
 }
 

@@ -5,14 +5,16 @@ using Sirenix.OdinInspector;
 
 namespace Nino.NewStateMatching
 {
-    public abstract class StateMatchingMonoBehaviourInitializer  
+    public abstract class SMSMonoBehaviourInitializer  
     {
-        public StateMatchingMonoBehaviourInitializer(StateMatchingMonoBehaviour creater, string name)
+        public SMSMonoBehaviourInitializer(StateMatchingMonoBehaviour creater, string name,System.Type contentType)
         {
             this.creater = creater;
             this.pureName = name;
             this.contentObjName = WriteBeforeName() + name + WriteAfterName();
+            this.contentType = contentType;
         }
+        [HideInInspector] public System.Type contentType;
         [HideInInspector] public StateMatchingMonoBehaviour creater;
         public StateMatchingMonoBehaviour content;
         [HideInInspector] public string pureName;
@@ -31,7 +33,8 @@ namespace Nino.NewStateMatching
             GameObject contentObj = creater.transform.Find(contentObjName)?.gameObject;
             if(contentObj == null) contentObj = GeneralUtility.CreateGameObject(contentObjName, creater.transform);
             if (content == null) content = TryFindContent();
-            if (content == null) content = AddComponentToGameObject(contentObj);
+            if (content == null) content = (StateMatchingMonoBehaviour)contentObj.AddComponent(contentType);
+
             AssignContentParent();
             content.Initialize();
             assignAddress();
@@ -50,7 +53,6 @@ namespace Nino.NewStateMatching
         protected abstract string WriteBeforeName();
         protected abstract string WriteAfterName();
         protected abstract StateMatchingMonoBehaviour TryFindContent();
-        protected abstract StateMatchingMonoBehaviour AddComponentToGameObject(GameObject contentObj);
         protected abstract void AssignContentParent();
         protected abstract void UpdateCreaterAddress();
         protected abstract void ResetHierarchy();

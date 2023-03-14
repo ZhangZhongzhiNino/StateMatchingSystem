@@ -6,7 +6,7 @@ namespace Nino.NewStateMatching.PlayerCharacter.Trigger
     {
         protected override void AddExecuterGroupInitializers()
         {
-            GeneralUtility.AddGroupInitializer(ref initializers, new PlayerInputExecuterGroupInitializer(this, "PlayerInput"));
+            GeneralUtility.AddGroupInitializer(ref initializers, new ExecuterGroupInitializer(this, "PlayerInput",typeof(PlayerInputExecuterGroup)));
         }
         protected override string WriteAddress()
         {

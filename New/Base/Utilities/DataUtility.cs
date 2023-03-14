@@ -7,6 +7,41 @@ namespace Nino.NewStateMatching
 {
     public static class DataUtility
     {
+        public static void AddCompair(
+            DataController dataController, 
+            string compairName,
+            CompairFucntion func, 
+            System.Type inputType, 
+            System.Type targetType)
+        {
+            CompairMethod newCompair = new CompairMethod(compairName,func, inputType, targetType);
+            LabledItem newLabledItem = new LabledItem(newCompair, compairName, "Compair");
+            dataController.AddItem(newLabledItem);
+        }
+        public static void AddTFCompair(
+            DataController dataController,
+            string compairName,
+            TFCompairFucntion func,
+            System.Type inputType,
+            System.Type targetType)
+        {
+            TFCompairMethod newCompair = new TFCompairMethod(compairName,func, inputType,targetType);
+            LabledItem newLabledItem = new LabledItem(newCompair, compairName, "TFCompair");
+            dataController.AddItem(newLabledItem);
+        }
+        public static void AddAction(DataController dataController, string actionName, Action<object> func, System.Type inputType = null)
+        {
+            dataController.AddItem(
+                new LabledItem(
+                    new SMSAction(
+                        actionName,
+                        (object input) => func(input),
+                        inputType: inputType,
+                        haveInput: inputType != null),
+                    actionName,
+                    "Action"
+                    ));
+        }
         public static bool ScriptableObjectIsDefaultOrNull<T>(T obj) where T : ScriptableObject
         {
             return (obj == null || obj == default(T));

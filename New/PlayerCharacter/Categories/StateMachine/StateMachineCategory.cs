@@ -4,8 +4,8 @@
     {
         protected override void AddExecuterGroupInitializers()
         {
-/*            GeneralUtility.AddGroupInitializer(ref initializers, new FSM_Group_Initializer(this, "FSM Group"));
-*/        }
+            GeneralUtility.AddGroupInitializer(ref initializers, new ExecuterGroupInitializer(this, "FSM Group",typeof(SMSDiscreteStateMachineGroup)));
+        }
         protected override string WriteAddress()
         {
             return "State Machine";

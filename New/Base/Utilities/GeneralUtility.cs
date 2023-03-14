@@ -82,7 +82,7 @@ namespace Nino.NewStateMatching
             return newScript;
         }
 
-        public static void AddInitializer(ref List<StateMatchingMonoBehaviourInitializer> list, StateMatchingMonoBehaviourInitializer initializer)
+        public static void AddInitializer(ref List<SMSMonoBehaviourInitializer> list, SMSMonoBehaviourInitializer initializer)
         {
             if (list.Find(x => x.pureName == initializer.pureName) == null) list.Add(initializer);
             else list.Find(x => x.pureName == initializer.pureName).Initialize();

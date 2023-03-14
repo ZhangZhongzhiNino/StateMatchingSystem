@@ -1,8 +1,5 @@
 using Sirenix.OdinInspector;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 namespace Nino.NewStateMatching
@@ -11,53 +8,59 @@ namespace Nino.NewStateMatching
     public class SMSAction 
     {
         public string actionName;
-        public SMSExecuter executer;
         [ReadOnly] public bool haveInput;
         [ReadOnly] public bool needItemReference;
         [ReadOnly] public bool continuous;
         [ReadOnly] public System.Type inputType;
         public ActionMethod PerformAction;
-        public SMSAction(string actionName, Action<object> action)
+        public SMSAction(string actionName, Action<object> action, System.Type inputType=null, bool haveInput=false, bool needItemReference=false, bool continuous =false)
         {
             this.actionName = actionName;
+            this.haveInput = haveInput;
+            this.needItemReference = needItemReference;
+            this.continuous = continuous;
+            this.inputType = inputType;
             this.PerformAction = new ActionMethod(action);
         }
-    }
-    public class MyClass : MonoBehaviour
-    {
-        SMSAction newAction;
-        public void exeampleFunction(object input)
+        public SMSAction()
         {
-            Debug.Log(transform.position);
-        }
-        private void Start()
-        {
-            newAction = new SMSAction("newName", exeampleFunction);
-            newAction.PerformAction?.Invoke();
+
         }
     }
+    [LabelWidth(200)]
     public class ActionReference
     {
-        public SMSAction actionReference;
-        public bool itemReferenceInput;
-        public bool eventTriggered;
-        public bool itemReferenceForDelay;
-        public bool continuousAfterStateFinish;
-        public SMSUpdater smsUpdater;
-        public float executionDelay;
-        public float executionCoolDown;
+        [ReadOnly]public SMSAction actionReference;
+        [FoldoutGroup("Input")] public bool itemReferenceInput;
+        [FoldoutGroup("Input"), ShowIf("@!itemReferenceInput")] public object staticInput;
+        [FoldoutGroup("Input"), ShowIf("itemReferenceInput")] public ItemSelector inputItemSelector;
+        
+        [FoldoutGroup("Delay")] public bool itemReferenceForDelay;
+        [FoldoutGroup("Delay"), ShowIf("@!itemReferenceForDelay")] public float executionDelay;
+        [FoldoutGroup("Delay"), ShowIf("itemReferenceForDelay")] public ItemSelector executionDelayItemSelector;
+
+        [FoldoutGroup("Other")] public bool eventTriggered;
+        [FoldoutGroup("Other"), ShowIf("eventTriggered")] public ItemSelector triggerItemSelector;
+        [FoldoutGroup("Other")] public bool continuousAfterStateFinish;
+
+        [HideInInspector]public SMSupdater smsUpdater;
+        
+        [HideInInspector]public float executionCoolDown;
         
 
-        public System.Type inputType;
-        public object staticInput;
+        [HideInInspector] public System.Type inputType;
+        
 
-        public ItemSelector executionDelayItemSelector;
-        public ItemSelector triggerItemSelector;
-        public ItemSelector inputItemSelector;
         
         
         
-        public ActionReference(SMSAction actionReference, SMSUpdater smsUpdater)
+
+        public ActionReference()
+        {
+
+        }
+        
+        public ActionReference(SMSAction actionReference, SMSupdater smsUpdater,AddressData rootAddress)
         {
             
             this.actionReference = actionReference;
@@ -75,9 +78,8 @@ namespace Nino.NewStateMatching
             executionCoolDown = 0;
             
 
-            AddressData rootAddress = actionReference.executer.address.GetRootAddress();
             executionDelayItemSelector = new ItemSelector(rootAddress, typeof(float));
-            triggerItemSelector = new ItemSelector(rootAddress, typeof(UnityEvent));
+            triggerItemSelector = new ItemSelector(rootAddress, typeof(UnityEvent),group:"Trigger",groupedItem: true);
             inputItemSelector = new ItemSelector(rootAddress, inputType);
         }
         public void PerformAction()
@@ -87,6 +89,7 @@ namespace Nino.NewStateMatching
             else if (itemReferenceInput == true)
                 actionReference.PerformAction(inputItemSelector.item.GetValue(actionReference.inputType));
             else actionReference.PerformAction(staticInput);
+            
         }
         public void StateEnter()
         {
@@ -111,19 +114,21 @@ namespace Nino.NewStateMatching
         }
         public void CoolDownFinished()
         {
-            if(eventTriggered == false)
+            if(eventTriggered)
             {
-                triggerItemSelector.item.GetValue<UnityEvent>().AddListener(EventTriggered);
+                UnityEvent getevent = triggerItemSelector.item.value as UnityEvent;
+                getevent.AddListener(EventTriggered);
             }
             else
             {
                 if(actionReference.continuous == false) PerformAction();
-                else smsUpdater.SMSUpdate.AddListener(PerformAction);
+                else smsUpdater.actionUpdate.AddListener(PerformAction);
             }
         }
         public void EventTriggered()
         {
-            triggerItemSelector.item.GetValue<UnityEvent>().RemoveListener(EventTriggered);
+            UnityEvent getevent = triggerItemSelector.item.value as UnityEvent;
+            getevent.RemoveListener(EventTriggered);
             PerformAction();
         }
         public void StateExit()
@@ -132,7 +137,7 @@ namespace Nino.NewStateMatching
             else
             {
                 smsUpdater.timerUpdate.RemoveListener(CoolDown);
-                smsUpdater.SMSUpdate.RemoveListener(PerformAction);
+                smsUpdater.actionUpdate.RemoveListener(PerformAction);
             }
         }
         
@@ -145,126 +150,60 @@ namespace Nino.NewStateMatching
             }
         }
     }
-    public class ItemSelector
-    {
-        public AddressData rootAddress;
-        public AddressData currentAddress;
-        public System.Type itemType;
-        public string address;
-        public Item item;
-
-        public ItemSelector(AddressData rootAddress, System.Type itemType)
-        {
-            this.rootAddress = rootAddress;
-            this.itemType = itemType;
-            this.currentAddress = rootAddress;
-            address = "";
-        }
-        public void GoBackToRootAddress()
-        {
-            currentAddress = rootAddress;
-            address = "";
-        }
-        public void NavigateToChildAddress([ValueDropdown("@currentAddress.GetAllChildLocalAddress()")] string selectChild)
-        {
-            inputItemNameList = new List<string>();
-            if (string.IsNullOrWhiteSpace(selectChild)) return;
-            AddressData nextAddress = currentAddress.childs.FirstOrDefault(x => x.localAddress == selectChild);
-            if (nextAddress != default(AddressData)) currentAddress = nextAddress;
-            if (currentAddress.script is SMSExecuter exe)
-            {
-                dataController = exe.dataController;
-                inputItemNameList = dataController.GetAllItemNamesOfType(itemType);
-            }
-            address = currentAddress.globalAddress;
-        }
-        [HideInInspector, SerializeField] DataController dataController;
-        [HideInInspector, SerializeField] List<string> inputItemNameList;
-        public void SelectItem([ValueDropdown("inputItemNameList")] string selectItem)
-        {
-            if (string.IsNullOrWhiteSpace(selectItem)) return;
-            Item findItem = dataController.GetItem(selectItem);
-            if (findItem != null) item = findItem;
-        }
-    }
-    public class SMSUpdater : StateMatchingMonoBehaviour
-    {
-        public UnityEvent SMSUpdate;
-        public float updateInterval;
-        public bool updateOn;
-        public UnityEvent timerUpdate;
-        public float timerInterval;
-        public bool timerOn;
-        private void Start()
-        {
-            
-        }
-        private void OnEnable()
-        {
-            StartCoroutine(SMSTimerInvoke());
-        }
-        private void OnDisable()
-        {
-            StopAllCoroutines();
-        }
-        public IEnumerator SMSTimerInvoke()
-        {
-            while (true)
-            {
-                if(timerOn) timerUpdate?.Invoke();
-                yield return new WaitForSeconds(timerInterval);
-            }
-        }
-        public IEnumerator SMSUpdateInvoke()
-        {
-            while (true)
-            {
-                if (updateOn) SMSUpdate?.Invoke();
-                yield return new WaitForSeconds(updateInterval);
-            }
-        }
-        public override void Initialize()
-        {
-            timerInterval = 0.2f;
-            timerOn = true;
-            updateInterval = 0.2f;
-            updateOn = true;
-        }
-
-        public override void Remove()
-        {
-            
-        }
-    }
     public interface NeedInitialize
     {
         public void Initialize();
     }
-    public abstract class CompairMethod
+    public delegate float CompairFucntion(object input, object target);
+    public class CompairMethod
     {
+        public string compairName;
         public System.Type inputType;
         public System.Type targetType;
-        public abstract float Compair(object input, object target);
+        public CompairFucntion Compair;
+        public CompairMethod() { }
+        public CompairMethod(string compairName,CompairFucntion method, System.Type inputType, System.Type targetType)
+        {
+            this.compairName = compairName;
+            this.inputType = inputType;
+            this.targetType = targetType;
+            Compair += method;
+        }
+
     }
-    public abstract class TFCompairMethod
+    public delegate bool TFCompairFucntion(object input, object target);
+    public class TFCompairMethod
     {
+        public string compairName;
         public System.Type inputType;
         public System.Type targetType;
-        public abstract bool Compair(object input, object target);
+        public TFCompairFucntion Compair;
+        public TFCompairMethod() { }
+        public TFCompairMethod(string compairName, TFCompairFucntion method,System.Type inputType, System.Type targetType)
+        {
+            this.compairName = compairName;
+            this.inputType = inputType;
+            this.targetType = targetType;
+            Compair += method;
+        }
     }
+    [LabelWidth(200)]
     public class CompairReference
     {
-        public CompairMethod compairMethod;
+        [ReadOnly] public string compairName;
+        [HideInInspector] public CompairMethod compairMethod;
         public float weight;
-        public System.Type inputType;
-        public System.Type targetType;
-        public bool itemReferenceTarget;
-        public object target;
-        public ItemSelector inputSelector;
-        public ItemSelector targetSelector;
+        [HideInInspector] public System.Type inputType;
+        [HideInInspector] public System.Type targetType;
+        [FoldoutGroup("Target")] public bool itemReferenceTarget;
+        [FoldoutGroup("Target"), ShowIf("@!itemReferenceTarget")] public object target;
+        [FoldoutGroup("Target"), ShowIf("itemReferenceTarget")] public ItemSelector targetSelector;
+        [FoldoutGroup("Input")] public ItemSelector inputSelector;
+        
 
         public CompairReference(CompairMethod compairMethod,AddressData rootAddress)
         {
+            this.compairName = compairMethod.compairName;
             this.compairMethod = compairMethod;
             weight = 1;
             inputType = compairMethod.inputType;
@@ -289,18 +228,22 @@ namespace Nino.NewStateMatching
         }
         
     }
+    [LabelWidth(200)]
     public class TFCompairReference
     {
-        public TFCompairMethod compairMethod;
-        public System.Type inputType;
-        public System.Type targetType;
-        public bool itemReferenceTarget;
-        public object target;
-        public ItemSelector inputSelector;
-        public ItemSelector targetSelector;
+        [ReadOnly] public string compairName;
+        [HideInInspector]public TFCompairMethod compairMethod;
+        [HideInInspector] public System.Type inputType;
+        [HideInInspector] public System.Type targetType;
+        [FoldoutGroup("Target")] public bool itemReferenceTarget;
+        [FoldoutGroup("Target"), ShowIf("@!itemReferenceTarget")] public object target;
+        [FoldoutGroup("Target"), ShowIf("itemReferenceTarget")] public ItemSelector targetSelector;
+        [FoldoutGroup("Input")] public ItemSelector inputSelector;
+        
 
         public TFCompairReference(TFCompairMethod compairMethod, AddressData rootAddress)
         {
+            this.compairName = compairMethod.compairName;
             this.compairMethod = compairMethod;
             inputType = compairMethod.inputType;
             targetType = compairMethod.targetType;
@@ -321,86 +264,6 @@ namespace Nino.NewStateMatching
             {
                 targetNeedInitialize.Initialize();
             }
-        }
-    }
-    public class SMSState: NeedInitialize
-    {
-        public string stateName;
-        public AddressData rootAddress;
-        public SMSUpdater smsUpdater;
-        public List<TFCompairReference> tfCompairs;
-        public List<CompairReference> compairs;
-        public List<ActionReference> actions;
-        public ItemSelector tfCompairSelector;
-        public ItemSelector compairSelector;
-        public ItemSelector actionSelector;
-        public void Initialize()
-        {
-            if (tfCompairs == null) tfCompairs = new List<TFCompairReference>();
-            if (compairs == null) compairs = new List<CompairReference>();
-            if (actions == null) actions = new List<ActionReference>();
-            if (tfCompairSelector == null) tfCompairSelector = new ItemSelector(rootAddress, typeof(TFCompairMethod));
-            if (compairSelector == null) compairSelector = new ItemSelector(rootAddress, typeof(CompairMethod));
-            if (actionSelector == null) actionSelector = new ItemSelector(rootAddress, typeof(SMSAction));
-        }
-        public SMSState(string stateName, SMSUpdater smsUpdater, AddressData rootAddress)
-        {
-            this.rootAddress = rootAddress;
-            this.stateName = stateName;
-            this.smsUpdater = smsUpdater;
-            Initialize();
-        }
-        public bool AbleToTransisst()
-        {
-            foreach(TFCompairReference tfCompair in tfCompairs)
-            {
-                if (!tfCompair.GetBool()) return false;
-            }
-            return true;
-        }
-        public float GetPreference()
-        {
-            float sumWeight = 0;
-            float sumDifference = 0;
-            compairs.ForEach(x => {
-                sumWeight += x.weight;
-                sumDifference += x.GetDifference();
-            });
-            return sumDifference / sumWeight;
-        }
-
-        public void EnterState()
-        {
-            actions.ForEach(x => x.StateEnter());
-        }
-        public void ExistState()
-        {
-            actions.ForEach(x => x.StateExit());
-        }
-
-        [Button]
-        public void AddTFCompair()
-        {
-            tfCompairs.Add(
-                new TFCompairReference(
-                    tfCompairSelector.item.GetValue(typeof(TFCompairMethod)) as TFCompairMethod,
-                    rootAddress));
-        }
-        [Button]
-        public void AddCompair()
-        {
-            compairs.Add(
-                new CompairReference(
-                    compairSelector.item.GetValue(typeof(CompairMethod)) as CompairMethod,
-                    rootAddress));
-        }
-        [Button]
-        public void AddAction()
-        {
-            actions.Add(
-                new ActionReference(
-                    actionSelector.item.GetValue(typeof(SMSAction)) as SMSAction,
-                    smsUpdater));
         }
     }
 }

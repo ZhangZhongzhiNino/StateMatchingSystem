@@ -9,7 +9,7 @@ namespace Nino.NewStateMatching.PlayerCharacter.Trigger.PlayerInput
     {
         protected override void AddExecuterInitializers()
         {
-            GeneralUtility.AddExecuterInitializer(ref initializers, new InputExecuter_TouchGesture_Initializer(this, "Touch Gesture"));
+            GeneralUtility.AddExecuterInitializer(ref initializers, new ExecuterInitializer(this, "Touch Gesture",typeof(InputExecuter_TouchGesture)));
         }
 
         protected override string WriteLocalAddress()

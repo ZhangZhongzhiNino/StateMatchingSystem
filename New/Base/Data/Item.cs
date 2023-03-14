@@ -1,12 +1,18 @@
 ﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector.Editor;
+using Sirenix.Serialization;
 
 using System;
 using System.Linq;
 
 using UnityEngine;
 
+using UnityEngine.Events;
+using Sirenix.Utilities.Editor;
+
 namespace Nino.NewStateMatching
 {
+    [Serializable]
     public class Item
     {
         [TitleGroup("Basic Info",order:-1),LabelWidth(140),PropertyOrder(0),EnableIf("editableInInspector")] public string itemName;
@@ -15,7 +21,7 @@ namespace Nino.NewStateMatching
         [TitleGroup("Basic Info"), LabelWidth(140), PropertyOrder(4), EnableIf("editableInInspector")] public bool resetWhenEnabled;
         [TitleGroup("Basic Info"), ShowIf("resetWhenEnabled"), LabelWidth(140), PropertyOrder(5), EnableIf("editableInInspector")] public object defaultValue;
 
-        [TitleGroup("Value"), EnableIf("editableInInspector")] public object value;
+        [TitleGroup("Value"), EnableIf("editableInInspector"),LabelWidth(240), SerializeReference] public object value;
 
         public bool editableInInspector;
         
@@ -38,15 +44,15 @@ namespace Nino.NewStateMatching
         }
         public bool HaveSameTypeAs(object instance) => valueType.IsAssignableFrom(value.GetType());
         public bool IsType(System.Type type) => type == valueType;
-        public T GetValue<T>()
+        /*public T GetValue<T>()
         {
             if (typeof(T) == valueType) return (T)value;
             return default(T);
-        }
+        }*/
         public object GetValue(System.Type valueType)
         {
             if (this.valueType == valueType) return value;
-            return Activator.CreateInstance(this.valueType);
+            return Activator.CreateInstance(valueType);
         }
         public T GetValueCopy<T>()
         {
@@ -97,16 +103,16 @@ namespace Nino.NewStateMatching
         }
         public bool setValue<T>(T newValue)
         {
-            if (IsType(typeof(T))) return false;
+            if (!IsType(typeof(T))) return false;
             this.value = newValue;
-            return true;
+            return true; 
         }
         public bool setValue(object newValue)
         {
             if (!HaveSameTypeAs(newValue)) return false;
             this.value = newValue;
             return true;
-        }
+        } 
         public void TryResetValue()
         {
             if (resetWhenEnabled)
@@ -125,4 +131,7 @@ namespace Nino.NewStateMatching
     }
 
 }
+
+
+
 
