@@ -54,7 +54,9 @@ namespace Nino.NewStateMatching.PlayerCharacter
         }
         public void SetFloat(object input)
         {
+            
             SetFloatInput _input =(SetFloatInput) input;
+            Debug.Log(_input.newValue);
             dataController.GetItem(_input.itemName).setValue(_input.newValue);
         }
         public void SetInt(object input)

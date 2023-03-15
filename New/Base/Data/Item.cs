@@ -118,11 +118,11 @@ namespace Nino.NewStateMatching
             T r = default(T);
             if (typeof(T) == valueType && defaultValue != null)
             {
-                return (T) GeneralUtility.GetValueClone(defaultValue);
+                return (T) SerializationUtility.CreateCopy(defaultValue);
             }
             return r;
         }
-        public object GetDefaultValueCopy(System.Type valueType) => GeneralUtility.GetValueClone(defaultValue);
+        public object GetDefaultValueCopy(System.Type valueType) => SerializationUtility.CreateCopy(defaultValue);
         public bool setValue<T>(T newValue)
         {
             if (!IsType(typeof(T))) return false;
@@ -139,7 +139,7 @@ namespace Nino.NewStateMatching
         { 
             if (resetWhenEnabled)
             {
-                value = GeneralUtility.GetValueClone(defaultValue);
+                value = SerializationUtility.CreateCopy(defaultValue);
             }
         }
         [Button,ShowIf("editableInInspector")]

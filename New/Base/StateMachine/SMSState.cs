@@ -8,13 +8,13 @@ namespace Nino.NewStateMatching
         public string stateName;
         [HideInInspector] public AddressData rootAddress;
         [HideInInspector] public SMSupdater smsUpdater;
-        [FoldoutGroup("TF Compairs")] public List<TFCompairReference> tfCompairs;
+        [FoldoutGroup("TF Compairs"), ListDrawerSettings(ListElementLabelName = "compairName")] public List<TFCompairReference> tfCompairs;
         [FoldoutGroup("TF Compairs")] public ItemSelector tfCompairSelector;
 
-        [FoldoutGroup("Float Compairs")] public List<CompairReference> compairs;
+        [FoldoutGroup("Float Compairs"), ListDrawerSettings(ListElementLabelName = "compairName")] public List<CompairReference> compairs;
         [FoldoutGroup("Float Compairs")] public ItemSelector compairSelector;
 
-        [FoldoutGroup("Actions")] public List<ActionReference> actions;
+        [FoldoutGroup("Actions"),ListDrawerSettings(ListElementLabelName = "@actionReference.actionName")] public List<ActionReference> actions;
         [FoldoutGroup("Actions")] public ItemSelector actionSelector;
 
         public bool selfTransform;

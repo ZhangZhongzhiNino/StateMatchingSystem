@@ -47,22 +47,10 @@ namespace Nino.NewStateMatching
                     "Transist to State",
                     "Action"
                 ));
-            dataController.AddItem(
-                new LabledItem(
-                    new SMSAction(
-                        "EnterFSM",
-                        (object input) => EnterFSM(input)),
-                    "EnterFSM",
-                    "Action"
-                ));
-            dataController.AddItem(
-                new LabledItem(
-                    new SMSAction(
-                        "ExitFSM",
-                        (object input) => ExitFSM(input)),
-                    "ExitFSM",
-                    "Action"
-                ));
+             
+            DataUtility.AddAction(dataController, "TransistToState", TransistToState,typeof(SMSState));
+            DataUtility.AddAction(dataController, "EnterFSM", EnterFSM);
+            DataUtility.AddAction(dataController, "ExitFSM", ExitFSM);
         }
         
         protected override void PreRemoveInstance()

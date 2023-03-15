@@ -47,7 +47,7 @@ namespace Nino.NewStateMatching
         }
         public ItemSelector GetClone()
         {
-            return (ItemSelector) GeneralUtility.GetValueClone(this);
+            return (ItemSelector) SerializationUtility.CreateCopy(this);
         } 
         
         [Button(ButtonSizes.Large),GUIColor(1,0.4f,0.4f),ShowIf("@rootAddress != currentAddress")]

@@ -4,7 +4,8 @@ using System.Linq;
 using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-
+using Sirenix.Serialization;
+using Sirenix.OdinInspector;
 namespace Nino.NewStateMatching
 {
     public class CloneHelper: ICloneable
@@ -26,13 +27,7 @@ namespace Nino.NewStateMatching
         }
     }
     public static class GeneralUtility
-    {
-
-        public static object GetValueClone(object value)
-        {
-            CloneHelper newClone = new CloneHelper(value);
-            return newClone.Clone();
-        }
+    { 
         public static GameObject CreateGameObject(string objName, Transform parent = null)
         {
             GameObject newGameObject = new GameObject();
