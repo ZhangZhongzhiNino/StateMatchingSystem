@@ -2,16 +2,17 @@ using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
 using UnityEngine.Events;
+using Sirenix.Serialization;
 namespace Nino.NewStateMatching
 {
     public delegate void ActionMethod(object input = null);
     public class SMSAction 
     {
-        public string actionName;
-        [ReadOnly] public bool haveInput;
-        [ReadOnly] public bool needItemReference;
-        [ReadOnly] public bool continuous;
-        [ReadOnly] public System.Type inputType;
+        [ReadOnly, OdinSerialize] public string actionName;
+        [ReadOnly, OdinSerialize] public bool haveInput;
+        [ReadOnly, OdinSerialize] public bool needItemReference;
+        [ReadOnly, OdinSerialize] public bool continuous;
+        [ReadOnly, OdinSerialize] public System.Type inputType;
         public ActionMethod PerformAction;
         public SMSAction(string actionName, Action<object> action, System.Type inputType=null, bool haveInput=false, bool needItemReference=false, bool continuous =false)
         {
@@ -30,7 +31,14 @@ namespace Nino.NewStateMatching
     [LabelWidth(200)]
     public class ActionReference
     {
-        [ReadOnly]public SMSAction actionReference;
+        public ItemSelector actionSelector;
+        [ReadOnly]public SMSAction actionReference
+        {
+            get
+            {
+                return actionSelector.item.value as SMSAction;
+            }
+        }
         [FoldoutGroup("Input")] public bool itemReferenceInput;
         [FoldoutGroup("Input"), ShowIf("@!itemReferenceInput")] public object staticInput;
         [FoldoutGroup("Input"), ShowIf("itemReferenceInput")] public ItemSelector inputItemSelector;
@@ -43,12 +51,12 @@ namespace Nino.NewStateMatching
         [FoldoutGroup("Other"), ShowIf("eventTriggered")] public ItemSelector triggerItemSelector;
         [FoldoutGroup("Other")] public bool continuousAfterStateFinish;
 
-        [HideInInspector]public SMSupdater smsUpdater;
+        [HideInInspector,OdinSerialize]public SMSupdater smsUpdater;
         
-        [HideInInspector]public float executionCoolDown;
+        [HideInInspector,OdinSerialize]public float executionCoolDown;
         
 
-        [HideInInspector] public System.Type inputType;
+        [HideInInspector, OdinSerialize] public System.Type inputType;
         
 
         
@@ -60,10 +68,9 @@ namespace Nino.NewStateMatching
 
         }
         
-        public ActionReference(SMSAction actionReference, SMSupdater smsUpdater,AddressData rootAddress)
+        public ActionReference(ItemSelector actionSelector, SMSupdater smsUpdater,AddressData rootAddress)
         {
-            
-            this.actionReference = actionReference;
+            this.actionSelector =  actionSelector.GetClone(); 
 
             itemReferenceInput = actionReference.needItemReference;
             eventTriggered = false;
@@ -190,21 +197,28 @@ namespace Nino.NewStateMatching
     [LabelWidth(200)]
     public class CompairReference
     {
+        public ItemSelector compairSelector;
         [ReadOnly] public string compairName;
-        [HideInInspector] public CompairMethod compairMethod;
+        [HideInInspector, OdinSerialize] public CompairMethod compairMethod
+        {
+            get
+            {
+                return compairSelector.item.value as CompairMethod;
+            }
+        }
         public float weight;
-        [HideInInspector] public System.Type inputType;
-        [HideInInspector] public System.Type targetType;
+        [HideInInspector, OdinSerialize] public System.Type inputType;
+        [HideInInspector, OdinSerialize] public System.Type targetType;
         [FoldoutGroup("Target")] public bool itemReferenceTarget;
         [FoldoutGroup("Target"), ShowIf("@!itemReferenceTarget")] public object target;
         [FoldoutGroup("Target"), ShowIf("itemReferenceTarget")] public ItemSelector targetSelector;
         [FoldoutGroup("Input")] public ItemSelector inputSelector;
         
 
-        public CompairReference(CompairMethod compairMethod,AddressData rootAddress)
+        public CompairReference(ItemSelector compairSelector, AddressData rootAddress)
         {
+            this.compairSelector = compairSelector.GetClone();
             this.compairName = compairMethod.compairName;
-            this.compairMethod = compairMethod;
             weight = 1;
             inputType = compairMethod.inputType;
             targetType = compairMethod.targetType;
@@ -231,20 +245,27 @@ namespace Nino.NewStateMatching
     [LabelWidth(200)]
     public class TFCompairReference
     {
+        public ItemSelector compairSelector;
         [ReadOnly] public string compairName;
-        [HideInInspector]public TFCompairMethod compairMethod;
-        [HideInInspector] public System.Type inputType;
-        [HideInInspector] public System.Type targetType;
+        [HideInInspector, OdinSerialize] public TFCompairMethod compairMethod
+        {
+            get
+            {
+                return compairSelector.item.value as TFCompairMethod;
+            }
+        }
+        [HideInInspector, OdinSerialize] public System.Type inputType;
+        [HideInInspector, OdinSerialize] public System.Type targetType;
         [FoldoutGroup("Target")] public bool itemReferenceTarget;
         [FoldoutGroup("Target"), ShowIf("@!itemReferenceTarget")] public object target;
         [FoldoutGroup("Target"), ShowIf("itemReferenceTarget")] public ItemSelector targetSelector;
         [FoldoutGroup("Input")] public ItemSelector inputSelector;
         
 
-        public TFCompairReference(TFCompairMethod compairMethod, AddressData rootAddress)
+        public TFCompairReference(ItemSelector compairSelector, AddressData rootAddress)
         {
-            this.compairName = compairMethod.compairName;
-            this.compairMethod = compairMethod;
+            this.compairSelector = compairSelector.GetClone();
+            this.compairName = compairMethod.compairName; 
             inputType = compairMethod.inputType;
             targetType = compairMethod.targetType;
             itemReferenceTarget = false;

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using UnityEngine.Events;
+using UnityEngine;
 
 namespace Nino.NewStateMatching
 {
@@ -14,19 +15,10 @@ namespace Nino.NewStateMatching
         [FoldoutGroup("Data"), PropertyOrder(1),DisableIf("@!editableInInspector")]
         [ListDrawerSettings(
             ListElementLabelName = "itemName",
-            HideAddButton = true,
-            HideRemoveButton = true,
+            HideAddButton = true, 
             DraggableItems = false,
             ShowIndexLabels =true)] 
         public List<Item> items;
-        [PropertyOrder(1),ShowIf("showDetailedItems") , DisableIf("@!editableInInspector"),FoldoutGroup("Detailed Reference")]
-        [ListDrawerSettings(
-            ListElementLabelName = "itemName",
-            HideAddButton = true,
-            HideRemoveButton = true,
-            DraggableItems = false,
-            ShowIndexLabels = true)]
-        public List<Item> inputItems;
         [PropertyOrder(1), ShowIf("showDetailedItems"), DisableIf("@!editableInInspector"), FoldoutGroup("Detailed Reference")]
         [ListDrawerSettings(
             ListElementLabelName = "itemName",
@@ -52,6 +44,12 @@ namespace Nino.NewStateMatching
 
         [HorizontalGroup("Data/Null"), Button(ButtonSizes.Large), GUIColor(1, 0.4f, 0.4f)]
         void RemoveNullItems()
+        {
+            items.RemoveAll(x => x == null);
+            items.RemoveAll(x => x.valueType == null);
+            UpdateDictionrary();
+        }
+        void RemoveNullWiouthUpdate()
         {
             items.RemoveAll(x => x == null);
             items.RemoveAll(x => x.valueType == null);
@@ -100,8 +98,8 @@ namespace Nino.NewStateMatching
         }
 
         protected override void RunOnEveryEnable()
-        {
-            if (items == null || items.Count == 0)
+        { 
+            if (items != null || items.Count != 0)
             {
                 items.ForEach(x => x.TryResetValue());
                 return;
@@ -113,7 +111,6 @@ namespace Nino.NewStateMatching
         {
             editableInInspector = false;
             items = new List<Item>();
-            inputItems = new List<Item>();
             unlabledItems = new List<Item>();
             labledItems = new List<LabledItem>();
             UpdateDictionrary();
@@ -122,13 +119,11 @@ namespace Nino.NewStateMatching
 
         public void UpdateReferenceList()
         {
-            RemoveNullItems();
+            RemoveNullWiouthUpdate();
             InitializeNullValues();
-            UpdateInputItems();
             UpdateLabledItems();
             UpdateUnlabledItems();
         }
-        public void UpdateInputItems() => inputItems = items.FindAll(x => x.actionInput == true);
         public void UpdateUnlabledItems() => unlabledItems = items.FindAll(x => x.GetType() == typeof(Item));
         public void UpdateLabledItems()
         {
@@ -143,7 +138,6 @@ namespace Nino.NewStateMatching
         }
 
         public List<string> GetAllItemNames() => GeneralUtility.GetNameInItemList(items);
-        public List<string> GetAllInputItemNames() => GeneralUtility.GetNameInItemList(inputItems);
         public List<string> GetAllIUnlabledtemNames() => GeneralUtility.GetNameInItemList(unlabledItems);
         public List<string> GetAllILabledtemNames() => GeneralUtility.GetNameInItemList(labledItems);
         public List<string> GetAllItemNamesOfType(Type valueType)
@@ -167,11 +161,11 @@ namespace Nino.NewStateMatching
         public Item GetItem(string itemName) => items.FirstOrDefault(x => x.itemName == itemName);
         public bool Contain(Predicate<Item> match) => DataUtility.ListContainItem(match, items);
 
-        public Item AddItem(string itemName, Type valueType, bool labled, string group)
+        public Item AddItem(string itemName, Type valueType, bool labled, string group,bool useOdinSerialization = true)
         {
-            if (labled && string.IsNullOrWhiteSpace(group)) return AddLabledItem(itemName, valueType);
-            else if (labled) return AddLabledItem(itemName, group, valueType);
-            else return AddItem(itemName, valueType);
+            if (labled && string.IsNullOrWhiteSpace(group)) return AddLabledItem(itemName, valueType, useOdinSerialization);
+            else if (labled) return AddLabledItem(itemName, group, valueType, useOdinSerialization);
+            else return AddItem(itemName, valueType, useOdinSerialization);
         }
         public Item AddItem(Item newItem)
         {
@@ -180,10 +174,10 @@ namespace Nino.NewStateMatching
             UpdateReferenceList();
             return r;
         }
-        public Item AddItem(string newItemName, Type valueType) => AddItem(new Item(valueType: valueType, newItemName));
+        public Item AddItem(string newItemName, Type valueType, bool useOdinSerialization = true) => AddItem(new Item(valueType: valueType, newItemName, useOdinSerialization));
 
-        public LabledItem AddLabledItem(string newItemName, string groupName, Type valueType) => AddItem(new LabledItem(valueType: valueType, newItemName, groupName)) as LabledItem;
-        public LabledItem AddLabledItem(string newItemName, Type valueType) => AddItem(new LabledItem(valueType: valueType, newItemName)) as LabledItem;
+        public LabledItem AddLabledItem(string newItemName, string groupName, Type valueType, bool useOdinSerialization = true) => AddItem(new LabledItem(valueType: valueType, newItemName, groupName, useOdinSerialization)) as LabledItem;
+        public LabledItem AddLabledItem(string newItemName, Type valueType, bool useOdinSerialization = true) => AddItem(new LabledItem(valueType: valueType, newItemName, useOdinSerialization)) as LabledItem;
 
         
     }

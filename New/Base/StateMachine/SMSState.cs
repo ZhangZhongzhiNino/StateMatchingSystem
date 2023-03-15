@@ -16,6 +16,8 @@ namespace Nino.NewStateMatching
 
         [FoldoutGroup("Actions")] public List<ActionReference> actions;
         [FoldoutGroup("Actions")] public ItemSelector actionSelector;
+
+        public bool selfTransform;
         public void Initialize()
         {
             if (tfCompairs == null) tfCompairs = new List<TFCompairReference>();
@@ -26,8 +28,9 @@ namespace Nino.NewStateMatching
             if (actionSelector == null) actionSelector = new ItemSelector(rootAddress, typeof(SMSAction), group: "Action", groupedItem: true);
         }
         public SMSState() { }
-        public SMSState(string stateName, SMSupdater smsUpdater, AddressData rootAddress)
+        public SMSState(string stateName, SMSupdater smsUpdater, AddressData rootAddress,bool selfTransform = false)
         {
+            this.selfTransform = selfTransform;
             this.rootAddress = rootAddress;
             this.stateName = stateName;
             this.smsUpdater = smsUpdater;
@@ -35,6 +38,7 @@ namespace Nino.NewStateMatching
         }
         public bool AbleToTransisst()
         {
+            if (tfCompairs == null || tfCompairs.Count == 0) return true;
             foreach(TFCompairReference tfCompair in tfCompairs)
             {
                 if (!tfCompair.GetBool()) return false;
@@ -43,6 +47,7 @@ namespace Nino.NewStateMatching
         }
         public float GetDifference()
         {
+            if (compairs == null || compairs.Count == 0) return 9999;
             float sumWeight = 0;
             float sumDifference = 0;
             compairs.ForEach(x => {
@@ -66,7 +71,7 @@ namespace Nino.NewStateMatching
         {
             tfCompairs.Add(
                 new TFCompairReference(
-                    tfCompairSelector.item.GetValue(typeof(TFCompairMethod)) as TFCompairMethod,
+                    tfCompairSelector,
                     rootAddress));
         }
         [Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f), FoldoutGroup("Float Compairs"), ShowIf("@compairSelector.item!= null")]
@@ -74,7 +79,7 @@ namespace Nino.NewStateMatching
         {
             compairs.Add(
                 new CompairReference(
-                    compairSelector.item.GetValue(typeof(CompairMethod)) as CompairMethod,
+                    compairSelector,
                     rootAddress));
         }
         [Button(ButtonSizes.Large), GUIColor(0.4f, 1, 0.4f), FoldoutGroup("Actions"), ShowIf("@actionSelector.item!= null")]
@@ -82,7 +87,7 @@ namespace Nino.NewStateMatching
         {
             actions.Add(
                 new ActionReference(
-                    actionSelector.item.GetValue(typeof(SMSAction)) as SMSAction,
+                    actionSelector,
                     smsUpdater,
                     rootAddress));
         }

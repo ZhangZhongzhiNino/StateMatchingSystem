@@ -2,7 +2,7 @@
 using Sirenix.OdinInspector.Editor;
 using Sirenix.Serialization;
 
-using System;
+using System; 
 using System.Linq;
 
 using UnityEngine;
@@ -11,22 +11,51 @@ using UnityEngine.Events;
 using Sirenix.Utilities.Editor;
 
 namespace Nino.NewStateMatching
-{
-    [Serializable]
+{ 
     public class Item
     {
-        [TitleGroup("Basic Info",order:-1),LabelWidth(140),PropertyOrder(0),EnableIf("editableInInspector")] public string itemName;
-        [TitleGroup("Basic Info"), LabelWidth(125), PropertyOrder(2),ReadOnly] public System.Type valueType;
-        [TitleGroup("Basic Info"), LabelWidth(140), PropertyOrder(3), EnableIf("editableInInspector")] public bool actionInput;
-        [TitleGroup("Basic Info"), LabelWidth(140), PropertyOrder(4), EnableIf("editableInInspector")] public bool resetWhenEnabled;
-        [TitleGroup("Basic Info"), ShowIf("resetWhenEnabled"), LabelWidth(140), PropertyOrder(5), EnableIf("editableInInspector")] public object defaultValue;
+        [TitleGroup("Basic Info",order:-1),LabelWidth(140), EnableIf("editableInInspector")] public string itemName;
+        [TitleGroup("Basic Info"), LabelWidth(125), ReadOnly,OdinSerialize] public System.Type valueType; 
+        [TitleGroup("Basic Info"), EnableIf("editableInInspector")] public bool resetWhenEnabled;
+        [TitleGroup("Basic Info"), ReadOnly] public bool useOdinSerialization;
+        [TitleGroup("Basic Info")] public bool editableInInspector;
 
-        [TitleGroup("Value"), EnableIf("editableInInspector"),LabelWidth(240), SerializeReference] public object value;
-
-        public bool editableInInspector;
-        
-        public Item(System.Type valueType,string itemName)
+        [TitleGroup("Value"), ShowIf("@!useOdinSerialization") , EnableIf("editableInInspector"), SerializeReference] public object Unity_value;
+        [TitleGroup("Value"), ShowIf("@useOdinSerialization"), EnableIf("editableInInspector"), OdinSerialize] public object Odin_Value;
+        [TitleGroup("Value"), ShowIf("@resetWhenEnabled && !useOdinSerialization"), EnableIf("editableInInspector"), SerializeReference] public object U_DefaultValue;
+        [TitleGroup("Value"), ShowIf("@resetWhenEnabled && useOdinSerialization"), EnableIf("editableInInspector"), OdinSerialize] public object Odin_DefaultValue;
+        public object defaultValue
         {
+            get
+            {
+                if (useOdinSerialization) return Odin_DefaultValue;
+                else return U_DefaultValue;
+            }
+            set
+            {
+                if (useOdinSerialization) Odin_DefaultValue = value;
+                else U_DefaultValue = value;
+            }
+        } 
+        public object value
+        {
+            get
+            {
+                if (useOdinSerialization) return Odin_Value;
+                else return Unity_value;
+            }
+            set
+            {
+                if (useOdinSerialization) Odin_Value = value;
+                else Unity_value = value;
+            }
+        }
+
+        
+
+        public Item(System.Type valueType, string itemName, bool useOdinSerialization = true)
+        {
+            this.useOdinSerialization = useOdinSerialization;
             this.itemName = itemName;
             this.valueType = valueType;
             value = Activator.CreateInstance(valueType);
@@ -34,8 +63,9 @@ namespace Nino.NewStateMatching
             resetWhenEnabled = false;
             editableInInspector = false;
         }
-        public Item(object value, string itemName)
+        public Item(object value, string itemName, bool useOdinSerialization = true)
         {
+            this.useOdinSerialization = useOdinSerialization;
             this.itemName = itemName;
             this.valueType = value.GetType();
             this.value = value;
@@ -88,19 +118,11 @@ namespace Nino.NewStateMatching
             T r = default(T);
             if (typeof(T) == valueType && defaultValue != null)
             {
-                defaultValue.GetType().GetProperties().ToList().ForEach(x => x.SetValue(r, x.GetValue(defaultValue)));
+                return (T) GeneralUtility.GetValueClone(defaultValue);
             }
             return r;
         }
-        public object GetDefaultValueCopy(System.Type valueType)
-        {
-            object r = Activator.CreateInstance(valueType);
-            if (this.valueType == valueType && defaultValue != null)
-            {
-                defaultValue.GetType().GetProperties().ToList().ForEach(x => x.SetValue(r, x.GetValue(defaultValue)));
-            }
-            return r;
-        }
+        public object GetDefaultValueCopy(System.Type valueType) => GeneralUtility.GetValueClone(defaultValue);
         public bool setValue<T>(T newValue)
         {
             if (!IsType(typeof(T))) return false;
@@ -114,20 +136,21 @@ namespace Nino.NewStateMatching
             return true;
         } 
         public void TryResetValue()
-        {
+        { 
             if (resetWhenEnabled)
             {
-                value = GetDefaultValueCopy(valueType);
+                value = GeneralUtility.GetValueClone(defaultValue);
             }
         }
         [Button,ShowIf("editableInInspector")]
         public void CreateValueIfNull()
         {
             if (value == null) value = Activator.CreateInstance(valueType);
-            if (defaultValue == null) value = Activator.CreateInstance(valueType);
+            if (defaultValue == null) defaultValue = Activator.CreateInstance(valueType);
             if (value is NeedInitialize _value) _value.Initialize();
             if (defaultValue is NeedInitialize _defaultValue) _defaultValue.Initialize();
         }
+         
     }
 
 }

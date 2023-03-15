@@ -2,11 +2,12 @@
 using Sirenix.Serialization;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using UnityEngine;
 using System.Reflection;
 namespace Nino.NewStateMatching
 {
-    public class ItemSelector
+    public class ItemSelector: ICloneable
     {
         [HideInInspector,OdinSerialize] public AddressData rootAddress;
         [HideInInspector, OdinSerialize] public AddressData currentAddress;
@@ -44,26 +45,10 @@ namespace Nino.NewStateMatching
             this.tags = tags;
             if (tags == null) tags = new List<string>();
         }
-        public ItemSelector(ItemSelector reference)
+        public ItemSelector GetClone()
         {
-            var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.GetProperty;
-
-            typeof(ItemSelector).GetFields(flags).ToList().ForEach(
-                x => {
-                    if (x.Name != "item"
-                    && x.Name != "dataController"
-                    && x.Name != "selectItemNameList")
-                        x.SetValue(this, x.GetValue(reference));
-                });
-            typeof(ItemSelector).GetProperties(flags).ToList().ForEach(
-                x =>  {
-                    if (x.Name != "item" 
-                    && x.Name != "dataController" 
-                    && x.Name != "selectItemNameList") 
-                        x.SetValue(this, x.GetValue(reference));
-                } );
-            
-        }
+            return (ItemSelector) GeneralUtility.GetValueClone(this);
+        } 
         
         [Button(ButtonSizes.Large),GUIColor(1,0.4f,0.4f),ShowIf("@rootAddress != currentAddress")]
         public void GoBackToRootAddress()
@@ -80,6 +65,10 @@ namespace Nino.NewStateMatching
             address = currentAddress.globalAddress; 
         }
 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
         [HideInInspector] DataController dataController
         {
             get
@@ -112,5 +101,7 @@ namespace Nino.NewStateMatching
         [ShowIf("@selectItemNameList.Count !=0"),ValueDropdown("selectItemNameList")]
         public string selectItem;
     }
+
+   
 }
 

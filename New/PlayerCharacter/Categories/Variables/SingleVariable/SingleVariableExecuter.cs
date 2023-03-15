@@ -19,7 +19,6 @@ namespace Nino.NewStateMatching.PlayerCharacter
         {
             Item newItem = dataController.AddItem(itemName, variableType, labled, groupName);
             newItem.resetWhenEnabled = resetWhenEnabled;
-            newItem.actionInput = actionInput;
         }
 
         [Button]

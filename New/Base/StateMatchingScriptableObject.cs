@@ -1,18 +1,21 @@
 ﻿using Sirenix.OdinInspector;
 
 using System;
-
+using UnityEngine;
 
 
 namespace Nino.NewStateMatching
-{
-    [Serializable]
+{ 
     public abstract class StateMatchingScriptableObject : SerializedScriptableObject
     {
-        [HideInInlineEditors]public bool initialized = false;
+        [HideInInlineEditors,SerializeReference] public bool initialized = false;
         private void OnEnable()
         {
-            if (initialized) return;
+            if (initialized)
+            {
+                RunOnEveryEnable();
+                return;
+            }
             initialized = true;
             Initialize();
         }

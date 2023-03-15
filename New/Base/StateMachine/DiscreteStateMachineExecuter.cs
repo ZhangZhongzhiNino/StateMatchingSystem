@@ -1,7 +1,5 @@
 ﻿using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Events;
 using System.Linq;
 namespace Nino.NewStateMatching
@@ -84,7 +82,7 @@ namespace Nino.NewStateMatching
         [Button(ButtonHeight = 40, Style = ButtonStyle.Box), GUIColor(0.4f, 1, 0.4f),ShowIf("@stateSelector.item != null")]
         public void AddState([ValueDropdown("@dic_state.Keys")] string triggerName)
         {
-            dic_state[triggerName].stateSelectors.Add( new ItemSelector(stateSelector));
+            dic_state[triggerName].stateSelectors.Add(  stateSelector.GetClone());
         }
 
                 
@@ -159,86 +157,7 @@ namespace Nino.NewStateMatching
             LabledItem labledState = new LabledItem(newState, newStateName, "State");
             dataController.AddItem(labledState);
         }
-        [Button]
-        void dbug()
-        {
-            
-        }
-    }
-    [System.Serializable]
-    public class StateSwitchAction
-    {
-        [HideInInspector, OdinSerialize] public DiscreteStateMachineExecuter executer;
-        [HideInInspector, OdinSerialize] public ItemSelector triggerSelector;
-        [ShowInInspector]public UnityEvent triggerEvent
-        {
-            get
-            {
-                return triggerSelector?.item?.value as UnityEvent;
-            }
-            set { }
-        }
-        [HideInInspector, SerializeReference] public UnityAction action;
-        [HideInInspector, OdinSerialize] public List<ItemSelector> stateSelectors;
-        [ListDrawerSettings(ListElementLabelName = "stateName"),ShowInInspector] public List<SMSState> considerStates
-        {
-            get
-            {
-                List<SMSState> r = new List<SMSState>();
-                if (stateSelectors != null && stateSelectors.Count != 0)
-                {
-                    stateSelectors.ForEach(x =>
-                    {
-                        if (x?.item?.value is SMSState state) r.Add(state);
-                        else stateSelectors.Remove(x);
-                    });
-                }
-                return r;
-            }
-            
-        }
-        
-        public void SwitchStateFunction()
-        {
-            Debug.Log("called");
-            if (!executer.entered) return;
-            List<SMSState> considerList = new List<SMSState>(considerStates);
-            considerList.RemoveAll(state => state.AbleToTransisst() == false);
-            if (considerList.Count == 0) return;
-            SMSState nextState = considerList[0];
-            float currentDifference = nextState.GetDifference();
-            foreach (SMSState thisConsider in considerList)
-            {
-                float thisiDifference = thisConsider.GetDifference();
-                if (thisiDifference < currentDifference)
-                {
-                    nextState = thisConsider;
-                    currentDifference = thisiDifference;
-                }
-            }
-            executer.TransistToState(nextState);
-        }
-        public StateSwitchAction(DiscreteStateMachineExecuter executer, ItemSelector triggerSelector)
-        {
-            this.executer = executer;
-            this.triggerSelector = new ItemSelector(triggerSelector);
-            this.stateSelectors = new List<ItemSelector>();
-            action = new UnityAction(SwitchStateFunction);
-        }
-        public void Enable()
-        {
-            triggerEvent.AddListener(action);
-            triggerEvent.Invoke();
-        }
-        public void Disable()
-        {
-            triggerEvent.RemoveListener(action);
-        }
-        [Button]
-        void De()
-        {
-            triggerEvent.Invoke();
-        }
+ 
     }
     
 }

@@ -2,14 +2,37 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Nino.NewStateMatching
 {
-
+    public class CloneHelper: ICloneable
+    {
+        public object value;
+        public object Clone()
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, value);
+                ms.Position = 0;
+                return formatter.Deserialize(ms);
+            }
+        } 
+        public CloneHelper(object value)
+        {
+            this.value = value;
+        }
+    }
     public static class GeneralUtility
     {
 
+        public static object GetValueClone(object value)
+        {
+            CloneHelper newClone = new CloneHelper(value);
+            return newClone.Clone();
+        }
         public static GameObject CreateGameObject(string objName, Transform parent = null)
         {
             GameObject newGameObject = new GameObject();

@@ -19,20 +19,20 @@ namespace Nino.NewStateMatching.PlayerCharacter.Trigger.PlayerInput
 
         protected override void InitializeInstance()
         {
-            dataController.AddLabledItem("Start Move", "Trigger", typeof(UnityEvent));
-            dataController.AddLabledItem("Stop Move", "Trigger", typeof(UnityEvent));
-            dataController.AddLabledItem("Start Run", "Trigger", typeof(UnityEvent));
-            dataController.AddLabledItem("Stop Run", "Trigger", typeof(UnityEvent));
-            dataController.AddLabledItem("Tap L", "Trigger", typeof(UnityEvent));
-            dataController.AddLabledItem("Tap R", "Trigger", typeof(UnityEvent));
-            dataController.AddLabledItem("Slide 8", "Trigger", typeof(UnityEvent));
-            dataController.AddLabledItem("Slide 2", "Trigger", typeof(UnityEvent));
-            dataController.AddLabledItem("Slide 4", "Trigger", typeof(UnityEvent));
-            dataController.AddLabledItem("Slide 6", "Trigger", typeof(UnityEvent));
-            dataController.AddLabledItem("Slide 82", "Trigger", typeof(UnityEvent));
-            dataController.AddLabledItem("Slide 28", "Trigger", typeof(UnityEvent));
-            dataController.AddLabledItem("Slide 46", "Trigger", typeof(UnityEvent));
-            dataController.AddLabledItem("Slide 64", "Trigger", typeof(UnityEvent)); 
+            dataController.AddLabledItem("Start Move", "Trigger", typeof(UnityEvent),false);
+            dataController.AddLabledItem("Stop Move", "Trigger", typeof(UnityEvent), false);
+            dataController.AddLabledItem("Start Run", "Trigger", typeof(UnityEvent), false);
+            dataController.AddLabledItem("Stop Run", "Trigger", typeof(UnityEvent), false);
+            dataController.AddLabledItem("Tap L", "Trigger", typeof(UnityEvent), false);
+            dataController.AddLabledItem("Tap R", "Trigger", typeof(UnityEvent), false);
+            dataController.AddLabledItem("Slide 8", "Trigger", typeof(UnityEvent), false);
+            dataController.AddLabledItem("Slide 2", "Trigger", typeof(UnityEvent), false);
+            dataController.AddLabledItem("Slide 4", "Trigger", typeof(UnityEvent), false);
+            dataController.AddLabledItem("Slide 6", "Trigger", typeof(UnityEvent), false);
+            dataController.AddLabledItem("Slide 82", "Trigger", typeof(UnityEvent), false);
+            dataController.AddLabledItem("Slide 28", "Trigger", typeof(UnityEvent), false);
+            dataController.AddLabledItem("Slide 46", "Trigger", typeof(UnityEvent), false);
+            dataController.AddLabledItem("Slide 64", "Trigger", typeof(UnityEvent), false); 
 
             dataController.AddLabledItem("Move Direction", typeof(Vector2));
 

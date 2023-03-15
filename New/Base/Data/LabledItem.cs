@@ -8,24 +8,24 @@ namespace Nino.NewStateMatching
 {
     public class LabledItem : Item
     {
-        [TitleGroup("Basic Info"), LabelWidth(140), PropertyOrder(1)] public string group;
-        [TitleGroup("tags")] public List<string> tags;
-        public LabledItem(Type valueType, string itemName) : base(valueType, itemName)
+        [TitleGroup("Lables"), LabelWidth(140)] public string group;
+        [TitleGroup("Lables")] public List<string> tags;
+        public LabledItem(Type valueType, string itemName, bool useOdinSerialization = true) : base(valueType, itemName, useOdinSerialization)
         {
             group = "";
             tags = new List<string>();
         }
-        public LabledItem(object value, string itemName) : base(value, itemName)
+        public LabledItem(object value, string itemName, bool useOdinSerialization = true) : base(value, itemName, useOdinSerialization)
         {
             group = "";
             tags = new List<string>();
         }
-        public LabledItem(Type valueType, string itemName,string group) : base(valueType: valueType, itemName)
+        public LabledItem(Type valueType, string itemName,string group, bool useOdinSerialization = true) : base(valueType: valueType, itemName, useOdinSerialization)
         {
             this.group = group;
             tags = new List<string>();
         }
-        public LabledItem(object value, string itemName,string group) : base(value, itemName)
+        public LabledItem(object value, string itemName,string group, bool useOdinSerialization = true) : base(value, itemName, useOdinSerialization)
         {
             this.group = group;
             tags = new List<string>();
