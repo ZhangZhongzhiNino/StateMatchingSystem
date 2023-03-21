@@ -16,6 +16,7 @@ namespace Nino.NewStateMatching
             EditorUtility.OpenHierarchy(executerGroup?.executerCategory?.gameObject, true);
             EditorUtility.OpenHierarchy(executerGroup?.gameObject, true);
         }
+        [FoldoutGroup("Debug",Order =9999),Button]
         public override void Initialize()
         {
             if (address == null) address = ScriptableObject.CreateInstance<AddressData>();

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-namespace Nino.NewStateMatching.PlayerCharacter
+namespace Nino.NewStateMatching
 {
     public class SingleVariableExecuter : SMSExecuter
     {

@@ -35,15 +35,15 @@ namespace Nino.NewStateMatching
             DraggableItems = false,
             ShowIndexLabels = true)]
         public List<LabledItem> labledItems;
-        [FoldoutGroup("Quick Edit",order:10),PropertyOrder(-1),ShowIf("editableInInspector")] public Dictionary<string, Item> dic_unlabledItems; 
-        [FoldoutGroup("Quick Edit"), ShowIf("editableInInspector")] public Dictionary<Type, List<Item>> dic_types;
-        [FoldoutGroup("Quick Edit"), ShowIf("editableInInspector")] public Dictionary<string, List<LabledItem>> dic_groups;
-        [FoldoutGroup("Quick Edit"), ShowIf("editableInInspector")] public Dictionary<string, List<LabledItem>> dic_tags;
+        [FoldoutGroup("Quick Edit",order:10),PropertyOrder(-1),ShowIf("showDetailedItems"), DisableIf("@!editableInInspector")] public Dictionary<string, Item> dic_unlabledItems; 
+        [FoldoutGroup("Quick Edit"), ShowIf("showDetailedItems"), DisableIf("@!editableInInspector")] public Dictionary<Type, List<Item>> dic_types;
+        [FoldoutGroup("Quick Edit"), ShowIf("showDetailedItems"), DisableIf("@!editableInInspector")] public Dictionary<string,List<LabledItem>> dic_groups;
+        [FoldoutGroup("Quick Edit"), ShowIf("showDetailedItems"), DisableIf("@!editableInInspector")] public Dictionary<string, List<LabledItem>> dic_tags;
         [PropertyOrder(20)] public bool showDetailedItems;
         [PropertyOrder(20)] public bool editableInInspector;
 
         [HorizontalGroup("Data/Null"), Button(ButtonSizes.Large), GUIColor(1, 0.4f, 0.4f)]
-        void RemoveNullItems()
+        public void RemoveNullItems()
         {
             items.RemoveAll(x => x == null);
             items.RemoveAll(x => x.valueType == null);
@@ -83,7 +83,7 @@ namespace Nino.NewStateMatching
                 dic_types.TryAdd(item.valueType, new List<Item>());
                 dic_types[item.valueType].Add(item);
             }
-            foreach(LabledItem item in labledItems)
+            foreach (LabledItem item in labledItems)
             {
                 dic_types.TryAdd(item.valueType, new List<Item>());
                 dic_types[item.valueType].Add(item);
@@ -159,6 +159,19 @@ namespace Nino.NewStateMatching
             return new List<string>();
         }
         public Item GetItem(string itemName) => items.FirstOrDefault(x => x.itemName == itemName);
+        public LabledItem GetLabledItem(string itemName, string groupName = null, List<string> lables = null)
+        {
+            foreach(LabledItem item in labledItems)
+            {
+                if(itemName == item.itemName)
+                {
+                    if (groupName != null && groupName != item.group) continue;
+                    if (lables != null && lables.Count != 0 && !item.HaveTags(lables)) continue;
+                    return item;
+                }
+            }
+            return null;
+        }
         public bool Contain(Predicate<Item> match) => DataUtility.ListContainItem(match, items);
 
         public Item AddItem(string itemName, Type valueType, bool labled, string group,bool useOdinSerialization = true)
@@ -179,6 +192,20 @@ namespace Nino.NewStateMatching
         public LabledItem AddLabledItem(string newItemName, string groupName, Type valueType, bool useOdinSerialization = true) => AddItem(new LabledItem(valueType: valueType, newItemName, groupName, useOdinSerialization)) as LabledItem;
         public LabledItem AddLabledItem(string newItemName, Type valueType, bool useOdinSerialization = true) => AddItem(new LabledItem(valueType: valueType, newItemName, useOdinSerialization)) as LabledItem;
 
+        public void ClearItemsButNotActionAndCompairMethods()
+        {
+            items.RemoveAll(x =>
+            {
+                if (x is LabledItem labledItem)
+                {
+                    if (labledItem.group == "Compair") return false;
+                    if (labledItem.group == "TFCompair") return false;
+                    if (labledItem.group == "Action") return false;
+                }
+                return true;
+            });
+            RemoveNullItems();
+        }
         
     }
 }

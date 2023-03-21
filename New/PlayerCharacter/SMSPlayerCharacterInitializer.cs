@@ -8,7 +8,7 @@ using Sirenix.OdinInspector;
 
 using Nino.NewStateMatching;
 
-namespace Nino.NewStateMatching.PlayerCharacter
+namespace Nino.NewStateMatching
 {
     public class SMSPlayerCharacterInitializer : StateMatchingRootInitializer<SMSPlayerCharacterRoot>
     {

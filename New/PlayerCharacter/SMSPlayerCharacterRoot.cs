@@ -2,8 +2,9 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
-using Nino.NewStateMatching.PlayerCharacter.Trigger;
-namespace Nino.NewStateMatching.PlayerCharacter
+using Nino.NewStateMatching.Trigger;
+using Nino.NewStateMatching.Action;
+namespace Nino.NewStateMatching
 {
     public class SMSPlayerCharacterRoot : StateMatchingRoot
     {
@@ -14,6 +15,7 @@ namespace Nino.NewStateMatching.PlayerCharacter
             categories.Add(CreateCategory<DetectorCategory>("Detector____"));
             categories.Add(CreateCategory<VariableCategory>("Variable____"));
             categories.Add(CreateCategory<DataCategory>("Data____"));
+            categories.Add(CreateCategory<ActionCategory>("Action____"));
             categories.Add(CreateCategory<StateMachineCategory>("FSM____"));
         }
 

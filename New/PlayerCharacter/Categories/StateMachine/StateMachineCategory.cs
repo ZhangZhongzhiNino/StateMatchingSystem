@@ -1,4 +1,4 @@
-﻿namespace Nino.NewStateMatching.PlayerCharacter
+﻿namespace Nino.NewStateMatching
 {
     public class StateMachineCategory : ExecuterCategory
     {

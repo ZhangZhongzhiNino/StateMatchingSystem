@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-namespace Nino.NewStateMatching.PlayerCharacter.Trigger.PlayerInput
+namespace Nino.NewStateMatching.Trigger.PlayerInput
 {
     public class PlayerInputExecuterGroup : ExecuterGroup
     {

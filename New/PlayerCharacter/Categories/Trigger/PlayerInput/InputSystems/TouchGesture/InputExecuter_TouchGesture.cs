@@ -4,7 +4,7 @@ using UnityEngine;
 
 using UnityEngine.Events;
 
-namespace Nino.NewStateMatching.PlayerCharacter.Trigger.PlayerInput
+namespace Nino.NewStateMatching.Trigger.PlayerInput
 {
     public class InputExecuter_TouchGesture : SMSExecuter
     {
@@ -35,10 +35,13 @@ namespace Nino.NewStateMatching.PlayerCharacter.Trigger.PlayerInput
             dataController.AddLabledItem("Slide 64", "Trigger", typeof(UnityEvent), false); 
 
             dataController.AddLabledItem("Move Direction", typeof(Vector2));
+            dataController.AddLabledItem("Delta R", typeof(Vector2));
+            dataController.AddLabledItem("Delta L", typeof(Vector2));
 
             if (inputReader == null) inputReader = gameObject.AddComponent<InputReader>();
             if (playerMoveControl == null) playerMoveControl = gameObject.AddComponent<PlayerMoveControl>();
             if (slideGestureInput == null) slideGestureInput = gameObject.AddComponent<SlideGestureInput>();
+            inputReader.executer = this;
             playerMoveControl.executer = this;
             slideGestureInput.executer = this;
         }

@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 572ab263dcd44d04cb1551b4933b2948
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - executerGroup: {instanceID: 0}
+  - address: {instanceID: 0}
+  - dataController: {instanceID: 0}
+  - rootObj: {instanceID: 0}
+  - ccPrefab: {fileID: 2459306763304945508, guid: a42f60b51b0fa1e4f9616976d78fe02d, type: 3}
+  - currentCC: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

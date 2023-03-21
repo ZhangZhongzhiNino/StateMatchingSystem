@@ -1,7 +1,7 @@
-﻿using Nino.NewStateMatching.PlayerCharacter.Variable;
+﻿using Nino.NewStateMatching.Variable;
 using Sirenix.OdinInspector;
 
-namespace Nino.NewStateMatching.PlayerCharacter
+namespace Nino.NewStateMatching
 {
     public class VariableCategory : ExecuterCategory
     {

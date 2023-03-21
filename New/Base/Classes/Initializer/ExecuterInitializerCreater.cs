@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 namespace Nino.NewStateMatching
 {
     public class ExecuterInitializerCreater
     {
-        public ExecuterGroup executerGroup;
-        public System.Type executerType;
+        [HideInInspector,OdinSerialize] public ExecuterGroup executerGroup;
+        [HideInInspector, OdinSerialize] public System.Type executerType;
         public ExecuterInitializerCreater(ExecuterGroup executerGroup,System.Type executerType)
         {
             this.executerGroup = executerGroup;

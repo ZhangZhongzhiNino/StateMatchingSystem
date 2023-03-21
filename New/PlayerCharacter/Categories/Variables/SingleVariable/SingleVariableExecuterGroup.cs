@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-namespace Nino.NewStateMatching.PlayerCharacter.Variable
+namespace Nino.NewStateMatching.Variable
 {
     public class SingleVariableExecuterGroup : ExecuterGroup
     {

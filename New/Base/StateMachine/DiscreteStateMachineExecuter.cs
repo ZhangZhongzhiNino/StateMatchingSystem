@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine.Events;
 using System.Linq;
+using UnityEditor;
+using UnityEngine;
 namespace Nino.NewStateMatching
 {
     public class DiscreteStateMachineExecuter :  SMSExecuter
@@ -37,17 +39,7 @@ namespace Nino.NewStateMatching
             }
             if (dic_state == null) dic_state = new Dictionary<string, StateSwitchAction>();
 
-            dataController.AddItem(
-                new LabledItem(
-                    new SMSAction(
-                        "Transist to State",
-                        (object input) => TransistToState(input),
-                        haveInput: true,
-                        inputType: typeof(SMSState)),
-                    "Transist to State",
-                    "Action"
-                ));
-             
+           
             DataUtility.AddAction(dataController, "TransistToState", TransistToState,typeof(SMSState));
             DataUtility.AddAction(dataController, "EnterFSM", EnterFSM);
             DataUtility.AddAction(dataController, "ExitFSM", ExitFSM);
@@ -74,7 +66,7 @@ namespace Nino.NewStateMatching
         }
 
                 
-        private void OnEnable()
+        private void Start()
         {
             EnableStateSwitchActions();
             if (enterStateWhenEnabled) EnterFSM();

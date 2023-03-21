@@ -1,11 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using Sirenix.OdinInspector;
-using Nino.NewStateMatching.PlayerCharacter.Trigger.PlayerInput;
+using Nino.NewStateMatching.Trigger.PlayerInput;
 public class InputReader : MonoBehaviour, PlayerInput.ITouchActions 
 {
+    public InputExecuter_TouchGesture executer;
+
+    public float delta0Timer;
+    public float delta1Timer;
+    IEnumerator ClearDelta()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.2f);
+            if (delta0Timer < 0) deltaLocation[0] = Vector2.zero;
+            else delta0Timer -= 0.2f;
+            if (delta1Timer < 0) deltaLocation[1] = Vector2.zero;
+            else delta1Timer -= 0.2f;
+        }
+    }
 
     //private settings
     private PlayerInput Pinput;
@@ -32,10 +48,20 @@ public class InputReader : MonoBehaviour, PlayerInput.ITouchActions
     {
         Pinput = new PlayerInput();
         Pinput.Touch.SetCallbacks(this);
-        Pinput.Touch.Enable();
+        Pinput.Touch.Enable(); 
+    }
+    private void OnEnable()
+    {
+        StartCoroutine(ClearDelta());
+    }
+    private void OnDisable()
+    {
+        StopCoroutine(ClearDelta());
     }
     void SetUpValues()
     {
+        delta0Timer = 0;
+        delta1Timer = 0;
         fingerCount = 2;
 
         if(TapEvent.Length < fingerCount) TapEvent = new UnityEvent[2];
@@ -67,7 +93,7 @@ public class InputReader : MonoBehaviour, PlayerInput.ITouchActions
     
         lastTapLocation = Vector2.zero;
     }
-
+    
     void PlayerInput.ITouchActions.OnFinger0(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
         
@@ -104,18 +130,24 @@ public class InputReader : MonoBehaviour, PlayerInput.ITouchActions
 
     void PlayerInput.ITouchActions.OnLocation0(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
+        delta0Timer = 0.2f;
         if (!context.performed) return;
         if (fingerLocation[0] != Vector2.zero) deltaLocation[0] = context.ReadValue<Vector2>() - fingerLocation[0];
         fingerLocation[0] = context.ReadValue<Vector2>();
         FingerMove[0]?.Invoke();
+        if (fingerRule[0] == 0) executer.dataController.GetItem("Delta L").setValue(deltaLocation[0]);
+        else executer.dataController.GetItem("Delta R").setValue(deltaLocation[0]);
     }
 
     void PlayerInput.ITouchActions.OnLocation1(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
+        delta1Timer = 0.2f;
         if (!context.performed) return;
         if (fingerLocation[1] != Vector2.zero) deltaLocation[1] = context.ReadValue<Vector2>() - fingerLocation[1];
         fingerLocation[1] = context.ReadValue<Vector2>();
         FingerMove[1]?.Invoke();
+        if (fingerRule[1] == 0) executer.dataController.GetItem("Delta L").setValue(deltaLocation[1]);
+        else executer.dataController.GetItem("Delta R").setValue(deltaLocation[1]);
     }
 
     void PlayerInput.ITouchActions.OnTap0(UnityEngine.InputSystem.InputAction.CallbackContext context)
@@ -123,6 +155,18 @@ public class InputReader : MonoBehaviour, PlayerInput.ITouchActions
         if (!context.performed) return;
         lastTapLocation = fingerLocation[0];
         TapEvent[0]?.Invoke();
+
+
+        if(lastTapLocation.x > (Screen.width/2))
+        {
+            UnityEvent tapEvent = executer.dataController.GetItem("Tap R").value as UnityEvent;
+            tapEvent.Invoke();
+        }
+        else
+        {
+            UnityEvent tapEvent = executer.dataController.GetItem("Tap L").value as UnityEvent;
+            tapEvent.Invoke();
+        }
     }
 
     void PlayerInput.ITouchActions.OnTap1(UnityEngine.InputSystem.InputAction.CallbackContext context)
@@ -130,6 +174,16 @@ public class InputReader : MonoBehaviour, PlayerInput.ITouchActions
         if (!context.performed) return;
         lastTapLocation = fingerLocation[1];
         TapEvent[1]?.Invoke();
+        if (lastTapLocation.x > (Screen.width / 2))
+        {
+            UnityEvent tapEvent = executer.dataController.GetItem("Tap R").value as UnityEvent;
+            tapEvent.Invoke();
+        }
+        else
+        {
+            UnityEvent tapEvent = executer.dataController.GetItem("Tap L").value as UnityEvent;
+            tapEvent.Invoke();
+        }
     }
 
     void MarkStartLocation_AssignRule(int fingerIndex)

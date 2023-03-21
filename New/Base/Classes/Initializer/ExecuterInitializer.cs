@@ -31,8 +31,9 @@ namespace Nino.NewStateMatching
             AddressData createrAddress = executerGroup.address;
             contentAddress.localAddress = pureName;
             createrAddress.AddChild(contentAddress);
-            createrAddress.UpdateGlobalAddressInChild();
+            createrAddress.UpdateGlobalAddressInChild(); 
             executer.InitializeAfterCreateAddress();
+
         }
     }
     

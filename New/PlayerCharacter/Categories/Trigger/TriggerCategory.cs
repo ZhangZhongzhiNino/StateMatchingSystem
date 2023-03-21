@@ -1,6 +1,6 @@
-﻿using Nino.NewStateMatching.PlayerCharacter.Trigger.PlayerInput;
+﻿using Nino.NewStateMatching.Trigger.PlayerInput;
 
-namespace Nino.NewStateMatching.PlayerCharacter.Trigger
+namespace Nino.NewStateMatching.Trigger
 {
     public class TriggerCategory : ExecuterCategory
     {

@@ -80,7 +80,7 @@ namespace Nino.NewStateMatching
             return getItem != null;
         }
         public static Item AddItemToList(Item newItem, List<Item> list)
-        {
+        { 
             Item findItem = list.Find(x => x.itemName == newItem.itemName);
             if (findItem !=null) return findItem;
             list.Add(newItem);

@@ -81,8 +81,8 @@ namespace Nino.NewStateMatching
         }
         public AddressData GetRootAddress()
         {
-            while (parent != null) return parent.GetRootAddress();
-            return this;
+            if (parent != null) return parent.GetRootAddress();
+            else return this;
         }
     }
 }

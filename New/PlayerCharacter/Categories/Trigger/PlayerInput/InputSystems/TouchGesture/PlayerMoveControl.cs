@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Sirenix.OdinInspector;
-using Nino.NewStateMatching.PlayerCharacter.Trigger.PlayerInput;
+using Nino.NewStateMatching.Trigger.PlayerInput;
 public class PlayerMoveControl : MonoBehaviour
 {
     public InputExecuter_TouchGesture executer;

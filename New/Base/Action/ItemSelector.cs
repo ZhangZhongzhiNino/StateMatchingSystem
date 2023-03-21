@@ -9,7 +9,7 @@ namespace Nino.NewStateMatching
 {
     public class ItemSelector: ICloneable
     {
-        [HideInInspector,OdinSerialize] public AddressData rootAddress;
+        [HideInInspector, OdinSerialize] public AddressData rootAddress;
         [HideInInspector, OdinSerialize] public AddressData currentAddress;
         [HideInInspector, OdinSerialize] public System.Type itemType;
         [ReadOnly]public string address;
@@ -38,12 +38,12 @@ namespace Nino.NewStateMatching
             this.rootAddress = rootAddress;
             this.itemType = itemType;
             this.currentAddress = rootAddress;
-            address = "";
             this.groupedItem = groupedItem;
             this.tagedItem = tagedItem;
             this.group = group;
             this.tags = tags;
             if (tags == null) tags = new List<string>();
+            if(rootAddress != null) address = rootAddress.globalAddress;
         }
         public ItemSelector GetClone()
         {

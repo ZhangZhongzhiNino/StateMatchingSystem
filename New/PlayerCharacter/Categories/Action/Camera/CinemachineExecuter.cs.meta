@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e9376f0349ccb504db9a652eefa95beb
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - executerGroup: {instanceID: 0}
+  - address: {instanceID: 0}
+  - dataController: {instanceID: 0}
+  - mainCamera: {instanceID: 0}
+  - lockViewPrefab: {fileID: 7444163921407070502, guid: 5414292e0a66deb4d83acd54c8490bad, type: 3}
+  - freeLookPrefab: {fileID: 3380000444078774406, guid: 8f7846566199d1648b7b37b20cb76b95, type: 3}
+  - currentVC: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
